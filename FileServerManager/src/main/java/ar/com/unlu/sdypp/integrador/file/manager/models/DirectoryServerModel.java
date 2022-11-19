@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class DirectoryServerModel {
-    private String name;
+    private int id;
     private String route;
     private String[] files;
 }

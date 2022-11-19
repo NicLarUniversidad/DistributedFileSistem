@@ -13,8 +13,29 @@ public class DirectoryServerService {
 
     @Autowired
     private DirectoryServerRepository directoryServerRepository;
+    private DirectoryServerModel directoryServerModel;
 
-    public void save(MultipartFile file, String routeName) {
-        this.directoryServerRepository.save(file, routeName);
+    @Override /*Crear nueva ruta*/
+    public void setRoute (int id,String route) {
+        this.directoryServerRepository.save(id, route);
+
     }
+
+    @Override /*Eliminar ruta*/
+    public void deleteRoute (int id) {
+        this.directoryServerRepository.delete(id);
+    }
+
+    @Override /*Motrar rutas*/
+    public List<listRoute> showRoutes () {
+
+    }
+
+   /* @Override /*Cambiar rutas*/
+    /*public void updateRoute () {
+
+    }*/
+
+
+
 }
