@@ -7,5 +7,6 @@ import org.springframework.web.multipart.MultipartFile;
 @Repository
 public class DirectoryServerRepository {
 
+    List<listRoute> findAllByFileId(ArrayList<Integer> fileid);
 
 }

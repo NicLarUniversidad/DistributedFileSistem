@@ -25,4 +25,9 @@ public class DirectoryServerController {
         directoryServerService.save(file, routeName);
         return "OK";
     }
-
+    @PostMapping("/getFile")
+    public List<listRoute> getListOfData(@RequestBody List<Integer> fileid) {
+        List<listRoute> findAllByFileId = fileService.getListOfData(fileid);
+        return findAllByFileId;
+    }
+}

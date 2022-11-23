@@ -11,24 +11,27 @@ import java.nio.file.FileAlreadyExistsException;
 @Service
 public class DirectoryServerService {
 
+    private final FileServerRepository fileServerRepository;
+
     @Autowired
     private DirectoryServerRepository directoryServerRepository;
     private DirectoryServerModel directoryServerModel;
 
-    @Override /*Crear nueva ruta*/
+    @Data /*Crear nueva ruta*/
     public void setRoute (int id,String route) {
         this.directoryServerRepository.save(id, route);
 
     }
 
-    @Override /*Eliminar ruta*/
+    @Data /*Eliminar ruta*/
     public void deleteRoute (int id) {
         this.directoryServerRepository.delete(id);
     }
 
-    @Override /*Motrar rutas*/
-    public List<listRoute> showRoutes () {
-
+    @Data /*Motrar rutas*/
+    public List<listRoute> showRoutes(ArrayList<Integer> fileid){
+        List<listRoute> findAllByFileId = repository.findAllByFileId(fileid);
+        return findAllByFileId;
     }
 
    /* @Override /*Cambiar rutas*/
