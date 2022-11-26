@@ -15,7 +15,7 @@ import java.nio.file.FileAlreadyExistsException;
 @RestController
 public class DirectoryServerController {
 
-    private static final Logger logger = LoggerFactory.getLogger(FileController.class);
+    private static final Logger logger = LoggerFactory.getLogger(DirectoryServerController.class);
 
     @Autowired
     private DirectoryServerService directoryServerService;
@@ -23,11 +23,18 @@ public class DirectoryServerController {
     @PutMapping("/file")
     public String saveRoute(@RequestParam("route") MultipartFile file, @RequestBody String routeName, HttpServletResponse response) {
         directoryServerService.save(file, routeName);
+        logger.info ("Procesando operación...");
         return "OK";
     }
-    @PostMapping("/getFile")
+    @GetMapping("/getFile")
     public List<listRoute> getListOfData(@RequestBody List<Integer> fileid) {
         List<listRoute> findAllByFileId = fileService.getListOfData(fileid);
-        return findAllByFileId;
+        try {
+            return findAllByFileId;
+        } catch (IOException e) {
+            logger.error("Se produzco un error al intentar recuperar la ruta, path: [{}]", path, e);
+            response.setStatus(204);
+        }
+        return null;
     }
 }

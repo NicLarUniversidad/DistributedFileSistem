@@ -16,19 +16,20 @@ public class DirectoryServerService {
     @Autowired
     private DirectoryServerRepository directoryServerRepository;
     private DirectoryServerModel directoryServerModel;
+    private ListRoute list;
 
-    @Data /*Crear nueva ruta*/
+    @Autowired /*Crear nueva ruta*/
     public void setRoute (int id,String route) {
-        this.directoryServerRepository.save(id, route);
+        this.directoryServerRepository.save(list);
 
     }
 
-    @Data /*Eliminar ruta*/
+    @Autowired /*Eliminar ruta*/
     public void deleteRoute (int id) {
         this.directoryServerRepository.delete(id);
     }
 
-    @Data /*Motrar rutas*/
+    @Autowired /*Motrar rutas*/
     public List<listRoute> showRoutes(ArrayList<Integer> fileid){
         List<listRoute> findAllByFileId = repository.findAllByFileId(fileid);
         return findAllByFileId;
