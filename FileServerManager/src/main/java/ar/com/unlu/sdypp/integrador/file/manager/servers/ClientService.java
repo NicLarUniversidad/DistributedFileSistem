@@ -11,7 +11,7 @@ import java.nio.file.FileAlreadyExistsException;
 @Service
 public class ClientService {
 
-    private final FileServerRepository fileServerRepository;
+    private final ClientRepository clientRepository;
 
     @Autowired /*Agregar cliente*/
     public void setClient (int id, String name, String job_title,boolean cambiar_permiso, int permiso) {
@@ -24,22 +24,22 @@ public class ClientService {
     }
 
     @Autowired /*Crear archivo*/
-    public void createFile (int name) {
+    public void createFile (string name) {
 
     }
 
     @Autowired /*Borrar archivo*/
-    public void deleteFile (int name) {
+    public void deleteFile (string name) {
 
     }
 
     @Autowired /*Crear ruta*/
-    public void createRoute (int name) {
+    public void createRoute (string name) {
 
     }
 
     @Autowired /*Borrar ruta*/
-    public void deleteRoute (int name) {
+    public void deleteRoute (string name) {
 
     }
 
