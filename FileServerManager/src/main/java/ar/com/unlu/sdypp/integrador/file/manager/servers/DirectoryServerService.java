@@ -35,6 +35,14 @@ public class DirectoryServerService {
         return findAllByFileId;
     }
 
+    /*
+    @Autowired /*Guardar archivo*/
+    public String saveFile (String nameRoute, File objFile){
+        /**/
+        return "OK";
+    }*/
+
+
    /* @Override /*Cambiar rutas*/
     /*public void updateRoute () {
 
