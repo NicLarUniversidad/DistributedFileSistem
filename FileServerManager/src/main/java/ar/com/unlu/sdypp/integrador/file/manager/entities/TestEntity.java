@@ -1,8 +1,10 @@
-package ar.com.file.system.servidorarchivo.demo.entities;
+package ar.com.unlu.sdypp.integrador.file.manager.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+
 import lombok.Data;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
 
 @Entity
 @Data

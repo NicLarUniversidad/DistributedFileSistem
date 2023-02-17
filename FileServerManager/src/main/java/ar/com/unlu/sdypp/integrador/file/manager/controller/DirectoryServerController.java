@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;
+import java.util.List;
 
 @RestController
 public class DirectoryServerController {
@@ -19,13 +20,21 @@ public class DirectoryServerController {
 
     @Autowired
     private DirectoryServerService directoryServerService;
-
+/*
     @PutMapping("/file")
     public String saveRoute(@RequestParam("route") MultipartFile file, @RequestBody String routeName, HttpServletResponse response) {
-        directoryServerService.save(file, routeName);
+        directoryServerService.saveFile(routeName, file);
         logger.info ("Procesando operación...");
         return "OK";
     }
+*/
+    @PutMapping("/path")
+    public String saveRoute(@RequestBody DirectoryServerModel directoryModel) {
+        directoryServerService.save(directoryModel);
+        logger.info ("Procesando operación...");
+        return "OK";
+    }
+    /*
     @GetMapping("/getFile")
     public List<listRoute> getListOfData(@RequestBody List<Integer> fileid) {
         List<listRoute> findAllByFileId = fileService.getListOfData(fileid);
@@ -36,5 +45,10 @@ public class DirectoryServerController {
             response.setStatus(204);
         }
         return null;
+    }*/
+
+    @GetMapping("/directory/list")
+    public Iterable<DirectoryServerModel> getAll() {
+        return this.directoryServerService.getAll();
     }
 }

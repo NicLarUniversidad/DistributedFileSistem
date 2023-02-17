@@ -1,18 +1,22 @@
-package ar.com.file.system.servidorarchivo.demo.cruds;
+package ar.com.unlu.sdypp.integrador.file.manager.cruds;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Generated;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 @Data
 @Entity(name="ServerUser")
+@AllArgsConstructor
+@NoArgsConstructor
 public class ServerUser {
 
     @Id
-    @GeneratedValue (strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer ID;
     String nombre;
 }

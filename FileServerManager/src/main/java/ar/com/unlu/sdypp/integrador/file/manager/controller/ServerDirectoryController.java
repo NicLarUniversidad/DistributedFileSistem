@@ -1,12 +1,12 @@
-package ar.com.file.system.servidorarchivo.demo.controller;
+package ar.com.unlu.sdypp.integrador.file.manager.controller;
 
-import ar.com.file.system.servidorarchivo.demo.cruds.Directory;
-import ar.com.file.system.servidorarchivo.demo.repositories.DirectoryRepository;
+import ar.com.unlu.sdypp.integrador.file.manager.cruds.Directory;
+import ar.com.unlu.sdypp.integrador.file.manager.repositories.DirectoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.cache.annotation;
+//import org.springframework.cache.annotation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,6 +28,8 @@ public class ServerDirectoryController {
     @PostMapping("/RutaDelete")
     public String DeleteFile (@RequestBody Directory archivo){
         archivo.setActivo(false);
+
+
         return "Archivo eliminado";
     }
 

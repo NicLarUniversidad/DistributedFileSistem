@@ -1,9 +1,11 @@
-package ar.com.file.system.servidorarchivo.demo.repositories;
+package ar.com.unlu.sdypp.integrador.file.manager.repositories;
 
-import ar.com.file.system.servidorarchivo.demo.cruds.ServerUser;
+import ar.com.unlu.sdypp.integrador.file.manager.cruds.ServerUser;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ServerUserRepository extends CrudRepository <ServerUser, Integer>{
+public interface ServerUserRepository extends CrudRepository<ServerUser, Integer>{
+
+    ServerUser getFirstByNombre(String nombre);
 }

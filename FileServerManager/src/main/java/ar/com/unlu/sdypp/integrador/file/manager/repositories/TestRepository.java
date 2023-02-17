@@ -1,6 +1,6 @@
-package ar.com.file.system.servidorarchivo.demo.repositories;
+package ar.com.unlu.sdypp.integrador.file.manager.repositories;
 
-import ar.com.file.system.servidorarchivo.demo.entities.TestEntity;
+import ar.com.unlu.sdypp.integrador.file.manager.entities.TestEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

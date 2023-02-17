@@ -1,7 +1,7 @@
-package ar.com.file.system.servidorarchivo.demo.services;
+package ar.com.unlu.sdypp.integrador.file.manager.services;
 
-import ar.com.file.system.servidorarchivo.demo.entities.TestEntity;
-import ar.com.file.system.servidorarchivo.demo.repositories.TestRepository;
+import ar.com.unlu.sdypp.integrador.file.manager.entities.TestEntity;
+import ar.com.unlu.sdypp.integrador.file.manager.repositories.TestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

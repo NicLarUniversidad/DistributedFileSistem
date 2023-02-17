@@ -1,6 +1,6 @@
-package ar.com.file.system.servidorarchivo.demo.repositories;
+package ar.com.unlu.sdypp.integrador.file.manager.repositories;
 
-import ar.com.file.system.servidorarchivo.demo.cruds.Directory;
+import ar.com.unlu.sdypp.integrador.file.manager.cruds.Directory;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

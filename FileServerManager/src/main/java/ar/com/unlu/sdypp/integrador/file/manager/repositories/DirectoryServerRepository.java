@@ -1,12 +1,16 @@
 package ar.com.unlu.sdypp.integrador.file.manager.repositories;
 
+import ar.com.unlu.sdypp.integrador.file.manager.models.DirectoryServerModel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.multipart.MultipartFile;
 
-@Repository
-public class DirectoryServerRepository {
+import java.util.ArrayList;
 
-    List<listRoute> findAllByFileId(ArrayList<Integer> fileid);
+@Repository
+public interface DirectoryServerRepository extends CrudRepository<DirectoryServerModel, Integer> {
+
+    //List<listRoute> findAllByFileId(ArrayList<Integer> fileid);
 
 }

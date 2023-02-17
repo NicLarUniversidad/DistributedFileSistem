@@ -1,12 +1,13 @@
-package ar.com.file.system.servidorarchivo.demo.controller;
+package ar.com.unlu.sdypp.integrador.file.manager.controller;
 
-import ar.com.file.system.servidorarchivo.demo.cruds.File;
-import ar.com.file.system.servidorarchivo.demo.repositories.FileRepository;
+//import ar.com.file.system.servidorarchivo.demo.repositories.FileRepository;
+import ar.com.unlu.sdypp.integrador.file.manager.cruds.File;
+import ar.com.unlu.sdypp.integrador.file.manager.repositories.FileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.cache.annotation;
+//import org.springframework.cache.annotation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,7 +25,7 @@ public class ServerFileController {
         newFile.setFormato("txt");
         newFile.setTipo("1");
         newFile.setActivo(false);
-        return fileRepository.save(newFile);
+        return newFile; //fileRepository.save(newFile, nombreArchivo);
     }
 
 
@@ -37,7 +38,7 @@ public class ServerFileController {
 
     @GetMapping("/Archivos")
     public Iterable <File> listFiles (){
-        return fileRepository.findAll();
+        return null; //fileRepository.findAll();
     }
 
 
