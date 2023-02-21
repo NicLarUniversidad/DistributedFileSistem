@@ -16,7 +16,7 @@ import java.net.URISyntaxException;
 @RestController
 public class DirectoryController {
 
-    private static final Logger logger = LoggerFactory.getLogger(FileController.class);
+    private static final Logger logger = LoggerFactory.getLogger(DirectoryController.class);
 
     private final DirectoryService directoryService;
 
@@ -26,13 +26,12 @@ public class DirectoryController {
     }
 
     @PostMapping("/directory")
-    public String saveDirectory(@RequestParam("directory") MultipartFile directory, @RequestParam("name") String directoryName,
+    public String saveDirectory(@RequestParam("name") String directoryName,
                            HttpServletResponse response) throws IOException, URISyntaxException {
         logger.info("Recibido: directoryName: {}", directoryName);
-        directoryService.save(directory,directoryName);
+        directoryService.save(directoryName);
         return "OK";
     }
-
 
 
     @ExceptionHandler(IOException.class)
