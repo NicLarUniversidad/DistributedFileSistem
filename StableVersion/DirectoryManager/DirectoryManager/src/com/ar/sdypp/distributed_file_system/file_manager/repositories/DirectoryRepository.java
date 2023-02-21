@@ -4,15 +4,13 @@ import com.ar.sdypp.distributed_file_system.file_manager.services.LoadBalancerSe
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.mime.MultipartEntity;
-import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.entity.mime.content.DirectoryBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
+import java.io.Directory;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -32,7 +30,7 @@ public class DirectoryRepository {
         DirectoryBody uploadDirectory = new DirectoryBody(directoryName);
         StringBody name = new StringBody(fileName);
         StringBody path = new StringBody("");
-        reqEntity.addPart("file", uploadDirectory);
+        reqEntity.addPart("directory", uploadDirectory);
         reqEntity.addPart("name", name);
         reqEntity.addPart("path", path);
         httpPost.setEntity(reqEntity);
