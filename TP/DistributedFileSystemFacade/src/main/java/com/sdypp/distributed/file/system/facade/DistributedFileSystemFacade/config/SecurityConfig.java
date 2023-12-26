@@ -2,13 +2,23 @@ package com.sdypp.distributed.file.system.facade.DistributedFileSystemFacade.con
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import javax.sql.DataSource;
+
+import java.util.Arrays;
+import java.util.Collections;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -23,10 +33,12 @@ public class SecurityConfig {
         /**
          * Custom configurations as per our requirement
          */
-        http.authorizeHttpRequests((auth) -> auth
-                .antMatchers("/myAccount", "/health").authenticated()
-                .antMatchers("/").permitAll()
+        http.authorizeHttpRequests(auth -> auth
+                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Quita seguridad para el cors
+                .antMatchers("/files", "/myAccount").authenticated()
+                .antMatchers("/health").permitAll()
         ).httpBasic(Customizer.withDefaults());
+        http.cors().disable();
         return http.build();
 
     }
