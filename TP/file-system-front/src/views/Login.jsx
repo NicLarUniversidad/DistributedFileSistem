@@ -28,26 +28,31 @@ const Login = () => {
 
     return (
         <div>
-            <h1>Login</h1>
-            <form onSubmit={handleLogin}>
-                <div>
-                    <label>Username:</label>
-                    <input
-                        type="text"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                    />
-                </div>
-                <div>
-                    <label>Password:</label>
-                    <input
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
-                </div>
-                <button type="submit">Login</button>
-            </form>
+            <header className="w3-container w3-blue-grey w3-center">
+                <h1 className="w3-twothird">Sistema de archivos distribuidos</h1>
+            </header>
+                <form className="w3-container w3-card-4 w3-quarter w3-display-middle" onSubmit={handleLogin}>
+                    <h2>Login</h2>
+
+                    <div>
+                        <label className="w3-label w3-validate">Username:</label>
+                        <input className="w3-input"
+                               type="text"
+                               value={email}
+                               onChange={(e) => setEmail(e.target.value)}
+                        />
+                    </div>
+                    <div>
+                        <label className="w3-label w3-validate">Password:</label>
+                        <input className="w3-input"
+                               type="password"
+                               value={password}
+                               onChange={(e) => setPassword(e.target.value)}
+                        />
+                    </div>
+
+                    <button type="submit" className="w3-btn w3-section w3-blue-grey w3-ripple">Login</button>
+                </form>
         </div>
     );
 };

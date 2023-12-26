@@ -35,7 +35,7 @@ function health(username, password) {
 }
 
 function logout() {
-    localStorage.removeItem('token');
+    localStorage.removeItem('logged');
 }
 
 
