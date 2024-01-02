@@ -14,11 +14,7 @@ public class DirectoryServerModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private String route;
-    private String name;
     private String path;
     private Integer userId;
-    private Date creationDate;
-    private Date lastModification;
-    //private String[] files;
+    private boolean saturado;
 }

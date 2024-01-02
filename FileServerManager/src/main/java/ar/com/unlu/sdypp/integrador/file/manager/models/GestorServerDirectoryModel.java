@@ -10,11 +10,10 @@ import java.util.Date;
 
 @Data
 @Entity
-public class FileModel {
-    private String name;
-    private String content;
-    private String path;
-    private float size;
-    private Date creationDate;
-    private Date lastModification;
+public class GestorServerDirectoryModel {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+    private boolean status;
+    private boolean saturado;
 }
