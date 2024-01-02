@@ -14,6 +14,7 @@ public class ClientModels {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    private String contrasenia;
     private String name;
     private String apellido;
     private String job_title;
