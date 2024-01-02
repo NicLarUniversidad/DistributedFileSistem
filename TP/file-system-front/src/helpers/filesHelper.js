@@ -16,4 +16,24 @@ async function getAllFiles() {
     return data;
 }
 
-export {getAllFiles}
+async function uploadFile(file) {
+    const base64encodedData = localStorage.getItem("token");
+    const url = getHealthUrl() + "upload-file";
+    const formData = new FormData();
+    formData.append("file", file, file.name);
+    const fetchResponse = await fetch(url, {
+        body: formData,
+        method: 'POST',
+        cache: 'no-cache',
+        credentials: 'same-origin',
+        headers: {
+            'Authorization': 'Basic ' + base64encodedData,
+            'Access-Control-Allow-Origin': '*'
+        }
+    })
+    const data = await fetchResponse.json()
+    console.log(data)
+    return data;
+}
+
+export {getAllFiles, uploadFile}

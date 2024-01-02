@@ -1,13 +1,15 @@
 package com.ar.sdypp.distributed_file_system.file_manager.repositories;
 
+import com.ar.sdypp.distributed_file_system.file_manager.models.FileDetailsModel;
 import com.ar.sdypp.distributed_file_system.file_manager.services.LoadBalancerService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Date;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.web.multipart.MultipartFile;
 
 @Repository
 public class FileRepository {
@@ -15,7 +17,7 @@ public class FileRepository {
     @Autowired
     private LoadBalancerService loadBalancerService;
 
-    public void save(MultipartFile file, String fileName) throws IOException, URISyntaxException {
+    public FileDetailsModel save(MultipartFile file, String username) throws IOException, URISyntaxException {
 //        String host = loadBalancerService.getServerUrl();
 //        URI url = new URI("http", host, "/file", null, null);
 //        HttpClient httpclient = new DefaultHttpClient();
@@ -31,10 +33,19 @@ public class FileRepository {
 //        httpPost.setEntity(reqEntity);
 //
 //        HttpResponse response = httpclient.execute(httpPost);
+        String size = calculateSize(file.getSize());
+        var response = new FileDetailsModel("prueba", username, file.getName(), new Date(), size);
+        return response;
     }
     private File multipartToFile(MultipartFile multipart, String fileName) throws IllegalStateException, IOException {
         File convFile = new File(System.getProperty("java.io.tmpdir")+"/"+fileName);
         multipart.transferTo(convFile);
         return convFile;
+    }
+
+    private String calculateSize(long size) {
+        String response = "";
+        response = size + " bytes";
+        return response;
     }
 }

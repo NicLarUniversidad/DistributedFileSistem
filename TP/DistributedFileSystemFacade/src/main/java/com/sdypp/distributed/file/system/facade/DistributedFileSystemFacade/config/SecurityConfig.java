@@ -35,10 +35,11 @@ public class SecurityConfig {
          */
         http.authorizeHttpRequests(auth -> auth
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Quita seguridad para el cors
-                .antMatchers("/files", "/myAccount").authenticated()
+                .antMatchers(HttpMethod.GET, "/files", "/myAccount").authenticated()
+                .antMatchers(HttpMethod.POST, "/files").authenticated()
                 .antMatchers("/health").permitAll()
-        ).httpBasic(Customizer.withDefaults());
-        http.cors().disable();
+        ).httpBasic(Customizer.withDefaults())
+                .csrf().disable();
         return http.build();
 
     }

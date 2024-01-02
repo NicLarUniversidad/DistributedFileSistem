@@ -6,7 +6,9 @@ import com.sdypp.distributed.file.system.facade.DistributedFileSystemFacade.mode
 import com.sdypp.distributed.file.system.facade.DistributedFileSystemFacade.services.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 //Acá se definen los recursos o las "URL"
@@ -21,12 +23,12 @@ public class FileController {
         this.fileService = fileService;
     }
 
-    @PostMapping("/upload-file")
-    //@RequestBody es para optener datos del cuerpo del request, siempre es un objeto o si no te toma el
-    //valor "plano" del cuerpo, por ejemplo un String.
-    public void login(@RequestBody FileModel loginModel) {
-
-    }
+//    @PostMapping("/upload-file")
+//    //@RequestBody es para optener datos del cuerpo del request, siempre es un objeto o si no te toma el
+//    //valor "plano" del cuerpo, por ejemplo un String.
+//    public void login(@RequestBody FileModel loginModel) {
+//
+//    }
 
     @GetMapping("/health")
     public String health() {
@@ -41,5 +43,10 @@ public class FileController {
     @GetMapping("/files")
     public FilesDetailModel myFiles() {
         return this.fileService.getAllFiles();
+    }
+
+    @PostMapping("/upload-file")
+    public FileDetailsModel uploadFile(@RequestParam("file") MultipartFile file) throws IOException {
+        return this.fileService.uploadFile(file);
     }
 }

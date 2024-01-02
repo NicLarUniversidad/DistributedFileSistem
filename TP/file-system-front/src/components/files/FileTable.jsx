@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {getAllFiles} from "../../helpers/filesHelper";
 import { format } from 'date-fns';
+import FileActionPanel from "./FileActionPanel";
 
 function FileTable(props) {
 
@@ -45,9 +46,7 @@ function FileTable(props) {
                     }
                 </table>
             </section>
-            <section className="w3-container w3-third w3-grey">
-                &nbsp;
-            </section>
+            <FileActionPanel />
         </section>
     );
 }

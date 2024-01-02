@@ -1,11 +1,10 @@
 package com.ar.sdypp.distributed_file_system.file_manager.entities;
 
-import org.hibernate.annotations.GenericGenerator;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.util.Date;
+import org.hibernate.annotations.GenericGenerator;
 
 @Entity(name = "file_details")
 public class FileDetailsEntity {
