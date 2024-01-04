@@ -10,12 +10,13 @@ import java.util.Date;
 
 @Data
 @Entity
+@Table (name= "User")
 public class ClientModels {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String contrasenia;
-    private String name;
+    private String nombre;
     private String apellido;
     private String job_title;
     private boolean cambiar_permisos;
