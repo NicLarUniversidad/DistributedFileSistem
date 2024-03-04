@@ -9,7 +9,6 @@ import javax.persistence.Id;
 import java.util.Date;
 
 @Data
-@Entity
 public class FileModel {
     private String name;
     private String content;

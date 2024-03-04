@@ -9,10 +9,8 @@ import javax.persistence.Id;
 import java.util.Date;
 
 @Data
-@Entity
 public class DirectoryServerModel {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private Integer id;
     private String path;
     private Integer userId;

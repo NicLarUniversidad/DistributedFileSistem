@@ -9,11 +9,7 @@ import javax.persistence.Id;
 import java.util.Date;
 
 @Data
-@Entity
-@Table (name= "User")
 public class ClientModels {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String contrasenia;
     private String nombre;
