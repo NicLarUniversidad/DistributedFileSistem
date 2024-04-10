@@ -1,17 +1,12 @@
 package ar.com.unlu.sdypp.integrador.file.manager.controller;
 
+import ar.com.unlu.sdypp.integrador.file.manager.cruds.ServerDirectory;
 import ar.com.unlu.sdypp.integrador.file.manager.models.DirectoryServerModel;
 import ar.com.unlu.sdypp.integrador.file.manager.servers.DirectoryServerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.nio.file.FileAlreadyExistsException;
-import java.util.List;
 
 @RestController
 public class DirectoryServerController {
@@ -29,7 +24,7 @@ public class DirectoryServerController {
     }
 */
     @PutMapping("/path")
-    public String saveRoute(@RequestBody DirectoryServerModel directoryModel) {
+    public String saveRoute(@RequestBody ServerDirectory directoryModel) {
         directoryServerService.save(directoryModel);
         logger.info ("Procesando operación...");
         return "OK";
@@ -48,7 +43,7 @@ public class DirectoryServerController {
     }*/
 
     @GetMapping("/directory/list")
-    public Iterable<DirectoryServerModel> getAll() {
+    public Iterable<ServerDirectory> getAll() {
         return this.directoryServerService.getAll();
     }
 }

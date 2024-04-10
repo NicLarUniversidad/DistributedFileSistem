@@ -1,6 +1,6 @@
 package ar.com.unlu.sdypp.integrador.file.manager.entities;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity

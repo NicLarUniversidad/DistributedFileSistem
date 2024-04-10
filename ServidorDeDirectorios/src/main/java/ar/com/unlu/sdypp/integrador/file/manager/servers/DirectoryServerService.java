@@ -1,5 +1,6 @@
 package ar.com.unlu.sdypp.integrador.file.manager.servers;
 
+import ar.com.unlu.sdypp.integrador.file.manager.cruds.ServerDirectory;
 import ar.com.unlu.sdypp.integrador.file.manager.models.DirectoryServerModel;
 import ar.com.unlu.sdypp.integrador.file.manager.repositories.DirectoryServerRepository;
 import ar.com.unlu.sdypp.integrador.file.manager.repositories.FileRepository;
@@ -42,11 +43,11 @@ public class DirectoryServerService {
         return "OK";
     }*/
 
-    public DirectoryServerModel save(DirectoryServerModel model) {
-        return this.directoryServerRepository.save(model);
+    public void save(ServerDirectory model) {
+        this.directoryServerRepository.save(model);
     }
 
-    public Iterable<DirectoryServerModel> getAll() {
+    public Iterable<ServerDirectory> getAll() {
         return this.directoryServerRepository.findAll();
     }
 

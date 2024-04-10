@@ -20,7 +20,7 @@ public class ClientRepository {
     }
 
     @Query(value = "SELECT u.nombre, u.apellido FROM User u WHERE u.permiso=2")
-    List<int> getUsersWherePermiso2() {
+    List<Integer> getUsersWherePermiso2() {
         return null;
     }
 }

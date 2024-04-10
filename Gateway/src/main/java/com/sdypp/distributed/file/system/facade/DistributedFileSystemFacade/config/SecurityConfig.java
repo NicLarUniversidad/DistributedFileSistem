@@ -13,7 +13,6 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import javax.sql.DataSource;
 
@@ -33,13 +32,13 @@ public class SecurityConfig {
         /**
          * Custom configurations as per our requirement
          */
-        http.authorizeHttpRequests(auth -> auth
-                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Quita seguridad para el cors
-                .antMatchers(HttpMethod.GET, "/files", "/myAccount").authenticated()
-                .antMatchers(HttpMethod.POST, "/files").authenticated()
-                .antMatchers("/health").permitAll()
-        ).httpBasic(Customizer.withDefaults())
-                .csrf().disable();
+//        http.authorizeHttpRequests(auth -> auth
+//                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Quita seguridad para el cors
+//                .antMatchers(HttpMethod.GET, "/files", "/myAccount").authenticated()
+//                .antMatchers(HttpMethod.POST, "/files").authenticated()
+//                .antMatchers("/health").permitAll()
+//        ).httpBasic(Customizer.withDefaults())
+//                .csrf().disable();
         return http.build();
 
     }
