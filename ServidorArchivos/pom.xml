@@ -82,7 +82,7 @@
                     <archive>
                         <index>true</index>
                         <manifest>
-                            <mainClass>com.ar.sdypp.distributedFileSystem.fileManager.Application</mainClass>
+                            <mainClass>com.ar.sdypp.distributed_file_system.file_manager.Application</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

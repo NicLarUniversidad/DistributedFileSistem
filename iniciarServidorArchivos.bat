@@ -3,4 +3,4 @@ call mvn package
 
 cd target
 
-java -jar .\DistributedFileSystemFacade-1.0-SNAPSHOT.jar
+java -jar .\FileManager-1.0-SNAPSHOT.jar
