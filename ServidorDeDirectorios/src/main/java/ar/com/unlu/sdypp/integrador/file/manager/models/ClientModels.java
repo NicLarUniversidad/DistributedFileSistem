@@ -18,4 +18,61 @@ public class ClientModels {
     private boolean cambiar_permisos;
     private int permiso; /* 1- read only
                             2- read and write */
+
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getContrasenia() {
+        return contrasenia;
+    }
+
+    public void setContrasenia(String contrasenia) {
+        this.contrasenia = contrasenia;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getApellido() {
+        return apellido;
+    }
+
+    public void setApellido(String apellido) {
+        this.apellido = apellido;
+    }
+
+    public String getJob_title() {
+        return job_title;
+    }
+
+    public void setJob_title(String job_title) {
+        this.job_title = job_title;
+    }
+
+    public boolean isCambiar_permisos() {
+        return cambiar_permisos;
+    }
+
+    public void setCambiar_permisos(boolean cambiar_permisos) {
+        this.cambiar_permisos = cambiar_permisos;
+    }
+
+    public int getPermiso() {
+        return permiso;
+    }
+
+    public void setPermiso(int permiso) {
+        this.permiso = permiso;
+    }
 }
