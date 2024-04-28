@@ -6,9 +6,12 @@ import com.ar.sdypp.distributed_file_system.file_manager.models.FilesDetailsMode
 import com.ar.sdypp.distributed_file_system.file_manager.repositories.FileDetailsRepository;
 import com.ar.sdypp.distributed_file_system.file_manager.repositories.FileRepository;
 import com.ar.sdypp.distributed_file_system.file_manager.utils.ModelMapperUtil;
+
+import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -36,4 +39,7 @@ public class FileService {
         return response;
     }
 
+    public FileSystemResource getFileById(String fileId) {
+        return this.fileRepository.getFileById(fileId);
+    }
 }

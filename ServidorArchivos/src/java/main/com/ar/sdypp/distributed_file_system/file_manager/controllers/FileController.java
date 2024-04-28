@@ -4,11 +4,14 @@ package com.ar.sdypp.distributed_file_system.file_manager.controllers;
 import com.ar.sdypp.distributed_file_system.file_manager.models.FileDetailsModel;
 import com.ar.sdypp.distributed_file_system.file_manager.models.FilesDetailsModel;
 import com.ar.sdypp.distributed_file_system.file_manager.services.FileService;
+
+import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -38,6 +41,13 @@ public class FileController {
         logger.info("Recibido: username: {}", username);
         var files = this.fileService.getUserFiles(username);
         return files;
+    }
+
+    @GetMapping("/get-file/{file-id}")
+    public FileSystemResource getFileById(@PathVariable(name = "file-id") String fileId) throws IOException, URISyntaxException {
+        logger.info("Recibido: file id: {}", fileId);
+        var file = this.fileService.getFileById(fileId);
+        return file;
     }
 
 

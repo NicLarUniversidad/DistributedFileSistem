@@ -49,4 +49,8 @@ public class FileService {
 //        }
         return this.fileRepository.uploadFile(file, currentUser);
     }
+
+    public MultipartFile getFile(String fileId) {
+        return this.fileRepository.getFile(fileId);
+    }
 }

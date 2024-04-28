@@ -22,6 +22,11 @@ public class FileController {
         fileService.save(file, fileName);
         return "OK";
     }
+
+    @GetMapping("/get-file/{fileId}")
+    public MultipartFile getFile(@RequestParam("fileId") String fileId) {
+        return this.fileService.getFile(fileId);
+    }
 /*
     @GetMapping("/file")
     public FileModel getFile(@RequestBody String path, HttpServletResponse response) {

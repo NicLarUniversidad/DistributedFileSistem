@@ -2,22 +2,20 @@ package ar.com.unlu.sdypp.integrador.file.manager.models;
 
 import lombok.Data;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import java.util.Date;
-
 @Data
 public class ClientModels {
     private int id;
     private String contrasenia;
-    private String nombre;
-    private String apellido;
+    private String firstName;
+    private String lastName;
     private String job_title;
+    private String email;
     private boolean cambiar_permisos;
     private int permiso; /* 1- read only
                             2- read and write */
+    private String direccion;;
+    private Boolean activo;
+    private String username;
 
 
     public int getId() {
@@ -36,20 +34,20 @@ public class ClientModels {
         this.contrasenia = contrasenia;
     }
 
-    public String getNombre() {
-        return nombre;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
-    public String getApellido() {
-        return apellido;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setApellido(String apellido) {
-        this.apellido = apellido;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public String getJob_title() {

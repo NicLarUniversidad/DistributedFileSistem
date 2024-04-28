@@ -10,3 +10,11 @@ El trabajo consiste en realizar un sistema de archivos distribuidos que permita 
 * Java 21
 * Maven 3.8.6
 * Node 16.15.0
+
+Instalación Rabbit:
+
+* Ir a la carpeta de instalación y en la subcarpeta /sbin ejecutar: .\rabbitmq-plugins enable rabbitmq_management
+* .\rabbitmq-plugins enable rabbitmq_management
+
+Agregar un usuario:  .\rabbitmqctl add_user guest0 "guest"
+Cambiar contraseña: .\rabbitmqctl  change_password guest 123

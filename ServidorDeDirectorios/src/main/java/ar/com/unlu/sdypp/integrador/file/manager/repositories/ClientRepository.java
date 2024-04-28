@@ -15,6 +15,7 @@ public interface ClientRepository extends JpaRepository<User, Integer> {
 
     //@Query(value = "SELECT u.permiso FROM User u")
     List<User> findByPermiso(String permiso);
+    List<User> findByUsername(String username);
 
    // @Query(value = "SELECT u.nombre, u.apellido FROM User u WHERE u.permiso=2")
    // List<Integer> getUsersWherePermiso2();

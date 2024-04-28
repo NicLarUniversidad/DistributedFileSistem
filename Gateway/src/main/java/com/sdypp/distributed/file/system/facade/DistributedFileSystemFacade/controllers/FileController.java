@@ -49,4 +49,9 @@ public class FileController {
     public FileDetailsModel uploadFile(@RequestParam("file") MultipartFile file) throws IOException {
         return this.fileService.uploadFile(file);
     }
+
+    @GetMapping("/get-file/{file-id}")
+    public MultipartFile getFile(@RequestParam("file-id") String fileId) throws IOException {
+        return this.fileService.getFile(fileId);
+    }
 }

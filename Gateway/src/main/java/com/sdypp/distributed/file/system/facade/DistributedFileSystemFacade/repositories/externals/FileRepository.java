@@ -71,4 +71,35 @@ public class FileRepository {
 
         return response.getBody();
     }
+
+    public MultipartFile getFile(String fileId) {
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        String boundary = Long.toHexString(System.currentTimeMillis());
+
+        LinkedMultiValueMap<String, String> headerMap = new LinkedMultiValueMap<>();
+        headerMap.add("Content-disposition", "form-data; file-id=" + fileId);
+        //pdfHeaderMap.add("Content-type", "pplication/json; boundary =" + boundary);
+
+        LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
+
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl("http://localhost:8081/get-file/" + fileId);
+
+        logger.info("Se hace una solicitud al servicio [Gestor de archivos]");
+
+        var requestEntity = new HttpEntity<>(map, headers);
+        HttpEntity<MultipartFile> response = restTemplate.exchange(
+                builder.toUriString(),
+                HttpMethod.POST,
+                requestEntity,
+                MultipartFile.class);
+
+        logger.info("Se devolvió desde el servicio [Gestor de archivos]: " + response.getBody());
+
+        return response.getBody();
+    }
 }

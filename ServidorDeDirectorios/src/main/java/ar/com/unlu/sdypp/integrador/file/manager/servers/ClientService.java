@@ -1,6 +1,7 @@
 package ar.com.unlu.sdypp.integrador.file.manager.servers;
 
 import ar.com.unlu.sdypp.integrador.file.manager.cruds.User;
+import ar.com.unlu.sdypp.integrador.file.manager.exceptions.UserAlreadyExistsException;
 import ar.com.unlu.sdypp.integrador.file.manager.repositories.ClientRepository;
 import ar.com.unlu.sdypp.integrador.file.manager.repositories.DirectoryServerRepository;
 import org.modelmapper.ModelMapper;
@@ -32,12 +33,18 @@ public class ClientService {
     }
 
     public ClientModels listById(int id){
-        var client = clientRepository.findById(id);
+        var client = clientRepository.findById(id).get();
         return modelMapper.map(client, ClientModels.class);
     }
 
-    public ClientModels create(ClientModels client){
+    public ClientModels create(ClientModels client) throws UserAlreadyExistsException {
         var clientCrud = modelMapper.map(client, User.class);
+
+        var clients = this.clientRepository.findByUsername(client.getUsername());
+        if (clients.size() != 0) {
+            throw new UserAlreadyExistsException("Ya existe el usuario con username=\"" + client.getUsername() + "\"");
+        }
+
         clientCrud = clientRepository.save(clientCrud);
         return modelMapper.map(clientCrud, ClientModels.class);
     }

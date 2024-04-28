@@ -15,6 +15,14 @@ public class FileService {
     private FileRepository fileRepository;
 
     public void save(MultipartFile file, String fileName) {
+        //TODO: Agregar lógica de cómo dividirlo
+
+
         this.fileRepository.save(file, fileName);
+    }
+
+    public MultipartFile getFile(String fileId) {
+        //TODO: Si tiene varias partes, acá se podrían ir recuperando y juntando
+        return this.fileRepository.getFile(fileId);
     }
 }

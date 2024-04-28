@@ -11,6 +11,7 @@ import java.nio.file.Paths;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,6 +27,20 @@ public class FileRepository {
         Path file0 = Paths.get(username + "/");
         Files.write(file0, data);
 
+        //TODO: Guardar archivo
+        //Hay que elegir una estrategia para asignar el nombre a los archivos.
+        //Se puede repetir el nombre con archivos de otro usuario?
+        //Opcion 1: Username + nombre archivo + parte
+        //Opcion 2: UUID asociado a usuario o nombre de archivo (tendria que guardarse la asociación a la bd)
+        //Opcion 3: Id usuario + nombre/id archivo
+
+        //Se puede guardar en el root de la aplicación, llamar el save sin hacer nada antes
+        //Hay que elegir en qué tabla guardar, en el otro servicio:
+        //      - Que el archivo es de determinado usuario
+        //      - La ruta de donde se guarda el archivo
+        //      - Si es un fragmento de archivo, hay que guardar de qué archivo es
+        //TODO: Encriptado del contenido
+
         String size = calculateSize(file.getSize());
         var response = new FileDetailsModel("prueba", username, file.getName(), new Date(), size);
         return response;
@@ -40,5 +55,11 @@ public class FileRepository {
         String response = "";
         response = size + " bytes";
         return response;
+    }
+
+    public FileSystemResource getFileById(String fileId) {
+        File file = new File("FileManager.iml");
+        //TODO: Decifrado del contenido
+        return new FileSystemResource(file);
     }
 }
