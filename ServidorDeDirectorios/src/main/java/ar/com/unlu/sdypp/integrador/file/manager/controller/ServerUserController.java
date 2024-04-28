@@ -21,8 +21,8 @@ public class ServerUserController {
 
     public User registerUser (@RequestBody String nombre){
         var newUser = new User();
-        newUser.setNombre(nombre);
-        newUser.setApellido("Morello");
+        newUser.setFirstname(nombre);
+        newUser.setLastname("Morello");
         newUser.setEmail("delfi@hotmail.com");
         newUser.setDireccion("134");
         newUser.setActivo(false);

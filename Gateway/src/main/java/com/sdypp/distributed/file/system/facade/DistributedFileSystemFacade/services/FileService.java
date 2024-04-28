@@ -40,13 +40,13 @@ public class FileService {
     }
 
     public FileDetailsModel uploadFile(MultipartFile file) throws IOException {
-        var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String currentUser;
-        if (principal instanceof UserDetails) {
-            currentUser = ((UserDetails)principal).getUsername();
-        } else {
-            currentUser = principal.toString();
-        }
+        //var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String currentUser = "test-user";
+//        if (principal instanceof UserDetails) {
+//            currentUser = ((UserDetails)principal).getUsername();
+//        } else {
+//            currentUser = principal.toString();
+//        }
         return this.fileRepository.uploadFile(file, currentUser);
     }
 }

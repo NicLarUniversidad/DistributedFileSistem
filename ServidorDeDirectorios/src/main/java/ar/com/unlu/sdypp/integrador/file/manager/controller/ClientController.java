@@ -1,15 +1,19 @@
 package ar.com.unlu.sdypp.integrador.file.manager.controller;
 
+import ar.com.unlu.sdypp.integrador.file.manager.models.ClientModels;
 import ar.com.unlu.sdypp.integrador.file.manager.models.DirectoryServerModel;
+import ar.com.unlu.sdypp.integrador.file.manager.servers.ClientService;
 import ar.com.unlu.sdypp.integrador.file.manager.servers.DirectoryServerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/client")
@@ -22,12 +26,12 @@ public class ClientController {
     @GetMapping
     private ResponseEntity<?> listAll (){
         List<ClientModels> clients = clientService.listAll();
-        return ResposeEntity.ok(clients);
+        return ResponseEntity.ok(clients);
     }
 
-    @GetMappping("/{id}")
+    @GetMapping("/{id}")
     private ResponseEntity<?> ListById(@PathVariable int id){
-        ClientModels client = clientService.lisyById(id);
+        ClientModels client = clientService.listById(id);
         return ResponseEntity.ok(client);
     }
 

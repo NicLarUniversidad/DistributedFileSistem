@@ -1,33 +1,51 @@
 package ar.com.unlu.sdypp.integrador.file.manager.servers;
 
+import ar.com.unlu.sdypp.integrador.file.manager.cruds.User;
+import ar.com.unlu.sdypp.integrador.file.manager.repositories.ClientRepository;
 import ar.com.unlu.sdypp.integrador.file.manager.repositories.DirectoryServerRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import ar.com.unlu.sdypp.integrador.file.manager.models.ClientModels
+import ar.com.unlu.sdypp.integrador.file.manager.models.ClientModels;
 
 import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;
+import java.util.List;
 
 @Service
 public class ClientService {
 
-    private final ClientRepository clientRepository;
+    @Autowired
+    private ClientRepository clientRepository;
+
+    private final ModelMapper modelMapper;
+
+    public ClientService() {
+        this.modelMapper = new ModelMapper();
+    }
 
     public List<ClientModels> listAll(){
-        return clientRepository.findAll();
+        var clients = clientRepository.findAll();
+        List<ClientModels> clientsDTO = (List<ClientModels>)modelMapper.map(clients, List.class);
+        return clientsDTO;
     }
 
     public ClientModels listById(int id){
-        return clientRepository.ListById(id).get();
+        var client = clientRepository.findById(id);
+        return modelMapper.map(client, ClientModels.class);
     }
 
     public ClientModels create(ClientModels client){
-        return clientRepository.save(client);
+        var clientCrud = modelMapper.map(client, User.class);
+        clientCrud = clientRepository.save(clientCrud);
+        return modelMapper.map(clientCrud, ClientModels.class);
     }
 
     public ClientModels update(ClientModels client){
-        return clientRepository.save(client);
+        var clientCrud = modelMapper.map(client, User.class);
+        clientCrud = clientRepository.save(clientCrud);
+        return modelMapper.map(clientCrud, ClientModels.class);
     }
 
     public void deleteById(int id){

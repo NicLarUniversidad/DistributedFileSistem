@@ -5,6 +5,9 @@ import com.ar.sdypp.distributed_file_system.file_manager.services.LoadBalancerSe
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,22 +20,12 @@ public class FileRepository {
     @Autowired
     private LoadBalancerService loadBalancerService;
 
-    public FileDetailsModel save(MultipartFile file, String username) throws IOException, URISyntaxException {
-//        String host = loadBalancerService.getServerUrl();
-//        URI url = new URI("http", host, "/file", null, null);
-//        HttpClient httpclient = new DefaultHttpClient();
-//        HttpPost httpPost = new HttpPost(url);
-//
-//        FileBody uploadFilePart = new FileBody(multipartToFile(file, fileName));
-//        StringBody name = new StringBody(fileName);
-//        StringBody path = new StringBody("");
-//        MultipartEntity reqEntity = new MultipartEntity();
-//        reqEntity.addPart("file", uploadFilePart);
-//        reqEntity.addPart("name", name);
-//        reqEntity.addPart("path", path);
-//        httpPost.setEntity(reqEntity);
-//
-//        HttpResponse response = httpclient.execute(httpPost);
+    public FileDetailsModel save(MultipartFile file, String username) throws IOException {
+
+        byte data[] = file.getBytes();
+        Path file0 = Paths.get(username + "/");
+        Files.write(file0, data);
+
         String size = calculateSize(file.getSize());
         var response = new FileDetailsModel("prueba", username, file.getName(), new Date(), size);
         return response;

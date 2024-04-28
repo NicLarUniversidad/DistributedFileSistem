@@ -7,7 +7,6 @@ import jakarta.persistence.Id;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Generated;
 import lombok.NoArgsConstructor;
 
 @Data
@@ -19,9 +18,10 @@ public class User {
     @Id
     @GeneratedValue (strategy = GenerationType.IDENTITY)
     Integer ID;
-    String nombre;
-    String apellido;
+    String firstname;
+    String lastname;
     String email;
-    String direccion;
+    String direccion;;
+    String permiso;
     Boolean activo;
 }
