@@ -10,7 +10,7 @@ import java.util.concurrent.TimeoutException;
 
 //Se arma este código basándose en https://www.rabbitmq.com/tutorials/tutorial-one-java.html
 //Hay otra implementación específica para Spring-boot https://spring.io/guides/gs/messaging-rabbitmq/
-@Component
+//@Component
 public class RabbitmqRepository {
 
     private final Connection connection;

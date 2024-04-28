@@ -24,7 +24,7 @@ public class FileController {
     }
 
     @GetMapping("/get-file/{fileId}")
-    public MultipartFile getFile(@RequestParam("fileId") String fileId) {
+    public MultipartFile getFile(@PathVariable("fileId") String fileId) {
         return this.fileService.getFile(fileId);
     }
 /*
