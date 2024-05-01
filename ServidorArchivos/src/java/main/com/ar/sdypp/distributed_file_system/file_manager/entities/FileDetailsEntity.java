@@ -15,4 +15,7 @@ public class FileDetailsEntity {
     private String size;
     private Date uploadedDate;
     private String username;
+    @Lob //permite persistir objetos de gran tamaño
+    private byte[] data;
+
 }

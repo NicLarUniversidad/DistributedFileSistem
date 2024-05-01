@@ -27,6 +27,13 @@ public class FileRepository {
         Path file0 = Paths.get(username + "/");
         Files.write(file0, data);
 
+        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+        FileDetailsModel fileEntity = FileEntity.builder()
+                .name(fileName)
+                .username(file.getUsername)
+                .build();
+        return save(fileEntity);
+
         //TODO: Guardar archivo
         //Hay que elegir una estrategia para asignar el nombre a los archivos.
         //Se puede repetir el nombre con archivos de otro usuario?
@@ -45,6 +52,17 @@ public class FileRepository {
         var response = new FileDetailsModel("prueba", username, file.getName(), new Date(), size);
         return response;
     }
+
+
+    public Optional<FileDetailsEntity> getFile(String id) throws FileNotFoundException{
+        Optional<FileDetailsEntity> file = fileRepository.findById(id);
+        if(file.isPresent()){
+            return file;
+        }
+        throw new FileNotFoundException();
+    }
+
+
     private File multipartToFile(MultipartFile multipart, String fileName) throws IllegalStateException, IOException {
         File convFile = new File(System.getProperty("java.io.tmpdir")+"/"+fileName);
         multipart.transferTo(convFile);

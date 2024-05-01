@@ -26,9 +26,17 @@ public class FileService {
     @Autowired
     private ModelMapperUtil modelMapperUtil;
 
+    //Permite almacenar archivos en la base de datos
     public FileDetailsModel save(MultipartFile file, String fileName) throws IOException, URISyntaxException {
         return this.fileRepository.save(file, fileName);
     }
+
+
+    //Permite descargar archivos de la base de datos
+    public Optional<FileDetailsEntity> getFile(String id) throws FileNotFoundException{
+        return this.getFile(id);
+    }
+
 
     public FilesDetailsModel getUserFiles(String username) {
         var files = this.fileDetailsRepository.findAllByUsername(username);
