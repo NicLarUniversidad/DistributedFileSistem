@@ -36,6 +36,17 @@ public class FileController {
         return response;
     }
 
+    // Descargar archivo
+    @GetMapping("/file/{id}")
+    public ResponseEntity<byte[]> getFile(@PathVariable id id) throws FileNotFoundException{
+        FileDetailsEntity fileEntity = fileService.getFileById(id).get();
+        return ResponseEntity.status(HttpStatus.OK)
+                .header(HttpHeaders.CONTENT_DISPOSITION,"attachment : filename\"" + fileEntity.getName()+"\"")
+                .body(fileEntity.getData());
+    }
+
+
+
     @GetMapping("/files")
     public FilesDetailsModel getUserFiles(@RequestParam(name = "username") String username) throws IOException, URISyntaxException {
         logger.info("Recibido: username: {}", username);
@@ -50,6 +61,13 @@ public class FileController {
         return file;
     }
 
+
+    //Trae la lista de archivos
+    @GetMapping("/allfiles")
+    public ResponseEntity<List<ResponseFile>> getListFiles(){
+        List<ResponseFile> files = fileService.getAllFiles();
+        return ResponseEntity.status(HttpStatus.OK).body(files);
+    }
 
 
     @ExceptionHandler(IOException.class)

@@ -12,6 +12,7 @@ public class FileDetailsEntity {
     @GenericGenerator(name="system-uuid", strategy = "uuid")
     private String id;
     private String name;
+    private String url;
     private String size;
     private Date uploadedDate;
     private String username;
