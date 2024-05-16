@@ -3,6 +3,7 @@ package com.ar.sdypp.distributed_file_system.file_manager.models;
 import java.util.Date;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -15,4 +16,5 @@ public class FileDetailsModel {
     private String size;
     private Date uploadedDate;
     private String username;
+    private String path;
 }
