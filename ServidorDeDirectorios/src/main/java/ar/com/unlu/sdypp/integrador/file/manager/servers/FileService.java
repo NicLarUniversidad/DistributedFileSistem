@@ -14,7 +14,7 @@ public class FileService {
     @Autowired
     private FileRepository fileRepository;
 
-    public void save(MultipartFile file, String fileName) {
+    public void save(MultipartFile file, String fileName) throws IOException {
         //TODO: Agregar lógica de cómo dividirlo
 
 

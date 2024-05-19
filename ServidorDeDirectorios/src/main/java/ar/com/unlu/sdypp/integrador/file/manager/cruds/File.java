@@ -18,13 +18,13 @@ public class File {
 
     @Id
     @GeneratedValue (strategy = GenerationType.IDENTITY)
-    Integer ID;
-    String nombreArchivo;
-    String nombreRutaDirectorio;
-    String tamaño;
-    String formato;
-    String tipo; //si es de lectura, escritura o ambas
-    Boolean activo;
+    private Integer ID;
+    private String nombreArchivo;
+    private String nombreRutaDirectorio;
+    private String tamaño;
+    private String formato;
+    private String tipo; //si es de lectura, escritura o ambas
+    private Boolean activo;
 
 
 }

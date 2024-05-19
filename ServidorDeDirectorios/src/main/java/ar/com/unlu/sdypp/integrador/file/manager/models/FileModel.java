@@ -16,4 +16,5 @@ public class FileModel {
     private float size;
     private Date creationDate;
     private Date lastModification;
+    private String username;
 }

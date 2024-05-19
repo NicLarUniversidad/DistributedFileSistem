@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+
 @RestController
 public class FileController {
 
@@ -18,7 +20,7 @@ public class FileController {
     private FileService fileService;
 
     @PutMapping("/file")
-    public String saveFile(@RequestParam("file") MultipartFile file, @RequestBody String fileName, HttpServletResponse response) {
+    public String saveFile(@RequestParam("file") MultipartFile file, @RequestParam("name") String fileName, HttpServletResponse response) throws IOException {
         fileService.save(file, fileName);
         return "OK";
     }

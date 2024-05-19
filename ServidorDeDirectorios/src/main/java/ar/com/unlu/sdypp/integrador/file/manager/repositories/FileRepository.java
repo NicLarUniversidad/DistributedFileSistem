@@ -1,6 +1,10 @@
 package ar.com.unlu.sdypp.integrador.file.manager.repositories;
 
+import ar.com.unlu.sdypp.integrador.file.manager.cruds.File;
+import ar.com.unlu.sdypp.integrador.file.manager.models.FileModel;
+import ar.com.unlu.sdypp.integrador.file.manager.repositories.amqp.RabbitmqRepository;
 import ar.com.unlu.sdypp.integrador.file.manager.servers.LoadBalancerService;
+import ar.com.unlu.sdypp.integrador.file.manager.utils.json;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -14,14 +18,41 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.io.IOException;
+import java.util.Arrays;
+
 @Component
 public class FileRepository {
 
     //@Autowired
     private LoadBalancerService loadBalancerService;
+    private final RabbitmqRepository rabbitmqRepository;
+    private FileDataRepository fileDataRepository;
+    private json jsonConverter;
 
-    public void save(MultipartFile file, String fileName) {
-        String url = loadBalancerService.getServerUrl();
+
+    @Autowired
+    public FileRepository(RabbitmqRepository rabbitmqRepository, FileDataRepository fileDataRepository, json jsonConverter) {
+        this.rabbitmqRepository = rabbitmqRepository;
+        this.fileDataRepository = fileDataRepository;
+        this.jsonConverter = new json();
+    }
+
+    public void save(MultipartFile file, String username) throws IOException {
+        File newFile = new File();
+        FileModel user = new FileModel();
+        newFile.setActivo(true);
+        newFile.setTamaño(file.getSize() + " bytes");
+        newFile.setNombreArchivo(file.getName());
+        String[] parts = file.getName().split("\\.");
+        newFile.setTipo(parts[parts.length - 1]);
+        fileDataRepository.save(newFile);
+        user.setName(file.getName());
+        user.setContent(new String(file.getBytes()));
+        user.setUsername(username);
+        user.setSize(file.getSize());
+        rabbitmqRepository.send(jsonConverter.ConvertirAjson(user));
+
     }
 
     public MultipartFile getFile(String fileId) {

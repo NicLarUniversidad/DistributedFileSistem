@@ -14,6 +14,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Date;
 
 @Component
 public class FileRepository {
@@ -34,12 +35,15 @@ public class FileRepository {
         Files.createDirectories(Paths.get(username));
         Files.write(file0, encryptData);
 
+        var size = file.getSize();
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
         FileDetailsModel fileEntity = new FileDetailsModel();
         fileEntity.setName(fileName);
         fileEntity.setUsername(username);
         fileEntity.setPath(file0.toString()); // Agrego path, por si en algún momento se cambia de estrategia
         fileEntity.setId(file0.toString());
+        fileEntity.setUploadedDate(new Date());
+        fileEntity.setSize(size + " bytes");
         return fileEntity;
     }
 
@@ -48,19 +52,20 @@ public class FileRepository {
         String path = username + "/" + fileId;
         File file = new File(path);
         if (file.exists()) {
-//            var content = StreamUtils.copyToString( new ClassPathResource(path).getInputStream(), Charset.defaultCharset()  );
-//            String plainText = textEncryptor.decrypt(content.toString());
-//            return plainText;
+            //var content = StreamUtils.copyToString( new ClassPathResource(path).getInputStream(), Charset.defaultCharset()  );
 
             BufferedReader reader = new BufferedReader(new FileReader(file));
             StringBuilder content = new StringBuilder();
             String line = null;
             do {
                 line = reader.readLine();
-                content.append(line);
+                if (line != null) {
+                    content.append(line);
+                }
             } while(line != null);
             reader.close();
-            return content.toString();
+            String plainText = textEncryptor.decrypt(content.toString());
+            return plainText;
         }
         else {
             throw new FileNotFoundException(fileId);
