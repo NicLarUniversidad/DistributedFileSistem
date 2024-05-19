@@ -47,6 +47,27 @@ public class FileRepository {
         return fileEntity;
     }
 
+    public FileDetailsModel saveStringAsFile(MultipartFile file, String username) throws IOException {
+        byte data[] = file.getBytes();
+        Path file0 = Paths.get(username + "/" + file.getOriginalFilename()); // username / nombre de archivo
+
+        String fileContain = new String(data, StandardCharsets.UTF_8);
+        var encryptData = textEncryptor.encrypt(fileContain).getBytes();
+        Files.createDirectories(Paths.get(username));
+        Files.write(file0, encryptData);
+
+        var size = file.getSize();
+        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+        FileDetailsModel fileEntity = new FileDetailsModel();
+        fileEntity.setName(fileName);
+        fileEntity.setUsername(username);
+        fileEntity.setPath(file0.toString()); // Agrego path, por si en algún momento se cambia de estrategia
+        fileEntity.setId(file0.toString());
+        fileEntity.setUploadedDate(new Date());
+        fileEntity.setSize(size + " bytes");
+        return fileEntity;
+    }
+
     public String getFileById(String fileId, String username) throws IOException {
         // Por ahora el ID podría ser el path
         String path = username + "/" + fileId;

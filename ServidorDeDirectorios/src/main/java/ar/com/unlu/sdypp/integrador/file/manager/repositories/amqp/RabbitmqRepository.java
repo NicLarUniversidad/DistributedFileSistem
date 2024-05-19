@@ -58,10 +58,10 @@ public class RabbitmqRepository {
         DeliverCallback deliverCallback = (consumerTag, delivery) -> {
             String message = new String(delivery.getBody(), "UTF-8");
             //Acá se debe procesar los mensajes recibidos
-
+            System.out.println(message);
             //Se avisa que se procesó el mensaje
             channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
         };
-        channel.basicConsume(queue, true, deliverCallback, consumerTag -> { });
+        channel.basicConsume(queue, false, deliverCallback, consumerTag -> { });
     }
 }

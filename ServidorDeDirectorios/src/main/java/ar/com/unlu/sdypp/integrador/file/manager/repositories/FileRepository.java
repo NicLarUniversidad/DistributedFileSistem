@@ -39,6 +39,7 @@ public class FileRepository {
     }
 
     public void save(MultipartFile file, String username) throws IOException {
+        //Se guarda la información del archivo
         File newFile = new File();
         FileModel user = new FileModel();
         newFile.setActivo(true);
@@ -47,7 +48,12 @@ public class FileRepository {
         String[] parts = file.getName().split("\\.");
         newFile.setTipo(parts[parts.length - 1]);
         fileDataRepository.save(newFile);
-        user.setName(file.getName());
+
+        //TODO: Dividir en partes el archivo y guardar en la base información de cada parte
+        //Y publicar cada parte por separado
+
+        //Se publica en rabbit
+        user.setName(file.getOriginalFilename());
         user.setContent(new String(file.getBytes()));
         user.setUsername(username);
         user.setSize(file.getSize());
