@@ -61,6 +61,58 @@ public class FileRepository {
 
     }
 
+    //Divide el archivo en partes
+    public static List<File> splitBySize(File largeFile, int maxChunkSize) throws IOException {
+        List<File> list = new ArrayList<>();
+        try (InputStream in = Files.newInputStream(largeFile.toPath())) {
+            final byte[] buffer = new byte[maxChunkSize];
+            int dataRead = in.read(buffer);
+            while (dataRead > -1) {
+                File fileChunk = stageFile(buffer, dataRead);
+                list.add(fileChunk);
+                dataRead = in.read(buffer);
+            }
+        }
+        return list;
+    }
+
+
+    private File stageFile(byte[] buffer, int length) throws IOException {
+        File outPutFile = File.createTempFile("temp-", "-split", new File(TEMP_DIRECTORY));
+        try(FileOutputStream fos = new FileOutputStream(outPutFile)) {
+            fos.write(buffer, 0, length);
+        }
+        return outPutFile;
+    }
+
+
+    private int getSizeInBytes(long totalBytes, int numberOfFiles) {
+        if (totalBytes % numberOfFiles != 0) {
+            totalBytes = ((totalBytes / numberOfFiles) + 1)*numberOfFiles;
+        }
+        long x = totalBytes / numberOfFiles;
+        if (x > Integer.MAX_VALUE){
+            throw new NumberFormatException("Byte chunk too large");
+
+        }
+        return (int) x;
+    }
+
+    public List<File> splitByNumberOfFiles(File largeFile, int noOfFiles) {
+        return splitBySize(largeFile, getSizeInBytes(largeFile.length(), noOfFiles));
+    }
+
+    //junto los pedazos del archivo
+    public File join(List<File> list) throws IOException {
+        File outPutFile = File.createTempFile("temp-", "unsplit", new File(TEMP_DIRECTORY));
+        FileOutputStream fos = new FileOutputStream(outPutFile);
+        for (File file : list) {
+            Files.copy(file.toPath(), fos);
+        }
+        fos.close();
+        return outPutFile;
+    }
+
     public MultipartFile getFile(String fileId) {
 
 
