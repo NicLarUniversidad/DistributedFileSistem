@@ -5,6 +5,7 @@ import com.sdypp.distributed.file.system.facade.DistributedFileSystemFacade.mode
 import com.sdypp.distributed.file.system.facade.DistributedFileSystemFacade.models.FilesDetailModel;
 import com.sdypp.distributed.file.system.facade.DistributedFileSystemFacade.services.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,8 +31,10 @@ public class FileController {
 //
 //    }
 
+    @Cacheable("health")
     @GetMapping("/health")
-    public String health() {
+    public String health() throws InterruptedException {
+        Thread.sleep(1000);
         return "OK";
     }
 
@@ -51,6 +54,7 @@ public class FileController {
     }
 
     @GetMapping("/get-file/{file-id}")
+    @Cacheable(value = "get-file", key = "#file-id")
     public MultipartFile getFile(@PathVariable("file-id") String fileId) throws IOException {
         System.out.println("Recibido id archivo = " + fileId);
         return this.fileService.getFile(fileId);
