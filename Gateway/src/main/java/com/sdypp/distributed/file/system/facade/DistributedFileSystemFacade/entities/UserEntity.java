@@ -9,11 +9,11 @@ import lombok.ToString;
 @Getter//Crea los getters por reflexión (sin programarlos vos xd)
 @Setter//Crea los setters por reflexión
 @ToString//Overwrite en el método toString con campos
-@Entity(name = "user")//Acá se settea el nombre de la tabla (se crea automáticamente según la configuración)
+//@Entity(name = "user")//Acá se settea el nombre de la tabla (se crea automáticamente según la configuración)
 public class UserEntity {
-    @Id//Si o si hay que definir un ID que sería una PK en la base de datos
+    //@Id//Si o si hay que definir un ID que sería una PK en la base de datos
     private String username;
     //Cada campo es una columna en la base de datos
-    @Column(name = "password")//Si se requiere, se puede renombrar los campos de la base con esta anotación
+    //@Column(name = "password")//Si se requiere, se puede renombrar los campos de la base con esta anotación
     private String password;
 }

@@ -7,10 +7,10 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 //Al implementar CommandLineRunner se ejecuta cuando inicia la aplicación...
-@Component
+//@Component
 public class Seeder implements CommandLineRunner {
 
-    @Autowired
+    //@Autowired
     private UserRepository userRepository;
 
     @Override
