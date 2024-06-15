@@ -29,11 +29,11 @@ public class RedisCacheService extends AbstractCacheManager {
     @Nullable
     public Cache getCache(String name) {
         // Quick check for existing cache...
-        //TODO: Agregar conexión con Redis y LRU
         logger.info("Searching for cache {}", name);
         Cache cache = null;
         Optional<Request> requestOptional = this.redisRequestRepository.findById(name);
         if (requestOptional.isPresent()) {
+            logger.info("Found cache {}", name);
             cache = requestOptional.get().getContent();
         } else {
             logger.info("Cache miss...");

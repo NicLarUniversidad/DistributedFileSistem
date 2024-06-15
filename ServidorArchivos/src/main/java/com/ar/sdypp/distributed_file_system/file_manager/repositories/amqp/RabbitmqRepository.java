@@ -91,6 +91,9 @@ public class RabbitmqRepository {
             Files.write(filePath.toPath(), encryptData);
             //Se avisa que se procesó el mensaje
             channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
+            //TODO: ACK que se guardó el archivo
+            //this.send(); objeto nuevo que comunique donde se guardó la parte, con un id y path
+            //Debe estar en un tópico separado
         };
         channel.basicConsume(queue, false, deliverCallback, consumerTag -> { });
     }

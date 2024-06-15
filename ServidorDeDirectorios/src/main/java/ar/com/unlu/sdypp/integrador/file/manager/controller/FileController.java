@@ -1,5 +1,6 @@
 package ar.com.unlu.sdypp.integrador.file.manager.controller;
 
+import ar.com.unlu.sdypp.integrador.file.manager.cruds.File;
 import ar.com.unlu.sdypp.integrador.file.manager.models.FileModel;
 import ar.com.unlu.sdypp.integrador.file.manager.servers.FileService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -28,6 +29,11 @@ public class FileController {
     @GetMapping("/get-file/{fileId}")
     public MultipartFile getFile(@PathVariable("fileId") String fileId) {
         return this.fileService.getFile(fileId);
+    }
+
+    @PostMapping("/upload-file")
+    public File uploadFile(@RequestParam("file") MultipartFile file) {
+        return fileService.uploadFile(file);
     }
 /*
     @GetMapping("/file")

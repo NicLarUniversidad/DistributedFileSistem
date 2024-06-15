@@ -38,7 +38,8 @@ public class FileController {
         return response;
     }
 
-    // Descargar archivo
+    // TODO: Modificar para recuperar una sola parte, pensar alternativas
+    // Recuperar parte archivo
     @GetMapping("/file")
     public ResponseEntity<byte[]> getFile(@PathParam("id") String id, @PathParam("username") String username) throws IOException {
         //FileDetailsEntity fileEntity = fileService.getFileById(id).get();

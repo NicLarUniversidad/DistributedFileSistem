@@ -18,8 +18,13 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 @Component
 public class FileRepository {
@@ -62,13 +67,13 @@ public class FileRepository {
     }
 
     //Divide el archivo en partes
-    public static List<File> splitBySize(File largeFile, int maxChunkSize) throws IOException {
-        List<File> list = new ArrayList<>();
-        try (InputStream in = Files.newInputStream(largeFile.toPath())) {
+    public List<java.io.File> splitBySize(MultipartFile largeFile, int maxChunkSize) throws IOException {
+        List<java.io.File> list = new ArrayList<>();
+        try (InputStream in = largeFile.getInputStream()) {
             final byte[] buffer = new byte[maxChunkSize];
             int dataRead = in.read(buffer);
             while (dataRead > -1) {
-                File fileChunk = stageFile(buffer, dataRead);
+                java.io.File fileChunk = stageFile(buffer, dataRead);
                 list.add(fileChunk);
                 dataRead = in.read(buffer);
             }
@@ -77,8 +82,8 @@ public class FileRepository {
     }
 
 
-    private File stageFile(byte[] buffer, int length) throws IOException {
-        File outPutFile = File.createTempFile("temp-", "-split", new File(TEMP_DIRECTORY));
+    private java.io.File stageFile(byte[] buffer, int length) throws IOException {
+        java.io.File outPutFile = java.io.File.createTempFile("temp-", "-split", new java.io.File("TEMP_DIRECTORY"));
         try(FileOutputStream fos = new FileOutputStream(outPutFile)) {
             fos.write(buffer, 0, length);
         }
@@ -98,15 +103,15 @@ public class FileRepository {
         return (int) x;
     }
 
-    public List<File> splitByNumberOfFiles(File largeFile, int noOfFiles) {
-        return splitBySize(largeFile, getSizeInBytes(largeFile.length(), noOfFiles));
+    public List<java.io.File> splitByNumberOfFiles(MultipartFile largeFile, int noOfFiles) throws IOException {
+        return splitBySize(largeFile, getSizeInBytes(largeFile.getSize(), noOfFiles));
     }
 
     //junto los pedazos del archivo
-    public File join(List<File> list) throws IOException {
-        File outPutFile = File.createTempFile("temp-", "unsplit", new File(TEMP_DIRECTORY));
+    public java.io.File join(List<java.io.File> list) throws IOException {
+        java.io.File outPutFile = java.io.File.createTempFile("temp-", "unsplit", new java.io.File("TEMP_DIRECTORY"));
         FileOutputStream fos = new FileOutputStream(outPutFile);
-        for (File file : list) {
+        for (java.io.File file : list) {
             Files.copy(file.toPath(), fos);
         }
         fos.close();

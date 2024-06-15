@@ -1,10 +1,4 @@
-Cifrado:
-
-StrongTextEncryptor textEncryptor = new StrongTextEncryptor();
-textEncryptor.setPassword(myEncryptionPassword);
-
-String myEncryptedText = textEncryptor.encrypt(myText);
-
-Descifrado:
-
-String plainText = textEncryptor.decrypt(myEncryptedText);
+1. Dividir archivo
+2. Juntar archivo
+3. Load balancer (Kubernetes, Docker)
+4. Redundancia base datos
