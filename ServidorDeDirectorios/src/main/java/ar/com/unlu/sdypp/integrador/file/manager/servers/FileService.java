@@ -47,6 +47,8 @@ public class FileService {
     }*/
 
     //publicar archivo en rabbit
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
     public void publishFile(String filePath, String queueName) throws IOException {
         // Leer el contenido del archivo
         Path path = Paths.get(filePath);
