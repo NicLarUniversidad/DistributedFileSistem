@@ -1,31 +1,44 @@
 package ar.com.unlu.sdypp.integrador.file.manager.servers;
 
-import ar.com.unlu.sdypp.integrador.file.manager.cruds.File;
+import ar.com.unlu.sdypp.integrador.file.manager.cruds.FileCrud;
 import ar.com.unlu.sdypp.integrador.file.manager.repositories.FileRepository;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessageProperties;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.FileAlreadyExistsException;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
 
 @Service
 public class FileService {
 
+    public final String TEMP_DIRECTORY = "/tmp/";
+    public static final Integer PART_NUMBERS = 10;
+
     @Autowired
     private FileRepository fileRepository;
 
-    public void save(MultipartFile file, String fileName) throws IOException {
-        //TODO: Agregar lógica de cómo dividirlo
+    public void save(MultipartFile file, String username) throws IOException {
+        var parts = this.fileRepository.splitByNumberOfFiles(file, PART_NUMBERS);
+        for (var part : parts) {
+            this.fileRepository.save(part, username);
+        }
 
-
-        this.fileRepository.save(file, fileName);
     }
 
-    //public MultipartFile getFile(String fileId) {
+    public MultipartFile getFile(String fileId) {
         //TODO: Si tiene varias partes, acá se podrían ir recuperando y juntando
-        //return this.fileRepository.getFile(fileId);
-   // }
+        return this.fileRepository.getFile(fileId);
+    }
 
     //TODO: Si tiene varias partes, acá se podrían ir recuperando y juntando
     public File join(List<File> list) throws IOException {
@@ -39,12 +52,13 @@ public class FileService {
     }
 
 
-    /*public File uploadFile(MultipartFile file) {
+    public FileCrud uploadFile(MultipartFile file, String username) throws IOException {
         //Dividir el archivo en partes
         //Subir las partes a rabbit
         //Verificar que todas las partes se hayan guardado (Opcional)
+        this.save(file, username);
         return null;
-    }*/
+    }
 
     //publicar archivo en rabbit
     @Autowired

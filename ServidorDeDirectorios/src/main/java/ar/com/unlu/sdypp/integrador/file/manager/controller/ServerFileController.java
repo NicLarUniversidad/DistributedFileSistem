@@ -1,24 +1,23 @@
 package ar.com.unlu.sdypp.integrador.file.manager.controller;
 
 //import ar.com.file.system.servidorarchivo.demo.repositories.FileRepository;
-import ar.com.unlu.sdypp.integrador.file.manager.cruds.File;
+import ar.com.unlu.sdypp.integrador.file.manager.cruds.FileCrud;
 import ar.com.unlu.sdypp.integrador.file.manager.repositories.FileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 //import org.springframework.cache.annotation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 
 public class ServerFileController {
     @Autowired
     private FileRepository fileRepository;
-    private File file;
+    private FileCrud fileCrud;
 
     @PostMapping("/ArchivoCreate")
-    public File CreateFile (@RequestBody String nombreArchivo){
-        var newFile = new File();
+    public FileCrud CreateFile (@RequestBody String nombreArchivo){
+        var newFile = new FileCrud();
         newFile.setNombreArchivo(nombreArchivo);
         newFile.setNombreRutaDirectorio(" ");
         newFile.setTamaño("10kb");
@@ -30,14 +29,14 @@ public class ServerFileController {
 
 
     @PostMapping("/ArchivoDelete")
-    public String DeleteFile (@RequestBody File archivo){
+    public String DeleteFile (@RequestBody FileCrud archivo){
         archivo.setActivo(false);
         return "Archivo eliminado";
     }
 
 
     @GetMapping("/Archivos")
-    public Iterable <File> listFiles (){
+    public Iterable <FileCrud> listFiles (){
         return null; //fileRepository.findAll();
     }
 

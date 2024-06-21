@@ -1,6 +1,6 @@
 package ar.com.unlu.sdypp.integrador.file.manager.repositories;
 
-import ar.com.unlu.sdypp.integrador.file.manager.cruds.File;
+import ar.com.unlu.sdypp.integrador.file.manager.cruds.FileCrud;
 import ar.com.unlu.sdypp.integrador.file.manager.models.FileModel;
 import ar.com.unlu.sdypp.integrador.file.manager.repositories.amqp.RabbitmqRepository;
 import ar.com.unlu.sdypp.integrador.file.manager.servers.LoadBalancerService;
@@ -11,23 +11,24 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
-import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 @Component
 public class FileRepository {
+
+    public final static String TEMP_DIRECTORY = "/";
 
     //@Autowired
     private LoadBalancerService loadBalancerService;
@@ -45,14 +46,14 @@ public class FileRepository {
 
     public void save(MultipartFile file, String username) throws IOException {
         //Se guarda la información del archivo
-        File newFile = new File();
+        FileCrud newFileCrud = new FileCrud();
         FileModel user = new FileModel();
-        newFile.setActivo(true);
-        newFile.setTamaño(file.getSize() + " bytes");
-        newFile.setNombreArchivo(file.getName());
+        newFileCrud.setActivo(true);
+        newFileCrud.setTamaño(file.getSize() + " bytes");
+        newFileCrud.setNombreArchivo(file.getName());
         String[] parts = file.getName().split("\\.");
-        newFile.setTipo(parts[parts.length - 1]);
-        fileDataRepository.save(newFile);
+        newFileCrud.setTipo(parts[parts.length - 1]);
+        fileDataRepository.save(newFileCrud);
 
         //TODO: Dividir en partes el archivo y guardar en la base información de cada parte
         //Y publicar cada parte por separado
@@ -63,6 +64,28 @@ public class FileRepository {
         user.setUsername(username);
         user.setSize(file.getSize());
         rabbitmqRepository.send(jsonConverter.ConvertirAjson(user));
+
+    }
+
+    public void save(File file, String username) throws IOException {
+        //Se guarda la información del archivo
+        FileCrud newFileCrud = new FileCrud();
+        FileModel fileModel = new FileModel();
+        newFileCrud.setActivo(true);
+        newFileCrud.setTamaño(file.length() + " bytes");
+        newFileCrud.setNombreArchivo(file.getName());
+        String[] parts = file.getName().split("\\.");
+        newFileCrud.setTipo(parts[parts.length - 1]);
+        fileDataRepository.save(newFileCrud);
+        //Y publicar cada parte por separado
+
+        //Se publica en rabbit
+        var content = Files.readAllBytes(file.toPath());
+        fileModel.setName(file.getName());
+        fileModel.setContent(new String(content));
+        fileModel.setUsername(username);
+        fileModel.setSize(content.length);
+        rabbitmqRepository.send(jsonConverter.ConvertirAjson(fileModel));
 
     }
 
@@ -83,7 +106,12 @@ public class FileRepository {
 
 
     private java.io.File stageFile(byte[] buffer, int length) throws IOException {
-        java.io.File outPutFile = java.io.File.createTempFile("temp-", "-split", new java.io.File("TEMP_DIRECTORY"));
+//        UUID uuid = UUID.randomUUID();
+//        File newFile = new File(TEMP_DIRECTORY + uuid + ".temp");
+//        if (!newFile.exists()) {
+//            newFile.createNewFile();
+//        }
+        java.io.File outPutFile = java.io.File.createTempFile("temp-", "-split", new java.io.File(TEMP_DIRECTORY));
         try(FileOutputStream fos = new FileOutputStream(outPutFile)) {
             fos.write(buffer, 0, length);
         }

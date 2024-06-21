@@ -7,14 +7,13 @@ import jakarta.persistence.Id;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Generated;
 import lombok.NoArgsConstructor;
 
 @Data
 @Entity(name="Archivo")
 @AllArgsConstructor
 @NoArgsConstructor
-public class File {
+public class FileCrud {
 
     @Id
     @GeneratedValue (strategy = GenerationType.IDENTITY)

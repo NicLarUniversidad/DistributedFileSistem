@@ -5,6 +5,8 @@ import com.google.gson.Gson;
 import com.rabbitmq.client.*;
 import org.apache.logging.log4j.message.Message;
 import org.jasypt.util.text.StrongTextEncryptor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -20,6 +22,8 @@ import java.util.concurrent.TimeoutException;
 //Hay otra implementación específica para Spring-boot https://spring.io/guides/gs/messaging-rabbitmq/
 @Component
 public class RabbitmqRepository {
+
+    public final static Logger logger = LoggerFactory.getLogger(RabbitmqRepository.class);
 
     private final Connection connection;
     private final Channel channel;
@@ -80,15 +84,21 @@ public class RabbitmqRepository {
         channel.queueBind(queueName, exchangeName, finishedWorkTopic);
         DeliverCallback deliverCallback = (consumerTag, delivery) -> {
             String message = new String(delivery.getBody(), "UTF-8");
+            logger.info("Message received: " + message);
             //Acá se debe procesar los mensajes recibidos
             Gson gson = new Gson();
             FileModel file = gson.fromJson(message, FileModel.class);
-            String path = file.getUsername()+"/"+file.getName();
+            String path = file.getUsername().replace(":", "/").replace(".", "/");
             File filePath = new File(path);
             //filePath.exists();
-            Files.createDirectories(Paths.get(username));
+            Files.createDirectories(Paths.get(username.replace(":", "/").replace(".", "/")));
+            File newFIle = new File(filePath, file.getName() + ".temp");
+            logger.info(newFIle.getAbsolutePath());
+            if (!newFIle.exists()) {
+                newFIle.createNewFile();
+            }
             var encryptData = textEncryptor.encrypt(file.getContent()).getBytes();
-            Files.write(filePath.toPath(), encryptData);
+            Files.write(newFIle.toPath(), encryptData);
             //Se avisa que se procesó el mensaje
             channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
             //TODO: ACK que se guardó el archivo

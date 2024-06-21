@@ -1,7 +1,6 @@
 package ar.com.unlu.sdypp.integrador.file.manager.controller;
 
-import ar.com.unlu.sdypp.integrador.file.manager.cruds.File;
-import ar.com.unlu.sdypp.integrador.file.manager.models.FileModel;
+import ar.com.unlu.sdypp.integrador.file.manager.cruds.FileCrud;
 import ar.com.unlu.sdypp.integrador.file.manager.servers.FileService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
@@ -32,8 +31,9 @@ public class FileController {
     }
 
     @PostMapping("/upload-file")
-    public File uploadFile(@RequestParam("file") MultipartFile file) {
-        return fileService.uploadFile(file);
+    public FileCrud uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("username") String username) throws IOException {
+        logger.info(String.format("Recibido: %s", file.getOriginalFilename()));
+        return fileService.uploadFile(file, username);
     }
 /*
     @GetMapping("/file")
