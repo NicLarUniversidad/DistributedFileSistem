@@ -92,7 +92,7 @@ public class RabbitmqRepository {
             File filePath = new File(path);
             //filePath.exists();
             Files.createDirectories(Paths.get(username.replace(":", "/").replace(".", "/")));
-            File newFIle = new File(filePath, file.getName() + ".temp");
+            File newFIle = new File(filePath, file.getName());
             logger.info(newFIle.getAbsolutePath());
             if (!newFIle.exists()) {
                 newFIle.createNewFile();

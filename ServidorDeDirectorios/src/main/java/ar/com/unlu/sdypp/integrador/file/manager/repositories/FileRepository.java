@@ -4,6 +4,7 @@ import ar.com.unlu.sdypp.integrador.file.manager.cruds.FileCrud;
 import ar.com.unlu.sdypp.integrador.file.manager.models.FileModel;
 import ar.com.unlu.sdypp.integrador.file.manager.repositories.amqp.RabbitmqRepository;
 import ar.com.unlu.sdypp.integrador.file.manager.servers.LoadBalancerService;
+import ar.com.unlu.sdypp.integrador.file.manager.servers.UserService;
 import ar.com.unlu.sdypp.integrador.file.manager.utils.json;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -36,7 +37,6 @@ public class FileRepository {
     private FileDataRepository fileDataRepository;
     private json jsonConverter;
 
-
     @Autowired
     public FileRepository(RabbitmqRepository rabbitmqRepository, FileDataRepository fileDataRepository, json jsonConverter) {
         this.rabbitmqRepository = rabbitmqRepository;
@@ -67,7 +67,7 @@ public class FileRepository {
 
     }
 
-    public void save(File file, String username) throws IOException {
+    public void save(File file, String username, String partName) throws IOException {
         //Se guarda la información del archivo
         FileCrud newFileCrud = new FileCrud();
         FileModel fileModel = new FileModel();
@@ -81,7 +81,7 @@ public class FileRepository {
 
         //Se publica en rabbit
         var content = Files.readAllBytes(file.toPath());
-        fileModel.setName(file.getName());
+        fileModel.setName(partName);
         fileModel.setContent(new String(content));
         fileModel.setUsername(username);
         fileModel.setSize(content.length);
@@ -146,30 +146,21 @@ public class FileRepository {
         return outPutFile;
     }
 
-    public MultipartFile getFile(String fileId) {
+    public String getFile(String fileId, String username) {
 
 
         RestTemplate restTemplate = new RestTemplate();
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        String boundary = Long.toHexString(System.currentTimeMillis());
-
-        LinkedMultiValueMap<String, String> headerMap = new LinkedMultiValueMap<>();
-        headerMap.add("Content-disposition", "form-data; file-id=" + fileId);
-        //pdfHeaderMap.add("Content-type", "application/json; boundary =" + boundary);
-
         LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
 
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl("http://localhost:10000/get-file/" + fileId);
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl("http://localhost:8081/file?username=" +  username + "&id=" + fileId);
 
-        var requestEntity = new HttpEntity<>(map, headers);
-        HttpEntity<MultipartFile> response = restTemplate.exchange(
+        var requestEntity = new HttpEntity<>(map);
+        HttpEntity<String> response = restTemplate.exchange(
                 builder.toUriString(),
-                HttpMethod.POST,
+                HttpMethod.GET,
                 requestEntity,
-                MultipartFile.class);
+                String.class);
 
         return response.getBody();
     }

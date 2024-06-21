@@ -26,7 +26,7 @@ public class FileController {
     }
 
     @GetMapping("/get-file/{fileId}")
-    public MultipartFile getFile(@PathVariable("fileId") String fileId) {
+    public String getFile(@PathVariable("fileId") Integer fileId) throws IOException {
         return this.fileService.getFile(fileId);
     }
 
