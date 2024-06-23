@@ -2,6 +2,8 @@ package com.ar.sdypp.distributed_file_system.file_manager.repositories;
 
 import com.ar.sdypp.distributed_file_system.file_manager.models.FileDetailsModel;
 import org.jasypt.util.text.StrongTextEncryptor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StreamUtils;
@@ -14,10 +16,13 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.Timestamp;
 import java.util.Date;
 
 @Component
 public class FileRepository {
+
+    private static final Logger logger = LoggerFactory.getLogger(FileRepository.class);
 
     private final StrongTextEncryptor textEncryptor;
 
@@ -70,6 +75,7 @@ public class FileRepository {
 
     public String getFileById(String fileId, String username) throws IOException {
         // Por ahora el ID podría ser el path
+        long startTime = System.currentTimeMillis();
         String path = username + "/" + fileId;
         File file = new File(path);
         if (file.exists()) {
@@ -86,6 +92,8 @@ public class FileRepository {
             } while(line != null);
             reader.close();
             String plainText = textEncryptor.decrypt(content.toString());
+            long finishTime = System.currentTimeMillis();
+            logger.info("Time taken: [" + (finishTime - startTime) + "] milliseconds");
             return plainText;
         }
         else {
