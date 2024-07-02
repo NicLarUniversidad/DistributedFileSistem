@@ -1,10 +1,9 @@
 package com.ar.sdypp.distributed_file_system.file_manager.repositories.amqp;
 
 import com.ar.sdypp.distributed_file_system.file_manager.models.FileModel;
-import com.ar.sdypp.distributed_file_system.file_manager.services.FileService;
+import com.ar.sdypp.distributed_file_system.file_manager.services.StorageService;
 import com.google.gson.Gson;
 import com.rabbitmq.client.*;
-import org.apache.logging.log4j.message.Message;
 import org.jasypt.util.text.StrongTextEncryptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,15 +12,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
-import java.util.Objects;
 import java.util.concurrent.TimeoutException;
 
 
@@ -52,8 +46,11 @@ public class RabbitmqRepository {
     private String password;
     private StrongTextEncryptor textEncryptor;
 
+    private final StorageService storageService;
+
     @Autowired
-    public RabbitmqRepository(Environment env) throws IOException, TimeoutException, URISyntaxException, NoSuchAlgorithmException, KeyManagementException {
+    public RabbitmqRepository(Environment env, StorageService storageService) throws IOException, TimeoutException, URISyntaxException, NoSuchAlgorithmException, KeyManagementException {
+        this.storageService = storageService;
         ConnectionFactory factory = new ConnectionFactory();
         this.queueName = "GuardadoArchivo"; //env.getProperty("sdypp.rabbitmq.queue.name");
         this.exchangeName = "default-exchange"; //env.getProperty("sdypp.rabbitmq.queue.exchange-name");
@@ -116,17 +113,20 @@ public class RabbitmqRepository {
                 //Acá se debe procesar los mensajes recibidos
                 Gson gson = new Gson();
                 FileModel file = gson.fromJson(message, FileModel.class);
-                String path = file.getUsername().replace(":", "/").replace(".", "/");
-                File filePath = new File(path);
+                //String path = file.getUsername().replace(":", "/").replace(".", "/");
+                //File filePath = new File(path);
                 //filePath.exists();
-                Files.createDirectories(Paths.get(username.replace(":", "/").replace(".", "/")));
-                File newFIle = new File(filePath, file.getName());
-                logger.info(newFIle.getAbsolutePath());
-                if (!newFIle.exists()) {
-                    newFIle.createNewFile();
-                }
+                //Files.createDirectories(Paths.get(username.replace(":", "/").replace(".", "/")));
+                //File newFIle = new File(filePath, file.getName());
+                //logger.info(newFIle.getAbsolutePath());
+                //if (!newFIle.exists()) {
+                //    newFIle.createNewFile();
+                //}
                 var encryptData = textEncryptor.encrypt(file.getContent()).getBytes();
-                Files.write(newFIle.toPath(), encryptData);
+
+                String fileUrl = this.storageService.saveFile(encryptData, file.getName());
+                logger.info("Se guardó el archivo en: {}", fileUrl);
+                //Files.write(newFIle.toPath(), encryptData);
                 //Se avisa que se procesó el mensaje
                 channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
                 //TODO: ACK que se guardó el archivo

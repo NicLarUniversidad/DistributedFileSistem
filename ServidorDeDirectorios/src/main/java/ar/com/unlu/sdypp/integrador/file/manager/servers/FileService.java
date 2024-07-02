@@ -46,7 +46,7 @@ public class FileService {
         var parts = this.fileRepository.splitByNumberOfFiles(file, PART_NUMBERS);
         var fileData = new FileCrud();
         var user = this.userService.findByUsername(username);
-        user.setUsername(username);
+        //user.setUsername(username);
         fileData.setActivo(true);
         fileData.setNombreArchivo(file.getOriginalFilename());
         fileData.setTamaño(file.getSize() + " bytes");

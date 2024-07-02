@@ -7,6 +7,7 @@ import ar.com.unlu.sdypp.integrador.file.manager.servers.LoadBalancerService;
 import ar.com.unlu.sdypp.integrador.file.manager.servers.UserService;
 import ar.com.unlu.sdypp.integrador.file.manager.utils.json;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -30,6 +31,9 @@ import java.util.UUID;
 public class FileRepository {
 
     public final static String TEMP_DIRECTORY = "/";
+
+    @Value("${sdypp.file.server.host:http://localhost:8081}")
+    private String host;
 
     //@Autowired
     private LoadBalancerService loadBalancerService;
@@ -153,7 +157,7 @@ public class FileRepository {
 
         LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
 
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl("http://localhost:8081/file?username=" +  username + "&id=" + fileId);
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(host + "/file?username=" +  username + "&id=" + fileId);
 
         var requestEntity = new HttpEntity<>(map);
         HttpEntity<String> response = restTemplate.exchange(

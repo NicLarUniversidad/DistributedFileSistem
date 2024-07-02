@@ -95,6 +95,20 @@
         </dependency>
         <!-- Thanks for using https://jar-download.com -->
 
+<!--        Dependencia para conectar con los servicios de GCP-->
+        <dependency>
+            <groupId>com.google.cloud</groupId>
+            <artifactId>spring-cloud-gcp-dependencies</artifactId>
+            <version>5.4.3</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+<!--        GCP Storage-->
+        <dependency>
+            <groupId>com.google.cloud</groupId>
+            <artifactId>spring-cloud-gcp-starter-storage</artifactId>
+            <version>5.4.3</version>
+        </dependency>
 
     </dependencies>
 
