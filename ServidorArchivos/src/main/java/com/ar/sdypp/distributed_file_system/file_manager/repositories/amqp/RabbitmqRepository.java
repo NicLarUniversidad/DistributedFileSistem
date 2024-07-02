@@ -35,39 +35,40 @@ public class RabbitmqRepository {
     private Connection connection;
     private Channel channel;
     //Se asigna el valor por variable del programa, en el application.properties
-    @Value("${sdypp.rabbitmq.host}")
+    @Value("${sdypp.rabbitmq.host:localhost}")
     private String host;
-    @Value("${sdypp.rabbitmq.queue.name}")
+    @Value("${sdypp.rabbitmq.queue.name:GuardadoArchivo}")
     private String queueName;
     //Cantidad máxima de mensajes que los consumidores pueden consumir a la vez
-    @Value("${sdypp.rabbitmq.consumer.prefetch-count}")
+    //@Value("${sdypp.rabbitmq.consumer.prefetch-count:1}")
     private int prefetchCount = 1;
     @Value("${sdypp.rabbitmq.queue.exchange-name:default-exchange}")
     private String exchangeName;
     @Value("${sdypp.rabbitmq.queue.topics:finish-work}")
     private String finishedWorkTopic;
-    @Value("${sdypp.rabbitmq.queue.username}")
+    @Value("${sdypp.rabbitmq.queue.username:guest}")
     private String username;
-    @Value("${sdypp.rabbitmq.queue.password}")
+    @Value("${sdypp.rabbitmq.queue.password:guest}")
     private String password;
     private StrongTextEncryptor textEncryptor;
 
     @Autowired
     public RabbitmqRepository(Environment env) throws IOException, TimeoutException, URISyntaxException, NoSuchAlgorithmException, KeyManagementException {
         ConnectionFactory factory = new ConnectionFactory();
-        this.host = env.getProperty("sdypp.rabbitmq.host");
-        this.queueName = env.getProperty("sdypp.rabbitmq.queue.name");
-        this.exchangeName = env.getProperty("sdypp.rabbitmq.queue.exchange-name");
-        this.queueName = env.getProperty("sdypp.rabbitmq.queue.name");
-        this.username = env.getProperty("sdypp.rabbitmq.queue.username");
-        this.password = env.getProperty("sdypp.rabbitmq.queue.password");
-        this.finishedWorkTopic = env.getProperty("sdypp.rabbitmq.queue.topics");
-        this.prefetchCount = Integer.parseInt(Objects.requireNonNull(env.getProperty("sdypp.rabbitmq.consumer.prefetch-count")));
+        this.queueName = "GuardadoArchivo"; //env.getProperty("sdypp.rabbitmq.queue.name");
+        this.exchangeName = "default-exchange"; //env.getProperty("sdypp.rabbitmq.queue.exchange-name");
+        this.finishedWorkTopic = "finished-works"; //env.getProperty("sdypp.rabbitmq.queue.topics");
+        //this.prefetchCount = Integer.parseInt(env.getProperty("sdypp.rabbitmq.consumer.prefetch-count"));
         String uri = env.getProperty("sdypp.rabbitmq.uri");
         if (uri != null) {
+            logger.info("Contectando con RabbitMQ... URI: " + uri);
             factory.setUri(uri);
         }
         else {
+            this.host = env.getProperty("sdypp.rabbitmq.host");
+            this.username = env.getProperty("sdypp.rabbitmq.queue.username");
+            this.password = env.getProperty("sdypp.rabbitmq.queue.password");
+            logger.info("Contectando con RabbitMQ... Host: " + this.host);
             factory.setHost(host);
             factory.setUsername(username);
             factory.setPassword(password);
@@ -75,7 +76,7 @@ public class RabbitmqRepository {
         connection = factory.newConnection();
         channel = connection.createChannel();
         channel.queueDeclare(queueName, true, false, false, null);
-        channel.basicQos(prefetchCount);
+        channel.basicQos(prefetchCount);// channel.basicQos(prefetchCount);
         //Se agrega esto para poder usar tópicos
         channel.exchangeDeclare(exchangeName, "topic");
         this.textEncryptor = new StrongTextEncryptor();
