@@ -10,6 +10,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -23,17 +24,20 @@ public class StorageService {
 
     private static Logger logger = LoggerFactory.getLogger(StorageService.class);
 
+    public static String cred = "";
+
     public String saveFile(byte[] fileContent, String fileName) throws IOException {
 //        Storage storage = StorageOptions.getDefaultInstance().getService();
 //        Bucket bucket = storage.create(BucketInfo.of("gs://sdypp-file-system"));
 //        Blob blob = bucket.create(fileName, fileContent);
 //        return blob.getMediaLink();
 
-        ClassPathResource classPathResource = new ClassPathResource("classpath:storage-credentials.json");
+        //ClassPathResource classPathResource = new ClassPathResource("classpath:storage-credentials.json");
         StorageOptions storageOptions = StorageOptions.newBuilder()
                 .setProjectId("hybrid-hawk-428007-f9")
                 .setCredentials(GoogleCredentials.fromStream(
-                        classPathResource.getInputStream()
+                        //classPathResource.getInputStream()
+                        new ByteArrayInputStream(cred.getBytes(StandardCharsets.UTF_8))
                 )).build();
         Storage storage = storageOptions.getService();
         long fileSize = fileContent.length;
