@@ -6,6 +6,7 @@ import com.google.cloud.storage.*;
 import com.google.common.io.CharSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
 
@@ -27,10 +28,13 @@ public class StorageService {
 //        Bucket bucket = storage.create(BucketInfo.of("gs://sdypp-file-system"));
 //        Blob blob = bucket.create(fileName, fileContent);
 //        return blob.getMediaLink();
+
+        ClassPathResource classPathResource = new ClassPathResource("classpath:storage-credentials.json");
         StorageOptions storageOptions = StorageOptions.newBuilder()
                 .setProjectId("hybrid-hawk-428007-f9")
-                .setCredentials(GoogleCredentials.fromStream(new
-                        FileInputStream(ResourceUtils.getFile("classpath:storage-credentials.json")))).build();
+                .setCredentials(GoogleCredentials.fromStream(
+                        classPathResource.getInputStream()
+                )).build();
         Storage storage = storageOptions.getService();
         long fileSize = fileContent.length;
 
