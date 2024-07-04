@@ -60,7 +60,7 @@ public class FileService {
             partData.setOriginalFile(fileData);
             fileData.getParts().add(partData);
             count++;
-            this.fileRepository.save(part, username, partName);
+            //this.fileRepository.save(part, username, partName);
         }
         this.fileDataRepository.save(fileData);
 

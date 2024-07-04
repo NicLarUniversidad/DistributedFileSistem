@@ -5,6 +5,7 @@ import com.sdypp.distributed.file.system.facade.DistributedFileSystemFacade.mode
 import com.sdypp.distributed.file.system.facade.DistributedFileSystemFacade.models.FilesDetailModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -22,13 +23,16 @@ public class FileRepository {
 
     private static final Logger logger = LoggerFactory.getLogger(FileRepository.class);
 
+    @Value("${sdypp.file.server.host:http://localhost:10000/}")
+    private String host;
+
     public FilesDetailModel getAllFiles(String username) {
         RestTemplate restTemplate = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl("http://localhost:8081/files?username="
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(host + "files?username="
                 + username);
 
         HttpEntity<?> entity = new HttpEntity<>(headers);
@@ -54,9 +58,9 @@ public class FileRepository {
 
         LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
         map.add("file", doc);
-        map.add("user", currentUser);
+        map.add("username", currentUser);
 
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl("http://localhost:8081/file");
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(host + "upload-file");
 
         logger.info("Se hace una solicitud al servicio [Gestor de archivos]");
 
@@ -87,7 +91,7 @@ public class FileRepository {
 
         LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
 
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl("http://localhost:8081/get-file/" + fileId);
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(host + "get-file/" + fileId);
 
         logger.info("Se hace una solicitud al servicio [Gestor de archivos]");
 
