@@ -3,6 +3,7 @@ package com.ar.sdypp.distributed_file_system.file_manager.repositories.amqp;
 import com.ar.sdypp.distributed_file_system.file_manager.models.FileModel;
 import com.ar.sdypp.distributed_file_system.file_manager.services.StorageService;
 import com.google.gson.Gson;
+import com.google.gson.stream.JsonReader;
 import com.rabbitmq.client.*;
 import org.jasypt.util.text.StrongTextEncryptor;
 import org.slf4j.Logger;
@@ -13,6 +14,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.net.URISyntaxException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
@@ -112,7 +114,9 @@ public class RabbitmqRepository {
                 logger.info("Message received: " + message);
                 //Acá se debe procesar los mensajes recibidos
                 Gson gson = new Gson();
-                FileModel file = gson.fromJson(message, FileModel.class);
+                JsonReader reader = new JsonReader(new StringReader(message));
+                reader.setLenient(true);
+                FileModel file = gson.fromJson(reader, FileModel.class);
                 //String path = file.getUsername().replace(":", "/").replace(".", "/");
                 //File filePath = new File(path);
                 //filePath.exists();
