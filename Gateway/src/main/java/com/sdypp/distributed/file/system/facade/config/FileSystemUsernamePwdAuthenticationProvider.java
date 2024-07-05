@@ -1,6 +1,6 @@
-//package com.sdypp.distributed.file.system.facade.DistributedFileSystemFacade.config;
+//package com.sdypp.distributed.file.system.facade.config;
 //
-//import com.sdypp.distributed.file.system.facade.DistributedFileSystemFacade.entities.UserEntity;
+//import com.sdypp.distributed.file.system.facade.entities.UserEntity;
 //import org.slf4j.Logger;
 //import org.slf4j.LoggerFactory;
 //import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +11,7 @@
 //import org.springframework.security.core.GrantedAuthority;
 //import org.springframework.security.core.authority.SimpleGrantedAuthority;
 //import org.springframework.security.crypto.password.PasswordEncoder;
-//import com.sdypp.distributed.file.system.facade.DistributedFileSystemFacade.repositories.UserRepository;
+//import com.sdypp.distributed.file.system.facade.repositories.UserRepository;
 //import org.springframework.stereotype.Service;
 //
 //import java.util.ArrayList;

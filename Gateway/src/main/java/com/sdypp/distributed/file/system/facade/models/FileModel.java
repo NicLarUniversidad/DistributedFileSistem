@@ -1,4 +1,4 @@
-package com.sdypp.distributed.file.system.facade.DistributedFileSystemFacade.models;
+package com.sdypp.distributed.file.system.facade.models;
 
 import lombok.Data;
 

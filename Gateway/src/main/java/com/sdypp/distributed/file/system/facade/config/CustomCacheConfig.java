@@ -1,7 +1,7 @@
-package com.sdypp.distributed.file.system.facade.DistributedFileSystemFacade.config;
+package com.sdypp.distributed.file.system.facade.config;
 
-import com.sdypp.distributed.file.system.facade.DistributedFileSystemFacade.cache.RedisCacheService;
-import com.sdypp.distributed.file.system.facade.DistributedFileSystemFacade.cache.RequestRepository;
+import com.sdypp.distributed.file.system.facade.cache.RedisCacheService;
+import com.sdypp.distributed.file.system.facade.cache.RequestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;

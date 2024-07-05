@@ -1,4 +1,4 @@
-//package com.sdypp.distributed.file.system.facade.DistributedFileSystemFacade.config;
+//package com.sdypp.distributed.file.system.facade.config;
 //
 //import org.springframework.context.annotation.Bean;
 //import org.springframework.context.annotation.Configuration;

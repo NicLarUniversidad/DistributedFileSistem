@@ -1,8 +1,8 @@
-package com.sdypp.distributed.file.system.facade.DistributedFileSystemFacade.repositories.externals;
+package com.sdypp.distributed.file.system.facade.repositories.externals;
 
-import com.sdypp.distributed.file.system.facade.DistributedFileSystemFacade.entities.UserEntity;
-import com.sdypp.distributed.file.system.facade.DistributedFileSystemFacade.models.FileDetailsModel;
-import com.sdypp.distributed.file.system.facade.DistributedFileSystemFacade.models.FilesDetailModel;
+import com.sdypp.distributed.file.system.facade.entities.UserEntity;
+import com.sdypp.distributed.file.system.facade.models.FileDetailsModel;
+import com.sdypp.distributed.file.system.facade.models.FilesDetailModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -76,7 +76,7 @@ public class FileRepository {
         return response.getBody();
     }
 
-    public MultipartFile getFile(String fileId) {
+    public byte[] getFile(String fileId) {
 
         RestTemplate restTemplate = new RestTemplate();
 
@@ -96,11 +96,11 @@ public class FileRepository {
         logger.info("Se hace una solicitud al servicio [Gestor de archivos]");
 
         var requestEntity = new HttpEntity<>(map, headers);
-        HttpEntity<MultipartFile> response = restTemplate.exchange(
+        HttpEntity<byte[]> response = restTemplate.exchange(
                 builder.toUriString(),
-                HttpMethod.POST,
+                HttpMethod.GET,
                 requestEntity,
-                MultipartFile.class);
+                byte[].class);
 
         logger.info("Se devolvió desde el servicio [Gestor de archivos]: " + response.getBody());
 

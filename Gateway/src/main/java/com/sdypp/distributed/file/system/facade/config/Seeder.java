@@ -1,7 +1,7 @@
-package com.sdypp.distributed.file.system.facade.DistributedFileSystemFacade.config;
+package com.sdypp.distributed.file.system.facade.config;
 
-import com.sdypp.distributed.file.system.facade.DistributedFileSystemFacade.entities.UserEntity;
-//import com.sdypp.distributed.file.system.facade.DistributedFileSystemFacade.repositories.UserRepository;
+import com.sdypp.distributed.file.system.facade.entities.UserEntity;
+//import com.sdypp.distributed.file.system.facade.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;

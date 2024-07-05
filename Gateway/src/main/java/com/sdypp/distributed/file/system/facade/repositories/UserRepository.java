@@ -1,6 +1,6 @@
-//package com.sdypp.distributed.file.system.facade.DistributedFileSystemFacade.repositories;
+//package com.sdypp.distributed.file.system.facade.repositories;
 
-import com.sdypp.distributed.file.system.facade.DistributedFileSystemFacade.entities.UserEntity;
+import com.sdypp.distributed.file.system.facade.entities.UserEntity;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

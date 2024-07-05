@@ -1,4 +1,4 @@
-package com.sdypp.distributed.file.system.facade.DistributedFileSystemFacade.cache;
+package com.sdypp.distributed.file.system.facade.cache;
 
 import lombok.Getter;
 import org.slf4j.Logger;

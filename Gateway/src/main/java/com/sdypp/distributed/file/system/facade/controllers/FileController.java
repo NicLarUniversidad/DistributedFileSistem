@@ -1,9 +1,9 @@
-package com.sdypp.distributed.file.system.facade.DistributedFileSystemFacade.controllers;
+package com.sdypp.distributed.file.system.facade.controllers;
 
-import com.sdypp.distributed.file.system.facade.DistributedFileSystemFacade.models.FileDetailsModel;
-import com.sdypp.distributed.file.system.facade.DistributedFileSystemFacade.models.FileModel;
-import com.sdypp.distributed.file.system.facade.DistributedFileSystemFacade.models.FilesDetailModel;
-import com.sdypp.distributed.file.system.facade.DistributedFileSystemFacade.services.FileService;
+import com.sdypp.distributed.file.system.facade.models.FileDetailsModel;
+import com.sdypp.distributed.file.system.facade.models.FileModel;
+import com.sdypp.distributed.file.system.facade.models.FilesDetailModel;
+import com.sdypp.distributed.file.system.facade.services.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
@@ -56,8 +56,8 @@ public class FileController {
     }
 
     @GetMapping("/get-file/{file-id}")
-    @Cacheable(value = "get-file", key = "fileId")
-    public MultipartFile getFile(@PathVariable("file-id") String fileId) throws IOException {
+    @Cacheable(value = "get-file")
+    public byte[] getFile(@PathVariable("file-id") String fileId) throws IOException {
         System.out.println("Recibido id archivo = " + fileId);
         return this.fileService.getFile(fileId);
     }
