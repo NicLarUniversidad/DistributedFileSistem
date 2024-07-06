@@ -19,9 +19,10 @@ function FileTable(props) {
                 <table className="w3-table w3-bordered w3-padding-48">
                     <thead>
                         <tr className="w3-row">
-                            <th className="w3-quarter">Nombre</th>
-                            <th className="w3-quarter">Fecha subida</th>
-                            <th className="w3-quarter">Tamaño</th>
+                            <th>Nombre</th>
+                            <th>Fecha subida</th>
+                            <th>Tamaño</th>
+                            <th></th>
                             <th></th>
                             <th></th>
                             <th></th>
@@ -34,9 +35,10 @@ function FileTable(props) {
                             return (
 
                                 <tr className="w3-row" key={idx}>
-                                    <td className="w3-quarter">{file.name}</td>
-                                    <td className="w3-quarter">{format(file.uploadedDate, 'yyyy/MM/dd')}</td>
-                                    <td className="w3-quarter">{file.size}</td>
+                                    <td>{file.nombreArchivo}</td>
+                                    <td></td>
+                                    {/*<td className="w3-quarter">{format(file.uploadedDate, 'yyyy/MM/dd')}</td>*/}
+                                    <td>{file.tamaño}</td>
                                     <td><small><i className="fas fa-download"></i></small></td>
                                     <td><small><i className="fas fa-edit"></i></small></td>
                                     <td><small><i className="fas fa-trash"></i></small></td>

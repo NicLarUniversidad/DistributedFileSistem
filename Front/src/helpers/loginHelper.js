@@ -40,7 +40,8 @@ function logout() {
 
 
 function getHealthUrl() {
-    return "http://localhost:8080/";
+    //return "http://34.121.203.246:8080/";
+    return "http://localhost:8080/"
 }
 
 export {getAuth, login, logout, health, getHealthUrl}

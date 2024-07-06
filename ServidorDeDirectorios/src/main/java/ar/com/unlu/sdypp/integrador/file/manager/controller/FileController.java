@@ -1,6 +1,8 @@
 package ar.com.unlu.sdypp.integrador.file.manager.controller;
 
 import ar.com.unlu.sdypp.integrador.file.manager.cruds.FileCrud;
+import ar.com.unlu.sdypp.integrador.file.manager.models.FileListModel;
+import ar.com.unlu.sdypp.integrador.file.manager.models.FileModel;
 import ar.com.unlu.sdypp.integrador.file.manager.servers.FileService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 public class FileController {
@@ -35,17 +38,11 @@ public class FileController {
         logger.info(String.format("Recibido: %s", file.getOriginalFilename()));
         return fileService.uploadFile(file, username);
     }
-/*
-    @GetMapping("/file")
-    public FileModel getFile(@RequestBody String path, HttpServletResponse response) {
-        try {
-            return fileService.get(path);
-        } catch (IOException e) {
-            logger.error("Se produzco un error al intentar recuperar el archivo, path: [{}]", path, e);
-            response.setStatus(204);
-        }
-        return null;
+    @GetMapping("/files/{username}")
+    public FileListModel getFile(@PathVariable("username") String username, HttpServletResponse response) {
+        return fileService.getAllFiles(username);
     }
+/*
 
     @PostMapping("/file")
     public FileModel updateFile(@RequestParam("file") MultipartFile file, @RequestBody RealFileLocation realFileLocation, HttpServletResponse response) throws IOException {

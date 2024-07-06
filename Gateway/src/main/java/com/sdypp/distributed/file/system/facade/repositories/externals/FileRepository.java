@@ -32,7 +32,7 @@ public class FileRepository {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(host + "files?username="
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(host + "files/"
                 + username);
 
         HttpEntity<?> entity = new HttpEntity<>(headers);

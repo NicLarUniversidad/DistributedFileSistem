@@ -31,12 +31,12 @@ public class FileService {
 //        } else {
 //            username = principal.toString();
 //        }
-        return "username";
+        return "test-user";
     }
 
     public FileDetailsModel uploadFile(MultipartFile file) throws IOException {
         //var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String currentUser = "test-user";
+        String currentUser = this.getUsername();
 //        if (principal instanceof UserDetails) {
 //            currentUser = ((UserDetails)principal).getUsername();
 //        } else {

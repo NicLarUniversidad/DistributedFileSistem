@@ -3,6 +3,8 @@ package ar.com.unlu.sdypp.integrador.file.manager.servers;
 import ar.com.unlu.sdypp.integrador.file.manager.cruds.FileCrud;
 import ar.com.unlu.sdypp.integrador.file.manager.cruds.FilePartCrud;
 import ar.com.unlu.sdypp.integrador.file.manager.cruds.UserCrud;
+import ar.com.unlu.sdypp.integrador.file.manager.models.FileListModel;
+import ar.com.unlu.sdypp.integrador.file.manager.models.FileModel;
 import ar.com.unlu.sdypp.integrador.file.manager.repositories.FileDataRepository;
 import ar.com.unlu.sdypp.integrador.file.manager.repositories.FileRepository;
 import org.slf4j.Logger;
@@ -125,5 +127,12 @@ public class FileService {
         // Publicar el mensaje en RabbitMQ
         rabbitTemplate.send(queueName, message);
         System.out.println("Archivo " + filePath + " publicado en la cola " + queueName);
+    }
+
+    public FileListModel getAllFiles(String username) {
+        List<FileCrud> files = this.fileDataRepository.findAllByUserUsername(username);
+        FileListModel fileListModel = new FileListModel();
+        fileListModel.setFiles(files);
+        return fileListModel;
     }
 }
