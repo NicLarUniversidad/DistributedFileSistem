@@ -2,6 +2,7 @@ package com.sdypp.distributed.file.system.facade.repositories.externals;
 
 import com.sdypp.distributed.file.system.facade.entities.UserEntity;
 import com.sdypp.distributed.file.system.facade.models.FileDetailsModel;
+import com.sdypp.distributed.file.system.facade.models.FileModel;
 import com.sdypp.distributed.file.system.facade.models.FilesDetailModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,7 +46,7 @@ public class FileRepository {
         return response.getBody();
     }
 
-    public FileDetailsModel uploadFile(MultipartFile file, String currentUser) throws IOException {
+    public FileModel uploadFile(MultipartFile file, String currentUser) throws IOException {
         RestTemplate restTemplate = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
@@ -65,11 +66,11 @@ public class FileRepository {
         logger.info("Se hace una solicitud al servicio [Gestor de archivos]");
 
         var requestEntity = new HttpEntity<>(map, headers);
-        HttpEntity<FileDetailsModel> response = restTemplate.exchange(
+        HttpEntity<FileModel> response = restTemplate.exchange(
                 builder.toUriString(),
                 HttpMethod.POST,
                 requestEntity,
-                FileDetailsModel.class);
+                FileModel.class);
 
         logger.info("Se devolvió desde el servicio [Gestor de archivos]: " + response.getBody());
 

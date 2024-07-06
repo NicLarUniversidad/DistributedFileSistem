@@ -44,7 +44,7 @@ public class FileService {
     @Autowired
     private UserService userService;
 
-    public void save(MultipartFile file, String username) throws IOException {
+    public FileCrud save(MultipartFile file, String username) throws IOException {
         var parts = this.fileRepository.splitByNumberOfFiles(file, PART_NUMBERS);
         var fileData = new FileCrud();
         var user = this.userService.findByUsername(username);
@@ -65,7 +65,7 @@ public class FileService {
             //this.fileRepository.save(part, username, partName);
         }
         this.fileDataRepository.save(fileData);
-
+        return fileData;
     }
 
     public String getFile(Integer fileId) throws IOException {
@@ -108,8 +108,7 @@ public class FileService {
         //Dividir el archivo en partes
         //Subir las partes a rabbit
         //Verificar que todas las partes se hayan guardado (Opcional)
-        this.save(file, username);
-        return null;
+        return this.save(file, username);
     }
 
     //publicar archivo en rabbit

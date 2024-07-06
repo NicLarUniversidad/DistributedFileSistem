@@ -1,6 +1,7 @@
 package com.sdypp.distributed.file.system.facade.services;
 
 import com.sdypp.distributed.file.system.facade.models.FileDetailsModel;
+import com.sdypp.distributed.file.system.facade.models.FileModel;
 import com.sdypp.distributed.file.system.facade.models.FilesDetailModel;
 import com.sdypp.distributed.file.system.facade.repositories.externals.FileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +35,7 @@ public class FileService {
         return "test-user";
     }
 
-    public FileDetailsModel uploadFile(MultipartFile file) throws IOException {
+    public FileModel uploadFile(MultipartFile file) throws IOException {
         //var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String currentUser = this.getUsername();
 //        if (principal instanceof UserDetails) {

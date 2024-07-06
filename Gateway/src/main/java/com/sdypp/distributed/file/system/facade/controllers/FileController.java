@@ -51,7 +51,7 @@ public class FileController {
     }
 
     @PostMapping("/upload-file")
-    public FileDetailsModel uploadFile(@RequestParam("file") MultipartFile file) throws IOException {
+    public FileModel uploadFile(@RequestParam("file") MultipartFile file) throws IOException {
         return this.fileService.uploadFile(file);
     }
 
