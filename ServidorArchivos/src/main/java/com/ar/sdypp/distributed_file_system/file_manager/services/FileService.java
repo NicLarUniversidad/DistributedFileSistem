@@ -56,7 +56,7 @@ public class FileService {
 //        return null;
 //    }
 
-    public String getFileById(String fileId, String username) throws IOException {
+    public byte[] getFileById(String fileId, String username) throws IOException {
         return this.fileRepository.getFileById(fileId, username);
     }
 }

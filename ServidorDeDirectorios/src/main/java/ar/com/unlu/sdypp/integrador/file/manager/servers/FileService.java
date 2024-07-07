@@ -13,6 +13,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -52,7 +53,7 @@ public class FileService {
         //user.setUsername(username);
         fileData.setActivo(true);
         fileData.setNombreArchivo(file.getOriginalFilename());
-        fileData.setTamaño(file.getSize() + " bytes");
+        fileData.setTamaño((int) file.getSize());
         fileData.setUser(user);
         int count = 1;
         for (var part : parts) {
@@ -74,18 +75,22 @@ public class FileService {
         var fileDataOpt = this.fileDataRepository.findById(fileId);
         if (fileDataOpt.isPresent()) {
             var fileData = fileDataOpt.get();
-            var contentMap = new HashMap<Integer, String>();
+            var contentMap = new HashMap<Integer, byte[]>();
             for (FilePartCrud part : fileData.getParts()) {
                 logger.info(part.getNombre() + " " + part.getOrden() + " " + part.getId() + " " + fileData.getUser().getUsername());
                 String carpeta = fileData.getUser().getUsername();
                 String nombreArchivo = part.getNombre(); //Archivo
-                var file = this.fileRepository.getFile(nombreArchivo, carpeta);
+                byte[] file = this.fileRepository.getFile(nombreArchivo, carpeta);
                 contentMap.put(part.getOrden(), file);
-                logger.info(file);
+                logger.info("Recived part with {} bytes", file.length);
             }
-            StringBuilder contenidoArchivo = new StringBuilder();
-            for (int i = 1; i <= fileData.getParts().size(); i++) {
-                contenidoArchivo.append(contentMap.get(i));
+            byte[] contenidoArchivo = new byte[fileData.getTamaño()];
+            int i = 0;
+            for (var part : contentMap.entrySet()) {
+                for (byte oneByte : part.getValue()) {
+                    contenidoArchivo[i] = oneByte;
+                    i++;
+                }
             }
             String fileName = fileData.getNombreArchivo();
             File temp = new File(TEMP_DIRECTORY);
@@ -96,7 +101,7 @@ public class FileService {
                 file.createNewFile();
             }
             FileOutputStream out = new FileOutputStream(file);
-            out.write(contenidoArchivo.toString().getBytes(StandardCharsets.UTF_8));
+            out.write(contenidoArchivo);
             return new InputStreamResource(new FileInputStream(file));
 
         }

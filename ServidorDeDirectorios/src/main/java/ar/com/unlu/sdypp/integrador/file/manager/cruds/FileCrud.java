@@ -20,7 +20,7 @@ public class FileCrud {
     private Integer ID;
     private String nombreArchivo;
     private String nombreRutaDirectorio;
-    private String tamaño;
+    private Integer tamaño;
     private String formato;
     private String tipo; //si es de lectura, escritura o ambas
     private Boolean activo;

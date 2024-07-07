@@ -78,13 +78,14 @@ public class FileRepository {
         return fileEntity;
     }
 
-    public String getFileById(String fileId, String username) throws IOException {
+    public byte[] getFileById(String fileId, String username) throws IOException {
         long startTime = System.currentTimeMillis();
-        String fileContent = this.storageService.getFile(fileId);
-        String plainText = textEncryptor.decrypt(fileContent);
+        byte[] fileContent = this.storageService.getFile(fileId);
+        //String plainText = textEncryptor.decrypt(fileContent);
         long finishTime = System.currentTimeMillis();
         logger.info("Time taken: [{}] milliseconds", finishTime - startTime);
-        return plainText;
+        //logger.info("Part size: [{}], encrypt size: [{}]", plainText.getBytes(StandardCharsets.UTF_8).length, fileContent.getBytes(StandardCharsets.UTF_8).length);
+        return fileContent;
         // Por ahora el ID podría ser el path
 //        long startTime = System.currentTimeMillis();
 //        String path = username + "/" + fileId;

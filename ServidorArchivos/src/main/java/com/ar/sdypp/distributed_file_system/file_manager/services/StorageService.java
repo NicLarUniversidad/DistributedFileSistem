@@ -24,6 +24,7 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,7 +39,7 @@ public class StorageService {
     public String saveFile(byte[] fileContent, String fileName) throws IOException {
         Storage storage = this.getStorage();
         long fileSize = fileContent.length;
-
+        logger.info("Saving a part with size: " + fileSize);
         Map<String, String> metadata = new HashMap<>();
         metadata.put("filename", fileName);
         metadata.put("content-length", String.valueOf(fileSize));
@@ -62,7 +63,7 @@ public class StorageService {
 
     }
 
-    public String getFile(String fileName) throws IOException {
+    public byte[] getFile(String fileName) throws IOException {
 //        FileUrlResource gcsFile = new FileUrlResource("https://storage.cloud.google.com/sdypp-file-system/" + fileName);
 //        return StreamUtils.copyToString(
 //                gcsFile.getInputStream(),
@@ -70,7 +71,10 @@ public class StorageService {
         logger.info("Descargando parte con nombre: [{}].", fileName);
         Storage storage = this.getStorage();
         Blob blob = storage.get("sdypp-file-system", fileName);
-        return new String(blob.getContent());
+        logger.info("Size: [{}].", blob.getContent().length);
+        String result = Base64.getEncoder().encodeToString(blob.getContent());
+        logger.info("String size: [{}].", result.getBytes().length);
+        return blob.getContent();
     }
 
 

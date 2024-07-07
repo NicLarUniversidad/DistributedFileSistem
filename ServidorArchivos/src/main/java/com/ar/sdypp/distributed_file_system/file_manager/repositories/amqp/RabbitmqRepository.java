@@ -16,8 +16,11 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.io.StringReader;
 import java.net.URISyntaxException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import java.util.concurrent.TimeoutException;
 
 
@@ -111,12 +114,13 @@ public class RabbitmqRepository {
             channel.queueBind(queueName, exchangeName, finishedWorkTopic);
             DeliverCallback deliverCallback = (consumerTag, delivery) -> {
                 String message = new String(delivery.getBody(), "UTF-8");
-                logger.info("Message received: " + message);
+                //logger.info("Message received: " + message);
                 //Acá se debe procesar los mensajes recibidos
                 Gson gson = new Gson();
                 JsonReader reader = new JsonReader(new StringReader(message));
                 reader.setLenient(true);
                 FileModel file = gson.fromJson(reader, FileModel.class);
+                logger.info("Message received: Content size: [{}]", file.getContent().length);
                 //String path = file.getUsername().replace(":", "/").replace(".", "/");
                 //File filePath = new File(path);
                 //filePath.exists();
@@ -126,9 +130,9 @@ public class RabbitmqRepository {
                 //if (!newFIle.exists()) {
                 //    newFIle.createNewFile();
                 //}
-                var encryptData = textEncryptor.encrypt(file.getContent()).getBytes();
+                //var encryptData = textEncryptor.encrypt(Arrays.toString(file.getContent())).getBytes();
 
-                String fileUrl = this.storageService.saveFile(encryptData, file.getName());
+                String fileUrl = this.storageService.saveFile( file.getContent(), file.getName());
                 logger.info("Se guardó el archivo en: {}", fileUrl);
                 //Files.write(newFIle.toPath(), encryptData);
                 //Se avisa que se procesó el mensaje

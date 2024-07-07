@@ -18,3 +18,9 @@ Instalación Rabbit:
 
 Agregar un usuario:  .\rabbitmqctl add_user guest0 "guest"
 Cambiar contraseña: .\rabbitmqctl  change_password guest 123
+
+## Instalación
+
+## Variables de ambiente
+
+## Despliegue en GCP

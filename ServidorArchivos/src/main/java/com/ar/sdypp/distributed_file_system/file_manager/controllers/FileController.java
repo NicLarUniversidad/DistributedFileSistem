@@ -46,7 +46,7 @@ public class FileController {
         var fileString = fileService.getFileById(id, username);
         return ResponseEntity.status(HttpStatus.OK)
                 .header(HttpHeaders.CONTENT_DISPOSITION,"attachment : filename\"" + id +"\"")
-                .body(fileString.getBytes());
+                .body(fileString);
     }
 
 

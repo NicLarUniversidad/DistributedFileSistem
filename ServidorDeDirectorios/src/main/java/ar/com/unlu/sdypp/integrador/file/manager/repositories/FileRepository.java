@@ -53,7 +53,7 @@ public class FileRepository {
         FileCrud newFileCrud = new FileCrud();
         FileModel user = new FileModel();
         newFileCrud.setActivo(true);
-        newFileCrud.setTamaño(file.getSize() + " bytes");
+        newFileCrud.setTamaño((int) file.getSize());
         newFileCrud.setNombreArchivo(file.getName());
         String[] parts = file.getName().split("\\.");
         newFileCrud.setTipo(parts[parts.length - 1]);
@@ -64,7 +64,7 @@ public class FileRepository {
 
         //Se publica en rabbit
         user.setName(file.getOriginalFilename());
-        user.setContent(new String(file.getBytes()));
+        user.setContent(file.getBytes());
         user.setUsername(username);
         user.setSize(file.getSize());
         rabbitmqRepository.send(jsonConverter.ConvertirAjson(user));
@@ -86,7 +86,7 @@ public class FileRepository {
         //Se publica en rabbit
         var content = Files.readAllBytes(file.toPath());
         fileModel.setName(partName);
-        fileModel.setContent(new String(content));
+        fileModel.setContent(content);
         fileModel.setUsername(username);
         fileModel.setSize(content.length);
         rabbitmqRepository.send(jsonConverter.ConvertirAjson(fileModel));
@@ -150,7 +150,7 @@ public class FileRepository {
         return outPutFile;
     }
 
-    public String getFile(String fileId, String username) {
+    public byte[] getFile(String fileId, String username) {
 
 
         RestTemplate restTemplate = new RestTemplate();
@@ -160,11 +160,11 @@ public class FileRepository {
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(host + "/file?username=" +  username + "&id=" + fileId);
 
         var requestEntity = new HttpEntity<>(map);
-        HttpEntity<String> response = restTemplate.exchange(
+        HttpEntity<byte[]> response = restTemplate.exchange(
                 builder.toUriString(),
                 HttpMethod.GET,
                 requestEntity,
-                String.class);
+                byte[].class);
 
         return response.getBody();
     }
