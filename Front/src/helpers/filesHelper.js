@@ -36,4 +36,19 @@ async function uploadFile(file) {
     return data;
 }
 
-export {getAllFiles, uploadFile}
+async function getFile(fileId) {
+    const base64encodedData = localStorage.getItem("token");
+    const url = getHealthUrl() + "get-file/" + fileId;
+    const fetchResponse = await fetch(url, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            'Authorization': 'Basic ' + base64encodedData
+        }
+    })
+    const data = await fetchResponse.json()
+    console.log(data)
+    return data;
+}
+
+export {getAllFiles, uploadFile, getFile}

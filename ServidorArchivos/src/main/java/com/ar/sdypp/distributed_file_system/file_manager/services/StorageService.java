@@ -67,6 +67,7 @@ public class StorageService {
 //        return StreamUtils.copyToString(
 //                gcsFile.getInputStream(),
 //                Charset.defaultCharset());
+        logger.info("Descargando parte con nombre: [{}].", fileName);
         Storage storage = this.getStorage();
         Blob blob = storage.get("sdypp-file-system", fileName);
         return new String(blob.getContent());

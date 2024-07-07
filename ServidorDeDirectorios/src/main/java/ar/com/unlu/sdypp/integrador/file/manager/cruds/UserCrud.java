@@ -1,5 +1,7 @@
 package ar.com.unlu.sdypp.integrador.file.manager.cruds;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -16,5 +18,6 @@ public class UserCrud {
     private String username;
 
     @OneToMany(cascade = CascadeType.ALL)
+    @JsonBackReference
     private List<FileCrud> files = new ArrayList<>();
 }
