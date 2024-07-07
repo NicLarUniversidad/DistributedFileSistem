@@ -2,9 +2,7 @@ package ar.com.unlu.sdypp.integrador.file.manager.servers;
 
 import ar.com.unlu.sdypp.integrador.file.manager.cruds.FileCrud;
 import ar.com.unlu.sdypp.integrador.file.manager.cruds.FilePartCrud;
-import ar.com.unlu.sdypp.integrador.file.manager.cruds.UserCrud;
 import ar.com.unlu.sdypp.integrador.file.manager.models.FileListModel;
-import ar.com.unlu.sdypp.integrador.file.manager.models.FileModel;
 import ar.com.unlu.sdypp.integrador.file.manager.repositories.FileDataRepository;
 import ar.com.unlu.sdypp.integrador.file.manager.repositories.FileRepository;
 import org.slf4j.Logger;
@@ -13,10 +11,13 @@ import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -68,7 +69,7 @@ public class FileService {
         return fileData;
     }
 
-    public String getFile(Integer fileId) throws IOException {
+    public Resource getFile(Integer fileId) throws IOException {
         //TODO: Si tiene varias partes, acá se podrían ir recuperando y juntando
         var fileDataOpt = this.fileDataRepository.findById(fileId);
         if (fileDataOpt.isPresent()) {
@@ -86,7 +87,18 @@ public class FileService {
             for (int i = 1; i <= fileData.getParts().size(); i++) {
                 contenidoArchivo.append(contentMap.get(i));
             }
-            return contenidoArchivo.toString();
+            String fileName = fileData.getNombreArchivo();
+            File temp = new File(TEMP_DIRECTORY);
+            if (!temp.exists())
+                temp.mkdir();
+            File file = new File(TEMP_DIRECTORY + fileName);
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            FileOutputStream out = new FileOutputStream(file);
+            out.write(contenidoArchivo.toString().getBytes(StandardCharsets.UTF_8));
+            return new InputStreamResource(new FileInputStream(file));
+
         }
 
         return null; //this.fileRepository.getFile(fileId);

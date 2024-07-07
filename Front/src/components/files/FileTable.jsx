@@ -12,9 +12,13 @@ function FileTable(props) {
         console.log("Files : " + files)
     }, [])
 
-    const handleDownloadFile = (fileId) => {
-        getFile(fileId).then(response => response.blob()).then(data => {
-            console.log(data)
+    const handleDownloadFile = (fileId, fileName) => {
+        getFile(fileId).then(response => {
+            var blob = new Blob([response], {type: "application/pdf"});
+            var link = document.createElement("a");
+            link.href = window.URL.createObjectURL(blob);
+            link.download = fileName;
+            link.click();
         })
     }
 
@@ -45,7 +49,7 @@ function FileTable(props) {
                                     <td></td>
                                     {/*<td className="w3-quarter">{format(file.uploadedDate, 'yyyy/MM/dd')}</td>*/}
                                     <td>{file.tamaño}</td>
-                                    <td><button onClick={() => {handleDownloadFile(file.id)}} className="w3-button"><i className="fas fa-download"></i></button></td>
+                                    <td><button onClick={() => {handleDownloadFile(file.id, file.nombreArchivo)}} className="w3-button"><i className="fas fa-download"></i></button></td>
                                     {/*<td><small><i className="fas fa-edit"></i></small></td>*/}
                                     <td><button className="w3-button"><i className="fas fa-trash"></i></button></td>
                                     <td><button className="w3-button"><i className="fas fa-eye"></i></button></td>

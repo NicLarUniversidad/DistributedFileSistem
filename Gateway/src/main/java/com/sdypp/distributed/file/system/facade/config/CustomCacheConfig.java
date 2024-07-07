@@ -1,5 +1,7 @@
 package com.sdypp.distributed.file.system.facade.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.sdypp.distributed.file.system.facade.cache.RedisCacheService;
 import com.sdypp.distributed.file.system.facade.cache.RequestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,7 @@ import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 
 @Configuration
 @EnableCaching

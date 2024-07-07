@@ -46,9 +46,7 @@ async function getFile(fileId) {
             'Authorization': 'Basic ' + base64encodedData
         }
     })
-    const data = await fetchResponse.json()
-    console.log(data)
-    return data;
+    return await fetchResponse.arrayBuffer();
 }
 
 export {getAllFiles, uploadFile, getFile}

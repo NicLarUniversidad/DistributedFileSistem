@@ -2,9 +2,11 @@ package com.sdypp.distributed.file.system.facade.services;
 
 import com.sdypp.distributed.file.system.facade.models.FileDetailsModel;
 import com.sdypp.distributed.file.system.facade.models.FileModel;
+import com.sdypp.distributed.file.system.facade.models.FileResource;
 import com.sdypp.distributed.file.system.facade.models.FilesDetailModel;
 import com.sdypp.distributed.file.system.facade.repositories.externals.FileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -46,7 +48,8 @@ public class FileService {
         return this.fileRepository.uploadFile(file, currentUser);
     }
 
-    public byte[] getFile(String fileId) {
+    public Resource getFile(String fileId) {
+        //return new FileResource(this.fileRepository.getFile(fileId));
         return this.fileRepository.getFile(fileId);
     }
 }

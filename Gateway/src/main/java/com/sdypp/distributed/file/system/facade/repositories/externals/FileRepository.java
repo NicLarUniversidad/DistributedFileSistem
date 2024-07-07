@@ -7,6 +7,7 @@ import com.sdypp.distributed.file.system.facade.models.FilesDetailModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -77,7 +78,7 @@ public class FileRepository {
         return response.getBody();
     }
 
-    public byte[] getFile(String fileId) {
+    public Resource getFile(String fileId) {
 
         RestTemplate restTemplate = new RestTemplate();
 
@@ -97,11 +98,11 @@ public class FileRepository {
         logger.info("Se hace una solicitud al servicio [Gestor de archivos]");
 
         var requestEntity = new HttpEntity<>(map, headers);
-        HttpEntity<byte[]> response = restTemplate.exchange(
+        HttpEntity<Resource> response = restTemplate.exchange(
                 builder.toUriString(),
                 HttpMethod.GET,
                 requestEntity,
-                byte[].class);
+                Resource.class);
 
         logger.info("Se devolvió desde el servicio [Gestor de archivos]: " + response.getBody());
 
