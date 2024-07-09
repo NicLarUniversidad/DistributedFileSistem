@@ -1,11 +1,13 @@
-package com.sdypp.distributed.file.system.facade.DistributedFileSystemFacade.controllers;
+package com.sdypp.distributed.file.system.facade.controllers;
 
-import com.sdypp.distributed.file.system.facade.DistributedFileSystemFacade.models.FileDetailsModel;
-import com.sdypp.distributed.file.system.facade.DistributedFileSystemFacade.models.FileModel;
-import com.sdypp.distributed.file.system.facade.DistributedFileSystemFacade.models.FilesDetailModel;
-import com.sdypp.distributed.file.system.facade.DistributedFileSystemFacade.services.FileService;
+import com.sdypp.distributed.file.system.facade.models.FileDetailsModel;
+import com.sdypp.distributed.file.system.facade.models.FileModel;
+import com.sdypp.distributed.file.system.facade.models.FileResource;
+import com.sdypp.distributed.file.system.facade.models.FilesDetailModel;
+import com.sdypp.distributed.file.system.facade.services.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.core.io.Resource;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -51,13 +53,13 @@ public class FileController {
     }
 
     @PostMapping("/upload-file")
-    public FileDetailsModel uploadFile(@RequestParam("file") MultipartFile file) throws IOException {
+    public FileModel uploadFile(@RequestParam("file") MultipartFile file) throws IOException {
         return this.fileService.uploadFile(file);
     }
 
     @GetMapping("/get-file/{file-id}")
-    @Cacheable(value = "get-file", key = "fileId")
-    public MultipartFile getFile(@PathVariable("file-id") String fileId) throws IOException {
+    @Cacheable(value = "get-file")
+    public Resource getFile(@PathVariable("file-id") String fileId) throws IOException {
         System.out.println("Recibido id archivo = " + fileId);
         return this.fileService.getFile(fileId);
     }

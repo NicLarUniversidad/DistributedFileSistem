@@ -6,8 +6,6 @@ import ar.com.unlu.sdypp.integrador.file.manager.repositories.amqp.RabbitmqRepos
 import ar.com.unlu.sdypp.integrador.file.manager.servers.LoadBalancerService;
 import ar.com.unlu.sdypp.integrador.file.manager.servers.UserService;
 import ar.com.unlu.sdypp.integrador.file.manager.utils.json;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -24,15 +22,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 @Component
 public class FileRepository {
-
-    private static final Logger logger = LoggerFactory.getLogger(FileRepository.class);
 
     public final static String TEMP_DIRECTORY = "/";
 
@@ -74,7 +69,6 @@ public class FileRepository {
 
     public void save(File file, String username, String partName) throws IOException {
         //Se guarda la información del archivo
-        long startTime = System.currentTimeMillis();
         FileCrud newFileCrud = new FileCrud();
         FileModel fileModel = new FileModel();
         newFileCrud.setActivo(true);
@@ -92,14 +86,11 @@ public class FileRepository {
         fileModel.setUsername(username);
         fileModel.setSize(content.length);
         rabbitmqRepository.send(jsonConverter.ConvertirAjson(fileModel));
-        long finishTime = System.currentTimeMillis();
-        logger.info("File save time: [" + (finishTime - startTime) + "] milliseconds");
 
     }
 
     //Divide el archivo en partes
     public List<java.io.File> splitBySize(MultipartFile largeFile, int maxChunkSize) throws IOException {
-        long startTimeParts = System.currentTimeMillis();
         List<java.io.File> list = new ArrayList<>();
         try (InputStream in = largeFile.getInputStream()) {
             final byte[] buffer = new byte[maxChunkSize];
@@ -110,8 +101,6 @@ public class FileRepository {
                 dataRead = in.read(buffer);
             }
         }
-        long finishTimeParts = System.currentTimeMillis();
-        logger.info("File division time: [" + (finishTimeParts - startTimeParts) + "] milliseconds");
         return list;
     }
 
@@ -148,15 +137,12 @@ public class FileRepository {
 
     //junto los pedazos del archivo
     public java.io.File join(List<java.io.File> list) throws IOException {
-        long startTimeJoinParts = System.currentTimeMillis();
         java.io.File outPutFile = java.io.File.createTempFile("temp-", "unsplit", new java.io.File("TEMP_DIRECTORY"));
         FileOutputStream fos = new FileOutputStream(outPutFile);
         for (java.io.File file : list) {
             Files.copy(file.toPath(), fos);
         }
         fos.close();
-        long finishTimeJoinParts = System.currentTimeMillis();
-        logger.info("Join parts file time: [" + (finishTimeJoinParts - startTimeJoinParts) + "] milliseconds");
         return outPutFile;
     }
 

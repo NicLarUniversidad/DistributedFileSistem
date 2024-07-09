@@ -1,10 +1,17 @@
 package ar.com.unlu.sdypp.integrador.file.manager.repositories.amqp;
 
 import com.rabbitmq.client.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.TimeoutException;
 
 
@@ -13,36 +20,51 @@ import java.util.concurrent.TimeoutException;
 @Component
 public class RabbitmqRepository {
 
+    public final static Logger logger = LoggerFactory.getLogger(RabbitmqRepository.class);
+
     private final Connection connection;
     private final Channel channel;
     //Se asigna el valor por variable del programa, en el application.properties
     @Value("${sdypp.rabbitmq.host:localhost}")
-    private String host = "localhost";
-    @Value("${sdypp.rabbitmq.queue.name:default}")
-    private String queueName = "default";
-    @Value("${sdypp.rabbitmq.queue.username:guest}")
-    private String username = "guest";
-    @Value("${sdypp.rabbitmq.queue.password:123}")
-    private String password = "123";
+    private String host;
+    @Value("${sdypp.rabbitmq.queue.name:GuardadoArchivo}")
+    private String queueName;
     //Cantidad máxima de mensajes que los consumidores pueden consumir a la vez
-    @Value("${sdypp.rabbitmq.consumer.prefetch-count:1}")
+    //@Value("${sdypp.rabbitmq.consumer.prefetch-count:1}")
     private int prefetchCount = 1;
     @Value("${sdypp.rabbitmq.queue.exchange-name:default-exchange}")
-    private String exchangeName = "default-exchange";
-    @Value("${sdypp.rabbitmq.queue.topics.finish-work:works.finished}")
-    private String finishedWorkTopic = "works.finished";
+    private String exchangeName;
+    @Value("${sdypp.rabbitmq.queue.topics:finish-work}")
+    private String finishedWorkTopic;
+    @Value("${sdypp.rabbitmq.queue.username:guest}")
+    private String username;
+    @Value("${sdypp.rabbitmq.queue.password:guest}")
+    private String password;
 
-    public RabbitmqRepository() throws IOException, TimeoutException {
+    @Autowired
+    public RabbitmqRepository(Environment env) throws IOException, TimeoutException, URISyntaxException, NoSuchAlgorithmException, KeyManagementException {
         ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost(host);
-        factory.setUsername(username);
-        factory.setPassword(password);
+        this.queueName = "GuardadoArchivo"; //env.getProperty("sdypp.rabbitmq.queue.name");
+        this.exchangeName = "default-exchange"; //env.getProperty("sdypp.rabbitmq.queue.exchange-name");
+        this.finishedWorkTopic = "finished-works"; //env.getProperty("sdypp.rabbitmq.queue.topics");
+        //this.prefetchCount = Integer.parseInt(env.getProperty("sdypp.rabbitmq.consumer.prefetch-count"));
+        String uri = env.getProperty("sdypp.rabbitmq.uri");
+        if (uri != null) {
+            logger.info("Contectando con RabbitMQ... URI: " + uri);
+            factory.setUri(uri);
+        }
+        else {
+            this.host = env.getProperty("sdypp.rabbitmq.host");
+            this.username = env.getProperty("sdypp.rabbitmq.queue.username");
+            this.password = env.getProperty("sdypp.rabbitmq.queue.password");
+            logger.info("Contectando con RabbitMQ... Host: " + this.host);
+            factory.setHost(host);
+            factory.setUsername(username);
+            factory.setPassword(password);
+        };
         connection = factory.newConnection();
         channel = connection.createChannel();
         channel.queueDeclare(queueName, true, false, false, null);
-        channel.basicQos(prefetchCount);
-        //Se agrega esto para poder usar tópicos
-        channel.exchangeDeclare(exchangeName, "topic");
     }
 
     //Investigar más cómo integrar con RPC https://www.rabbitmq.com/tutorials/tutorial-six-java.html

@@ -1,6 +1,6 @@
-package com.sdypp.distributed.file.system.facade.DistributedFileSystemFacade.repositories.externals;
+package com.sdypp.distributed.file.system.facade.repositories.externals;
 
-import com.sdypp.distributed.file.system.facade.DistributedFileSystemFacade.entities.UserEntity;
+import com.sdypp.distributed.file.system.facade.entities.UserEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;

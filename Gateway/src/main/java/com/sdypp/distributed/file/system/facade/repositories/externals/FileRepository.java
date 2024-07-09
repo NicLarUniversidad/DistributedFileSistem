@@ -1,10 +1,13 @@
-package com.sdypp.distributed.file.system.facade.DistributedFileSystemFacade.repositories.externals;
+package com.sdypp.distributed.file.system.facade.repositories.externals;
 
-import com.sdypp.distributed.file.system.facade.DistributedFileSystemFacade.entities.UserEntity;
-import com.sdypp.distributed.file.system.facade.DistributedFileSystemFacade.models.FileDetailsModel;
-import com.sdypp.distributed.file.system.facade.DistributedFileSystemFacade.models.FilesDetailModel;
+import com.sdypp.distributed.file.system.facade.entities.UserEntity;
+import com.sdypp.distributed.file.system.facade.models.FileDetailsModel;
+import com.sdypp.distributed.file.system.facade.models.FileModel;
+import com.sdypp.distributed.file.system.facade.models.FilesDetailModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -22,13 +25,16 @@ public class FileRepository {
 
     private static final Logger logger = LoggerFactory.getLogger(FileRepository.class);
 
+    @Value("${sdypp.file.server.host:http://localhost:10000/}")
+    private String host;
+
     public FilesDetailModel getAllFiles(String username) {
         RestTemplate restTemplate = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl("http://localhost:8081/files?username="
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(host + "files/"
                 + username);
 
         HttpEntity<?> entity = new HttpEntity<>(headers);
@@ -41,7 +47,7 @@ public class FileRepository {
         return response.getBody();
     }
 
-    public FileDetailsModel uploadFile(MultipartFile file, String currentUser) throws IOException {
+    public FileModel uploadFile(MultipartFile file, String currentUser) throws IOException {
         RestTemplate restTemplate = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
@@ -54,25 +60,25 @@ public class FileRepository {
 
         LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
         map.add("file", doc);
-        map.add("user", currentUser);
+        map.add("username", currentUser);
 
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl("http://localhost:8081/file");
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(host + "upload-file");
 
         logger.info("Se hace una solicitud al servicio [Gestor de archivos]");
 
         var requestEntity = new HttpEntity<>(map, headers);
-        HttpEntity<FileDetailsModel> response = restTemplate.exchange(
+        HttpEntity<FileModel> response = restTemplate.exchange(
                 builder.toUriString(),
                 HttpMethod.POST,
                 requestEntity,
-                FileDetailsModel.class);
+                FileModel.class);
 
         logger.info("Se devolvió desde el servicio [Gestor de archivos]: " + response.getBody());
 
         return response.getBody();
     }
 
-    public MultipartFile getFile(String fileId) {
+    public Resource getFile(String fileId) {
 
         RestTemplate restTemplate = new RestTemplate();
 
@@ -87,16 +93,16 @@ public class FileRepository {
 
         LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
 
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl("http://localhost:8081/get-file/" + fileId);
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(host + "get-file/" + fileId);
 
         logger.info("Se hace una solicitud al servicio [Gestor de archivos]");
 
         var requestEntity = new HttpEntity<>(map, headers);
-        HttpEntity<MultipartFile> response = restTemplate.exchange(
+        HttpEntity<Resource> response = restTemplate.exchange(
                 builder.toUriString(),
-                HttpMethod.POST,
+                HttpMethod.GET,
                 requestEntity,
-                MultipartFile.class);
+                Resource.class);
 
         logger.info("Se devolvió desde el servicio [Gestor de archivos]: " + response.getBody());
 

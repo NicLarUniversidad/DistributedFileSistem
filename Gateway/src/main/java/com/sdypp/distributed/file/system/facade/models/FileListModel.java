@@ -4,7 +4,8 @@ import lombok.Data;
 
 import java.util.List;
 
+
 @Data
-public class FilesDetailModel {
+public class FileListModel {
     private List<FileModel> files;
 }

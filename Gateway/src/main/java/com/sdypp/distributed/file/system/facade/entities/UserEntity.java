@@ -1,4 +1,4 @@
-package com.sdypp.distributed.file.system.facade.DistributedFileSystemFacade.entities;
+package com.sdypp.distributed.file.system.facade.entities;
 
 
 import lombok.Getter;

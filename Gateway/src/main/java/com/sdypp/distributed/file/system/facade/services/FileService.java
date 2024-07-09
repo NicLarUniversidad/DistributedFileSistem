@@ -1,9 +1,12 @@
-package com.sdypp.distributed.file.system.facade.DistributedFileSystemFacade.services;
+package com.sdypp.distributed.file.system.facade.services;
 
-import com.sdypp.distributed.file.system.facade.DistributedFileSystemFacade.models.FileDetailsModel;
-import com.sdypp.distributed.file.system.facade.DistributedFileSystemFacade.models.FilesDetailModel;
-import com.sdypp.distributed.file.system.facade.DistributedFileSystemFacade.repositories.externals.FileRepository;
+import com.sdypp.distributed.file.system.facade.models.FileDetailsModel;
+import com.sdypp.distributed.file.system.facade.models.FileModel;
+import com.sdypp.distributed.file.system.facade.models.FileResource;
+import com.sdypp.distributed.file.system.facade.models.FilesDetailModel;
+import com.sdypp.distributed.file.system.facade.repositories.externals.FileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -31,12 +34,12 @@ public class FileService {
 //        } else {
 //            username = principal.toString();
 //        }
-        return "username";
+        return "test-user";
     }
 
-    public FileDetailsModel uploadFile(MultipartFile file) throws IOException {
+    public FileModel uploadFile(MultipartFile file) throws IOException {
         //var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String currentUser = "test-user";
+        String currentUser = this.getUsername();
 //        if (principal instanceof UserDetails) {
 //            currentUser = ((UserDetails)principal).getUsername();
 //        } else {
@@ -45,7 +48,8 @@ public class FileService {
         return this.fileRepository.uploadFile(file, currentUser);
     }
 
-    public MultipartFile getFile(String fileId) {
+    public Resource getFile(String fileId) {
+        //return new FileResource(this.fileRepository.getFile(fileId));
         return this.fileRepository.getFile(fileId);
     }
 }

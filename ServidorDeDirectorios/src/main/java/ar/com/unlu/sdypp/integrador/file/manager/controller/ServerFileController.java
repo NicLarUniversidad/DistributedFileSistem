@@ -20,7 +20,7 @@ public class ServerFileController {
         var newFile = new FileCrud();
         newFile.setNombreArchivo(nombreArchivo);
         newFile.setNombreRutaDirectorio(" ");
-        newFile.setTamaño("10kb");
+        newFile.setTamaño(10);
         newFile.setFormato("txt");
         newFile.setTipo("1");
         newFile.setActivo(false);

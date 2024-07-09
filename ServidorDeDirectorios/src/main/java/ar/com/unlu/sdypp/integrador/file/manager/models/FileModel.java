@@ -11,7 +11,7 @@ import java.util.Date;
 @Data
 public class FileModel {
     private String name;
-    private String content;
+    private byte[] content;
     private String path;
     private float size;
     private Date creationDate;

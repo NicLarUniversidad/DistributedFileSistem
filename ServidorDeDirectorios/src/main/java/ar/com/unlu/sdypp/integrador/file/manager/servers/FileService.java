@@ -2,7 +2,7 @@ package ar.com.unlu.sdypp.integrador.file.manager.servers;
 
 import ar.com.unlu.sdypp.integrador.file.manager.cruds.FileCrud;
 import ar.com.unlu.sdypp.integrador.file.manager.cruds.FilePartCrud;
-import ar.com.unlu.sdypp.integrador.file.manager.cruds.UserCrud;
+import ar.com.unlu.sdypp.integrador.file.manager.models.FileListModel;
 import ar.com.unlu.sdypp.integrador.file.manager.repositories.FileDataRepository;
 import ar.com.unlu.sdypp.integrador.file.manager.repositories.FileRepository;
 import org.slf4j.Logger;
@@ -11,10 +11,14 @@ import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -42,14 +46,14 @@ public class FileService {
     @Autowired
     private UserService userService;
 
-    public void save(MultipartFile file, String username) throws IOException {
+    public FileCrud save(MultipartFile file, String username) throws IOException {
         var parts = this.fileRepository.splitByNumberOfFiles(file, PART_NUMBERS);
         var fileData = new FileCrud();
         var user = this.userService.findByUsername(username);
-        user.setUsername(username);
+        //user.setUsername(username);
         fileData.setActivo(true);
         fileData.setNombreArchivo(file.getOriginalFilename());
-        fileData.setTamaño(file.getSize() + " bytes");
+        fileData.setTamaño((int) file.getSize());
         fileData.setUser(user);
         int count = 1;
         for (var part : parts) {
@@ -63,28 +67,43 @@ public class FileService {
             this.fileRepository.save(part, username, partName);
         }
         this.fileDataRepository.save(fileData);
-
+        return fileData;
     }
 
-    public String getFile(Integer fileId) throws IOException {
+    public Resource getFile(Integer fileId) throws IOException {
         //TODO: Si tiene varias partes, acá se podrían ir recuperando y juntando
         var fileDataOpt = this.fileDataRepository.findById(fileId);
         if (fileDataOpt.isPresent()) {
             var fileData = fileDataOpt.get();
-            var contentMap = new HashMap<Integer, String>();
+            var contentMap = new HashMap<Integer, byte[]>();
             for (FilePartCrud part : fileData.getParts()) {
                 logger.info(part.getNombre() + " " + part.getOrden() + " " + part.getId() + " " + fileData.getUser().getUsername());
                 String carpeta = fileData.getUser().getUsername();
                 String nombreArchivo = part.getNombre(); //Archivo
-                var file = this.fileRepository.getFile(nombreArchivo, carpeta);
+                byte[] file = this.fileRepository.getFile(nombreArchivo, carpeta);
                 contentMap.put(part.getOrden(), file);
-                logger.info(file);
+                logger.info("Recived part with {} bytes", file.length);
             }
-            StringBuilder contenidoArchivo = new StringBuilder();
-            for (int i = 1; i <= fileData.getParts().size(); i++) {
-                contenidoArchivo.append(contentMap.get(i));
+            byte[] contenidoArchivo = new byte[fileData.getTamaño()];
+            int i = 0;
+            for (var part : contentMap.entrySet()) {
+                for (byte oneByte : part.getValue()) {
+                    contenidoArchivo[i] = oneByte;
+                    i++;
+                }
             }
-            return contenidoArchivo.toString();
+            String fileName = fileData.getNombreArchivo();
+            File temp = new File(TEMP_DIRECTORY);
+            if (!temp.exists())
+                temp.mkdir();
+            File file = new File(TEMP_DIRECTORY + fileName);
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            FileOutputStream out = new FileOutputStream(file);
+            out.write(contenidoArchivo);
+            return new InputStreamResource(new FileInputStream(file));
+
         }
 
         return null; //this.fileRepository.getFile(fileId);
@@ -106,8 +125,7 @@ public class FileService {
         //Dividir el archivo en partes
         //Subir las partes a rabbit
         //Verificar que todas las partes se hayan guardado (Opcional)
-        this.save(file, username);
-        return null;
+        return this.save(file, username);
     }
 
     //publicar archivo en rabbit
@@ -125,5 +143,12 @@ public class FileService {
         // Publicar el mensaje en RabbitMQ
         rabbitTemplate.send(queueName, message);
         System.out.println("Archivo " + filePath + " publicado en la cola " + queueName);
+    }
+
+    public FileListModel getAllFiles(String username) {
+        List<FileCrud> files = this.fileDataRepository.findAllByUserUsername(username);
+        FileListModel fileListModel = new FileListModel();
+        fileListModel.setFiles(files);
+        return fileListModel;
     }
 }

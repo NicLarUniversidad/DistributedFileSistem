@@ -1,4 +1,2 @@
-1. Dividir archivo
-2. Juntar archivo
-3. Load balancer (Kubernetes, Docker)
-4. Redundancia base datos
+1. Registros en base de datos, en servidor directorios
+2. Redundancia base datos
