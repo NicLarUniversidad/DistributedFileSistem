@@ -2,7 +2,7 @@ import { encode } from "base-64";
 
 function getAuth() {
     const token = localStorage.getItem('logged');
-    return !!token;
+    return true;//!!token;
 }
 
 function login(username, password) {
@@ -40,8 +40,7 @@ function logout() {
 
 
 function getHealthUrl() {
-    //return "http://34.121.203.246:8080/";
-    return "http://localhost:8080/"
+    return "http://localhost:8080/";
 }
 
 export {getAuth, login, logout, health, getHealthUrl}
