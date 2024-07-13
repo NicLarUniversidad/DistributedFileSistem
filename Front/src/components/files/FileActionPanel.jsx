@@ -17,6 +17,7 @@ function FileActionPanel(props) {
         uploadFile(file)
             .then((response) => {
                 console.log(response);
+                window.location.reload();
             })
             .catch((e) => {
                 alert("Se ha producido un error " + e);
