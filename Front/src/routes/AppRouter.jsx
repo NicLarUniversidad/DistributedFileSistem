@@ -3,6 +3,7 @@ import AdminDashboard from "../views/AdminDashboard";
 import Home from "../views/Home";
 import Login from "../views/Login";
 import RequireAuth from "../components/auth/RequireAuth";
+import FilePartScreen from "../components/parts/FilePartScreen";
 
 const AppRouter = () => {
 
@@ -26,6 +27,7 @@ const AppRouter = () => {
                                 <Home />
                             </RequireAuth>}
                     />
+                    <Route path={"/file/parts/:id"} element={<FilePartScreen />} />
                 </Routes>
             </Router>
         </>

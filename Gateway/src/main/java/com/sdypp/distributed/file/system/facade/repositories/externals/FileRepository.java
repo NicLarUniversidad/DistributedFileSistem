@@ -1,9 +1,7 @@
 package com.sdypp.distributed.file.system.facade.repositories.externals;
 
 import com.sdypp.distributed.file.system.facade.entities.UserEntity;
-import com.sdypp.distributed.file.system.facade.models.FileDetailsModel;
-import com.sdypp.distributed.file.system.facade.models.FileModel;
-import com.sdypp.distributed.file.system.facade.models.FilesDetailModel;
+import com.sdypp.distributed.file.system.facade.models.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -127,6 +125,28 @@ public class FileRepository {
                 HttpMethod.DELETE,
                 requestEntity,
                 String.class);
+
+        return response.getBody();
+    }
+
+    public PartModels getFileParts(Integer fileId) {
+        RestTemplate restTemplate = new RestTemplate();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
+
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(host + "file/parts/" + fileId);
+
+        logger.info("Se hace una solicitud al servicio [Gestor de archivos]");
+
+        var requestEntity = new HttpEntity<>(map, headers);
+        HttpEntity<PartModels> response = restTemplate.exchange(
+                builder.toUriString(),
+                HttpMethod.GET,
+                requestEntity,
+                PartModels.class);
 
         return response.getBody();
     }

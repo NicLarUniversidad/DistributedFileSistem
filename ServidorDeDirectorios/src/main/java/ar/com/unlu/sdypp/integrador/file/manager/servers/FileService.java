@@ -3,6 +3,7 @@ package ar.com.unlu.sdypp.integrador.file.manager.servers;
 import ar.com.unlu.sdypp.integrador.file.manager.cruds.FileCrud;
 import ar.com.unlu.sdypp.integrador.file.manager.cruds.FilePartCrud;
 import ar.com.unlu.sdypp.integrador.file.manager.models.FileListModel;
+import ar.com.unlu.sdypp.integrador.file.manager.models.PartsModel;
 import ar.com.unlu.sdypp.integrador.file.manager.repositories.FileDataRepository;
 import ar.com.unlu.sdypp.integrador.file.manager.repositories.FileRepository;
 import org.slf4j.Logger;
@@ -160,5 +161,14 @@ public class FileService {
             fileData.setActivo(false);
             this.fileDataRepository.save(fileData);
         }
+    }
+
+    public PartsModel getParts(Integer fileId) {
+        PartsModel partsModel = new PartsModel();
+        var file = this.fileDataRepository.findById(fileId);
+        if (file.isPresent()) {
+            partsModel.setParts(file.get().getParts());
+        }
+        return partsModel;
     }
 }

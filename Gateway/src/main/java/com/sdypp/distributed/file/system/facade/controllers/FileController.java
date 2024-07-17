@@ -1,9 +1,6 @@
 package com.sdypp.distributed.file.system.facade.controllers;
 
-import com.sdypp.distributed.file.system.facade.models.FileDetailsModel;
-import com.sdypp.distributed.file.system.facade.models.FileModel;
-import com.sdypp.distributed.file.system.facade.models.FileResource;
-import com.sdypp.distributed.file.system.facade.models.FilesDetailModel;
+import com.sdypp.distributed.file.system.facade.models.*;
 import com.sdypp.distributed.file.system.facade.services.FileService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,5 +65,11 @@ public class FileController {
     @DeleteMapping("/delete-file/{file-id}")
     public String deleteFile(@PathVariable("file-id") Integer fileId, HttpServletResponse response) {
         return fileService.deleteFile(fileId);
+    }
+
+    @GetMapping("/file/parts/{file-id}")
+    public PartModels getFileParts(@PathVariable("file-id") Integer fileId) throws IOException {
+        System.out.println("Recibido id archivo = " + fileId);
+        return this.fileService.getFileParts(fileId);
     }
 }

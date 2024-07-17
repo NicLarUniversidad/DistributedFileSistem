@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
 import {deleteFile, getAllFiles, getFile, uploadFile} from "../../helpers/filesHelper";
-import { format } from 'date-fns';
 import FileActionPanel from "./FileActionPanel";
 
 function FileTable(props) {
@@ -64,7 +63,7 @@ function FileTable(props) {
                                     <td><button onClick={() => {handleDownloadFile(file.id, file.nombreArchivo)}} className="w3-button"><i className="fas fa-download"></i></button></td>
                                     <td><button className="w3-button"><i className="fas fa-edit"></i></button></td>
                                     <td><button onClick={() => {handleDeleteFile(file.id)}} className="w3-button"><i className="fas fa-trash"></i></button></td>
-                                    <td><button className="w3-button"><i className="fas fa-eye"></i></button></td>
+                                    <td><a href={"/file/parts/" + file.id}  className="w3-button"><i className="fas fa-eye"></i></a></td>
                                 </tr>
                             )})
                     }

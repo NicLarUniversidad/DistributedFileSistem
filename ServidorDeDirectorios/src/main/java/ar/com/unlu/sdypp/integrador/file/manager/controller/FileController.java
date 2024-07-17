@@ -1,8 +1,10 @@
 package ar.com.unlu.sdypp.integrador.file.manager.controller;
 
 import ar.com.unlu.sdypp.integrador.file.manager.cruds.FileCrud;
+import ar.com.unlu.sdypp.integrador.file.manager.cruds.FilePartCrud;
 import ar.com.unlu.sdypp.integrador.file.manager.models.FileListModel;
 import ar.com.unlu.sdypp.integrador.file.manager.models.FileModel;
+import ar.com.unlu.sdypp.integrador.file.manager.models.PartsModel;
 import ar.com.unlu.sdypp.integrador.file.manager.servers.FileService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
@@ -39,6 +41,7 @@ public class FileController {
         logger.info(String.format("Recibido: %s", file.getOriginalFilename()));
         return fileService.uploadFile(file, username);
     }
+
     @GetMapping("/files/{username}")
     public FileListModel getFile(@PathVariable("username") String username, HttpServletResponse response) {
         return fileService.getAllFiles(username);
@@ -48,6 +51,11 @@ public class FileController {
     public String deleteFile(@PathVariable("file-id") Integer fileId, HttpServletResponse response) {
         fileService.deleteFile(fileId);
         return "OK";
+    }
+
+    @GetMapping("/file/parts/{file-id}")
+    public PartsModel getFile(@PathVariable("file-id") Integer fileId, HttpServletResponse response) {
+        return fileService.getParts(fileId);
     }
 /*
 

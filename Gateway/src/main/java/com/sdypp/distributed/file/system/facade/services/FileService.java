@@ -1,9 +1,6 @@
 package com.sdypp.distributed.file.system.facade.services;
 
-import com.sdypp.distributed.file.system.facade.models.FileDetailsModel;
-import com.sdypp.distributed.file.system.facade.models.FileModel;
-import com.sdypp.distributed.file.system.facade.models.FileResource;
-import com.sdypp.distributed.file.system.facade.models.FilesDetailModel;
+import com.sdypp.distributed.file.system.facade.models.*;
 import com.sdypp.distributed.file.system.facade.repositories.externals.FileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -55,5 +52,9 @@ public class FileService {
 
     public String deleteFile(Integer fileId) {
         return this.fileRepository.deleteFile(fileId);
+    }
+
+    public PartModels getFileParts(Integer fileId) {
+        return this.fileRepository.getFileParts(fileId);
     }
 }
