@@ -44,7 +44,7 @@ function FileTable(props) {
                             <th>Fecha subida</th>
                             <th>Tamaño</th>
                             <th></th>
-                            <th></th>
+                            {/*<th></th>*/}
                             <th></th>
                             <th></th>
                         </tr>
@@ -61,7 +61,7 @@ function FileTable(props) {
                                     {/*<td className="w3-quarter">{format(file.uploadedDate, 'yyyy/MM/dd')}</td>*/}
                                     <td>{file.tamaño}</td>
                                     <td><button onClick={() => {handleDownloadFile(file.id, file.nombreArchivo)}} className="w3-button"><i className="fas fa-download"></i></button></td>
-                                    <td><button className="w3-button"><i className="fas fa-edit"></i></button></td>
+                                    {/*<td><button className="w3-button"><i className="fas fa-edit"></i></button></td>*/}
                                     <td><button onClick={() => {handleDeleteFile(file.id)}} className="w3-button"><i className="fas fa-trash"></i></button></td>
                                     <td><a href={"/file/parts/" + file.id}  className="w3-button"><i className="fas fa-eye"></i></a></td>
                                 </tr>
