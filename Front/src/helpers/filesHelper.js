@@ -49,4 +49,17 @@ async function getFile(fileId) {
     return await fetchResponse.arrayBuffer();
 }
 
-export {getAllFiles, uploadFile, getFile}
+async function deleteFile(fileId) {
+    const base64encodedData = localStorage.getItem("token");
+    const url = getHealthUrl() + "delete-file/" + fileId;
+    const fetchResponse = await fetch(url, {
+        method: "delete",
+        headers: {
+            "Content-Type": "application/json",
+            'Authorization': 'Basic ' + base64encodedData
+        }
+    })
+    return await fetchResponse.arrayBuffer();
+}
+
+export {getAllFiles, uploadFile, getFile, deleteFile}

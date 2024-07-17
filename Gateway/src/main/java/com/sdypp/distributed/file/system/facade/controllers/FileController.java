@@ -5,6 +5,7 @@ import com.sdypp.distributed.file.system.facade.models.FileModel;
 import com.sdypp.distributed.file.system.facade.models.FileResource;
 import com.sdypp.distributed.file.system.facade.models.FilesDetailModel;
 import com.sdypp.distributed.file.system.facade.services.FileService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.Resource;
@@ -62,5 +63,10 @@ public class FileController {
     public Resource getFile(@PathVariable("file-id") String fileId) throws IOException {
         System.out.println("Recibido id archivo = " + fileId);
         return this.fileService.getFile(fileId);
+    }
+
+    @DeleteMapping("/delete-file/{file-id}")
+    public String deleteFile(@PathVariable("file-id") Integer fileId, HttpServletResponse response) {
+        return fileService.deleteFile(fileId);
     }
 }

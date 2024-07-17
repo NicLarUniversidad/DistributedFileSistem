@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {getAllFiles, getFile, uploadFile} from "../../helpers/filesHelper";
+import {deleteFile, getAllFiles, getFile, uploadFile} from "../../helpers/filesHelper";
 import { format } from 'date-fns';
 import FileActionPanel from "./FileActionPanel";
 
@@ -19,7 +19,19 @@ function FileTable(props) {
             link.href = window.URL.createObjectURL(blob);
             link.download = fileName;
             link.click();
+            window.location.reload();
         })
+    }
+
+    const handleDeleteFile = (fileId) => {
+        if (window.confirm('Si continua, se va a eliminar el archivo. ¿Realmente desea continuar?')) {
+            deleteFile(fileId).then(response => {
+                window.location.reload();
+            })
+                .catch(() =>{
+                    alert("Ocurrió un error inesperado con el servidor")
+                })
+        }
     }
 
     return (
@@ -51,7 +63,7 @@ function FileTable(props) {
                                     <td>{file.tamaño}</td>
                                     <td><button onClick={() => {handleDownloadFile(file.id, file.nombreArchivo)}} className="w3-button"><i className="fas fa-download"></i></button></td>
                                     <td><button className="w3-button"><i className="fas fa-edit"></i></button></td>
-                                    <td><button className="w3-button"><i className="fas fa-trash"></i></button></td>
+                                    <td><button onClick={() => {handleDeleteFile(file.id)}} className="w3-button"><i className="fas fa-trash"></i></button></td>
                                     <td><button className="w3-button"><i className="fas fa-eye"></i></button></td>
                                 </tr>
                             )})

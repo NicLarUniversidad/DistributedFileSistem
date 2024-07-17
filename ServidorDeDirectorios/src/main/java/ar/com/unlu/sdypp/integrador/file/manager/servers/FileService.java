@@ -53,7 +53,8 @@ public class FileService {
         //user.setUsername(username);
         fileData.setActivo(true);
         fileData.setNombreArchivo(file.getOriginalFilename());
-        fileData.setTamaño((int) file.getSize());
+        fileData.setTamaño(file.getSize() + " bytes");
+        fileData.setTamaño2((int) file.getSize());
         fileData.setUser(user);
         int count = 1;
         for (var part : parts) {
@@ -84,7 +85,7 @@ public class FileService {
                 contentMap.put(part.getOrden(), file);
                 logger.info("Recived part with {} bytes", file.length);
             }
-            byte[] contenidoArchivo = new byte[fileData.getTamaño()];
+            byte[] contenidoArchivo = new byte[fileData.getTamaño2()];
             int i = 0;
             for (var part : contentMap.entrySet()) {
                 for (byte oneByte : part.getValue()) {
@@ -146,9 +147,18 @@ public class FileService {
     }
 
     public FileListModel getAllFiles(String username) {
-        List<FileCrud> files = this.fileDataRepository.findAllByUserUsername(username);
+        List<FileCrud> files = this.fileDataRepository.findAllByUserUsernameAndActivo(username, true);
         FileListModel fileListModel = new FileListModel();
         fileListModel.setFiles(files);
         return fileListModel;
+    }
+
+    public void deleteFile(Integer fileId) {
+        var opt = this.fileDataRepository.findById(fileId);
+        if (opt.isPresent()) {
+            var fileData = opt.get();
+            fileData.setActivo(false);
+            this.fileDataRepository.save(fileData);
+        }
     }
 }

@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface FileDataRepository extends CrudRepository <FileCrud,Integer>{
-    List<FileCrud> findAllByUserUsername(String username);
+    List<FileCrud> findAllByUserUsernameAndActivo(String username, Boolean activo);
 }

@@ -43,6 +43,12 @@ public class FileController {
     public FileListModel getFile(@PathVariable("username") String username, HttpServletResponse response) {
         return fileService.getAllFiles(username);
     }
+
+    @DeleteMapping("/delete-file/{file-id}")
+    public String deleteFile(@PathVariable("file-id") Integer fileId, HttpServletResponse response) {
+        fileService.deleteFile(fileId);
+        return "OK";
+    }
 /*
 
     @PostMapping("/file")

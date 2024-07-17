@@ -7,6 +7,7 @@ import ar.com.unlu.sdypp.integrador.file.manager.servers.LoadBalancerService;
 import ar.com.unlu.sdypp.integrador.file.manager.servers.UserService;
 import ar.com.unlu.sdypp.integrador.file.manager.utils.json;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -37,6 +38,9 @@ public class FileRepository {
     private FileDataRepository fileDataRepository;
     private json jsonConverter;
 
+    @Value("${sdypp.file.server.host:http://localhost:8081}")
+    private String host;
+
     @Autowired
     public FileRepository(RabbitmqRepository rabbitmqRepository, FileDataRepository fileDataRepository, json jsonConverter) {
         this.rabbitmqRepository = rabbitmqRepository;
@@ -50,6 +54,7 @@ public class FileRepository {
         FileModel user = new FileModel();
         newFileCrud.setActivo(true);
         newFileCrud.setTamaño(file.getSize() + " bytes");
+        newFileCrud.setTamaño2((int) file.getSize());
         newFileCrud.setNombreArchivo(file.getName());
         String[] parts = file.getName().split("\\.");
         newFileCrud.setTipo(parts[parts.length - 1]);
@@ -60,7 +65,7 @@ public class FileRepository {
 
         //Se publica en rabbit
         user.setName(file.getOriginalFilename());
-        user.setContent(new String(file.getBytes()));
+        user.setContent(file.getBytes());
         user.setUsername(username);
         user.setSize(file.getSize());
         rabbitmqRepository.send(jsonConverter.ConvertirAjson(user));
@@ -69,20 +74,20 @@ public class FileRepository {
 
     public void save(File file, String username, String partName) throws IOException {
         //Se guarda la información del archivo
-        FileCrud newFileCrud = new FileCrud();
+        //FileCrud newFileCrud = new FileCrud();
         FileModel fileModel = new FileModel();
-        newFileCrud.setActivo(true);
-        newFileCrud.setTamaño(file.length() + " bytes");
-        newFileCrud.setNombreArchivo(file.getName());
+        //newFileCrud.setActivo(true);
+        //newFileCrud.setTamaño((int) file.length());
+        //newFileCrud.setNombreArchivo(file.getName());
         String[] parts = file.getName().split("\\.");
-        newFileCrud.setTipo(parts[parts.length - 1]);
-        fileDataRepository.save(newFileCrud);
+        //newFileCrud.setTipo(parts[parts.length - 1]);
+        //fileDataRepository.save(newFileCrud);
         //Y publicar cada parte por separado
 
         //Se publica en rabbit
         var content = Files.readAllBytes(file.toPath());
         fileModel.setName(partName);
-        fileModel.setContent(new String(content));
+        fileModel.setContent(content);
         fileModel.setUsername(username);
         fileModel.setSize(content.length);
         rabbitmqRepository.send(jsonConverter.ConvertirAjson(fileModel));
@@ -146,21 +151,21 @@ public class FileRepository {
         return outPutFile;
     }
 
-    public String getFile(String fileId, String username) {
+    public byte[] getFile(String fileId, String username) {
 
 
         RestTemplate restTemplate = new RestTemplate();
 
         LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
 
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl("http://localhost:8081/file?username=" +  username + "&id=" + fileId);
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(host + "/file?username=" +  username + "&id=" + fileId);
 
         var requestEntity = new HttpEntity<>(map);
-        HttpEntity<String> response = restTemplate.exchange(
+        HttpEntity<byte[]> response = restTemplate.exchange(
                 builder.toUriString(),
                 HttpMethod.GET,
                 requestEntity,
-                String.class);
+                byte[].class);
 
         return response.getBody();
     }

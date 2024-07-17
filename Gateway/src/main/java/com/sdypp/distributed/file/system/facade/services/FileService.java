@@ -52,4 +52,8 @@ public class FileService {
         //return new FileResource(this.fileRepository.getFile(fileId));
         return this.fileRepository.getFile(fileId);
     }
+
+    public String deleteFile(Integer fileId) {
+        return this.fileRepository.deleteFile(fileId);
+    }
 }
