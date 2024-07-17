@@ -4,14 +4,18 @@ import ar.com.unlu.sdypp.integrador.file.manager.cruds.FileCrud;
 import ar.com.unlu.sdypp.integrador.file.manager.cruds.FilePartCrud;
 import ar.com.unlu.sdypp.integrador.file.manager.models.FileListModel;
 import ar.com.unlu.sdypp.integrador.file.manager.models.PartsModel;
+import ar.com.unlu.sdypp.integrador.file.manager.repositories.AsyncFileRepository;
 import ar.com.unlu.sdypp.integrador.file.manager.repositories.FileDataRepository;
 import ar.com.unlu.sdypp.integrador.file.manager.repositories.FileRepository;
+import ar.com.unlu.sdypp.integrador.file.manager.repositories.TimeLogsRepository;
+import ar.com.unlu.sdypp.integrador.file.manager.services.TimeLogService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.util.Pair;
@@ -39,13 +43,20 @@ public class FileService {
     public final String TEMP_DIRECTORY = "/tmp/";
     public static final Integer PART_NUMBERS = 10;
 
+    @Value("${sdypp.file.server.host:http://localhost:8081}")
+    private String host;
+
     @Autowired
     private FileRepository fileRepository;
 
     @Autowired
     private FileDataRepository fileDataRepository;
+
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private TimeLogService timeLogService;
 
     public FileCrud save(MultipartFile file, String username) throws IOException {
         var parts = this.fileRepository.splitByNumberOfFiles(file, PART_NUMBERS);
@@ -72,19 +83,40 @@ public class FileService {
         return fileData;
     }
 
-    public Resource getFile(Integer fileId) throws IOException {
+    public Resource getFile(Integer fileId) throws IOException, InterruptedException {
         //TODO: Si tiene varias partes, acá se podrían ir recuperando y juntando
         var fileDataOpt = this.fileDataRepository.findById(fileId);
         if (fileDataOpt.isPresent()) {
             var fileData = fileDataOpt.get();
-            var contentMap = new HashMap<Integer, byte[]>();
+            var threads = new HashMap<Integer, AsyncFileRepository>();
+            var fileDownloadLog = this.timeLogService.startFileDownload(fileData);
+            logger.info("Iniciando descarga archivo: [{}], en hilo principal: [{}]", fileData.getNombreArchivo(), Thread.currentThread().getName());
+            var initTime = System.currentTimeMillis();
             for (FilePartCrud part : fileData.getParts()) {
-                logger.info(part.getNombre() + " " + part.getOrden() + " " + part.getId() + " " + fileData.getUser().getUsername());
-                String carpeta = fileData.getUser().getUsername();
-                String nombreArchivo = part.getNombre(); //Archivo
-                byte[] file = this.fileRepository.getFile(nombreArchivo, carpeta);
-                contentMap.put(part.getOrden(), file);
-                logger.info("Recived part with {} bytes", file.length);
+//                logger.info(part.getNombre() + " " + part.getOrden() + " " + part.getId() + " " + fileData.getUser().getUsername());
+//                String carpeta = fileData.getUser().getUsername();
+//                String nombreArchivo = part.getNombre(); //Archivo
+//                byte[] file = this.fileRepository.getFile(nombreArchivo, carpeta);
+//                contentMap.put(part.getOrden(), file);
+//                logger.info("Recived part with {} bytes", file.length);
+                AsyncFileRepository asyncFileRepository = new AsyncFileRepository(part.getNombre(), fileData.getUser().getUsername(), this.host);
+                asyncFileRepository.start();
+                threads.put(part.getOrden(), asyncFileRepository);
+            }
+            var finishTime = System.currentTimeMillis();
+            logger.info("Descarga finalizada, tiempo de descarga en hilo principal: {}", initTime - finishTime);
+            this.timeLogService.finishFileDownload(fileDownloadLog);
+            var contentMap = new HashMap<Integer, byte[]>();
+            for(Integer key : threads.keySet()) {
+                AsyncFileRepository thread = threads.get(key);
+                thread.join();
+                contentMap.put(key, thread.getFileContent());
+                this.timeLogService.logPartDownload(
+                        fileDownloadLog,
+                        thread.getStartTime(),
+                        thread.getEndTime(),
+                        thread.getName()
+                );
             }
             byte[] contenidoArchivo = new byte[fileData.getTamaño2()];
             int i = 0;

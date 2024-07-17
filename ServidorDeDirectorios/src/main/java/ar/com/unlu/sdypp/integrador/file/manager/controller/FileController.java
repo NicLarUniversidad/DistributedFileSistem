@@ -32,7 +32,7 @@ public class FileController {
     }
 
     @GetMapping("/get-file/{fileId}")
-    public Resource getFile(@PathVariable("fileId") Integer fileId) throws IOException {
+    public Resource getFile(@PathVariable("fileId") Integer fileId) throws IOException, InterruptedException {
         return this.fileService.getFile(fileId);
     }
 
