@@ -72,4 +72,10 @@ public class FileController {
         System.out.println("Recibido id archivo = " + fileId);
         return this.fileService.getFileParts(fileId);
     }
+
+    @GetMapping("/file/log/{file-id}")
+    public FileLogsModel getFileLogs(@PathVariable("file-id") Integer fileId) throws IOException {
+        System.out.println("Recibido id archivo = " + fileId);
+        return this.fileService.getFileLogs(fileId);
+    }
 }

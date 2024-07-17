@@ -150,4 +150,26 @@ public class FileRepository {
 
         return response.getBody();
     }
+
+    public FileLogsModel getFileLogs(Integer fileId) {
+        RestTemplate restTemplate = new RestTemplate();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
+
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(host + "file/log/" + fileId);
+
+        logger.info("Se hace una solicitud al servicio [Gestor de archivos]");
+
+        var requestEntity = new HttpEntity<>(map, headers);
+        HttpEntity<FileLogsModel> response = restTemplate.exchange(
+                builder.toUriString(),
+                HttpMethod.GET,
+                requestEntity,
+                FileLogsModel.class);
+
+        return response.getBody();
+    }
 }

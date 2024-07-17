@@ -3,6 +3,7 @@ package ar.com.unlu.sdypp.integrador.file.manager.controller;
 import ar.com.unlu.sdypp.integrador.file.manager.cruds.FileCrud;
 import ar.com.unlu.sdypp.integrador.file.manager.cruds.FilePartCrud;
 import ar.com.unlu.sdypp.integrador.file.manager.models.FileListModel;
+import ar.com.unlu.sdypp.integrador.file.manager.models.FileLogsModel;
 import ar.com.unlu.sdypp.integrador.file.manager.models.FileModel;
 import ar.com.unlu.sdypp.integrador.file.manager.models.PartsModel;
 import ar.com.unlu.sdypp.integrador.file.manager.servers.FileService;
@@ -57,6 +58,12 @@ public class FileController {
     public PartsModel getFile(@PathVariable("file-id") Integer fileId, HttpServletResponse response) {
         return fileService.getParts(fileId);
     }
+
+    @GetMapping("/file/log/{fileId}")
+    public FileLogsModel getFileLogs(@PathVariable("fileId") Integer fileId) throws Exception {
+        return this.fileService.getFileLogs(fileId);
+    }
+
 /*
 
     @PostMapping("/file")

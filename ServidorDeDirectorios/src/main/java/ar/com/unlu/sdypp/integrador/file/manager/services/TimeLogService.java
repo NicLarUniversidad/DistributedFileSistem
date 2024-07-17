@@ -2,6 +2,8 @@ package ar.com.unlu.sdypp.integrador.file.manager.services;
 
 import ar.com.unlu.sdypp.integrador.file.manager.cruds.FileCrud;
 import ar.com.unlu.sdypp.integrador.file.manager.cruds.TimeLogs;
+import ar.com.unlu.sdypp.integrador.file.manager.models.FileDownloadLog;
+import ar.com.unlu.sdypp.integrador.file.manager.models.FileLogsModel;
 import ar.com.unlu.sdypp.integrador.file.manager.repositories.TimeLogsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -46,5 +48,20 @@ public class TimeLogService {
         partLog.setProcessTime(finishTime.getTime() - initTime.getTime());
         partLog.setFile(partName);
         this.timeLogsRepository.save(partLog);
+    }
+
+    public FileLogsModel getFileLogs(String fileName) {
+        FileLogsModel fileLogsModel = new FileLogsModel();
+        var logs = this.timeLogsRepository.findByFile(fileName);
+        if (logs != null) {
+            for (var log : logs) {
+                FileDownloadLog fileDownloadLog = new FileDownloadLog();
+                fileDownloadLog.setFileLog(log);
+                var partsLogs = this.timeLogsRepository.findBySessionIdAndFileNot(log.getSessionId(), fileName);
+                fileDownloadLog.setPartsLogs(partsLogs);
+                fileLogsModel.getFileDownloadLog().add(fileDownloadLog);
+            }
+        }
+        return fileLogsModel;
     }
 }

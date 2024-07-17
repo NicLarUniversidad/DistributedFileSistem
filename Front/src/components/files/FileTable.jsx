@@ -47,6 +47,7 @@ function FileTable(props) {
                             {/*<th></th>*/}
                             <th></th>
                             <th></th>
+                            <th></th>
                         </tr>
                     </thead>
                     {
@@ -62,8 +63,9 @@ function FileTable(props) {
                                     <td>{file.tamaño}</td>
                                     <td><button onClick={() => {handleDownloadFile(file.id, file.nombreArchivo)}} className="w3-button"><i className="fas fa-download"></i></button></td>
                                     {/*<td><button className="w3-button"><i className="fas fa-edit"></i></button></td>*/}
-                                    <td><button onClick={() => {handleDeleteFile(file.id)}} className="w3-button"><i className="fas fa-trash"></i></button></td>
+                                    <td><a href={"/file/logs/" + file.id}  className="w3-button"><i className="fa-solid fa-square-poll-vertical"></i></a></td>
                                     <td><a href={"/file/parts/" + file.id}  className="w3-button"><i className="fas fa-eye"></i></a></td>
+                                    <td><button onClick={() => {handleDeleteFile(file.id)}} className="w3-button"><i className="fas fa-trash"></i></button></td>
                                 </tr>
                             )})
                     }

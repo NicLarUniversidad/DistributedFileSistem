@@ -75,4 +75,17 @@ async function getFileParts(fileId) {
     return await fetchResponse.json();
 }
 
-export {getAllFiles, uploadFile, getFile, deleteFile, getFileParts}
+async function getFileLogs(fileId) {
+    const base64encodedData = localStorage.getItem("token");
+    const url = getHealthUrl() + "file/log/" + fileId;
+    const fetchResponse = await fetch(url, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            'Authorization': 'Basic ' + base64encodedData
+        }
+    })
+    return await fetchResponse.json();
+}
+
+export {getAllFiles, uploadFile, getFile, deleteFile, getFileParts, getFileLogs}

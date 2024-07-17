@@ -4,6 +4,7 @@ import Home from "../views/Home";
 import Login from "../views/Login";
 import RequireAuth from "../components/auth/RequireAuth";
 import FilePartScreen from "../components/parts/FilePartScreen";
+import LogScreen from "../components/parts/logs/LogScreen";
 
 const AppRouter = () => {
 
@@ -28,6 +29,7 @@ const AppRouter = () => {
                             </RequireAuth>}
                     />
                     <Route path={"/file/parts/:id"} element={<FilePartScreen />} />
+                    <Route path={"/file/logs/:id"} element={<LogScreen />} />
                 </Routes>
             </Router>
         </>

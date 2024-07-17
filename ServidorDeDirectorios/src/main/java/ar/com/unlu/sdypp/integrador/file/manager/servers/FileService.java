@@ -3,6 +3,7 @@ package ar.com.unlu.sdypp.integrador.file.manager.servers;
 import ar.com.unlu.sdypp.integrador.file.manager.cruds.FileCrud;
 import ar.com.unlu.sdypp.integrador.file.manager.cruds.FilePartCrud;
 import ar.com.unlu.sdypp.integrador.file.manager.models.FileListModel;
+import ar.com.unlu.sdypp.integrador.file.manager.models.FileLogsModel;
 import ar.com.unlu.sdypp.integrador.file.manager.models.PartsModel;
 import ar.com.unlu.sdypp.integrador.file.manager.repositories.AsyncFileRepository;
 import ar.com.unlu.sdypp.integrador.file.manager.repositories.FileDataRepository;
@@ -84,7 +85,6 @@ public class FileService {
     }
 
     public Resource getFile(Integer fileId) throws IOException, InterruptedException {
-        //TODO: Si tiene varias partes, acá se podrían ir recuperando y juntando
         var fileDataOpt = this.fileDataRepository.findById(fileId);
         if (fileDataOpt.isPresent()) {
             var fileData = fileDataOpt.get();
@@ -103,9 +103,6 @@ public class FileService {
                 asyncFileRepository.start();
                 threads.put(part.getOrden(), asyncFileRepository);
             }
-            var finishTime = System.currentTimeMillis();
-            logger.info("Descarga finalizada, tiempo de descarga en hilo principal: {}", initTime - finishTime);
-            this.timeLogService.finishFileDownload(fileDownloadLog);
             var contentMap = new HashMap<Integer, byte[]>();
             for(Integer key : threads.keySet()) {
                 AsyncFileRepository thread = threads.get(key);
@@ -115,9 +112,12 @@ public class FileService {
                         fileDownloadLog,
                         thread.getStartTime(),
                         thread.getEndTime(),
-                        thread.getName()
+                        thread.getFileId()
                 );
             }
+            var finishTime = System.currentTimeMillis();
+            logger.info("Descarga finalizada, tiempo de descarga en hilo principal: {}", initTime - finishTime);
+            this.timeLogService.finishFileDownload(fileDownloadLog);
             byte[] contenidoArchivo = new byte[fileData.getTamaño2()];
             int i = 0;
             for (var part : contentMap.entrySet()) {
@@ -202,5 +202,13 @@ public class FileService {
             partsModel.setParts(file.get().getParts());
         }
         return partsModel;
+    }
+
+    public FileLogsModel getFileLogs(Integer fileId) throws Exception {
+        var fileData = this.fileDataRepository.findById(fileId);
+        if (fileData.isPresent()) {
+            return this.timeLogService.getFileLogs(fileData.get().getNombreArchivo());
+        }
+        throw new Exception("No se encontró el archivo con id " +fileId);
     }
 }

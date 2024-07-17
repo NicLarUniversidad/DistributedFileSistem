@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {getFileParts} from "../../helpers/filesHelper";
+import {getFileLogs, getFileParts} from "../../helpers/filesHelper";
 import {useParams} from "react-router-dom";
 
 

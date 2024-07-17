@@ -57,4 +57,8 @@ public class FileService {
     public PartModels getFileParts(Integer fileId) {
         return this.fileRepository.getFileParts(fileId);
     }
+
+    public FileLogsModel getFileLogs(Integer fileId) {
+        return this.fileRepository.getFileLogs(fileId);
+    }
 }
