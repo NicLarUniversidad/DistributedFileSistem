@@ -10,11 +10,14 @@ import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+
+import java.time.Duration;
 
 @Configuration
 @EnableCaching
@@ -55,7 +58,12 @@ public class CustomCacheConfig {
 //        return RedisCacheManager.builder(connectionFactory) //
 //                .cacheDefaults(config) //
 //                .build();
-        return new RedisCacheService(requestRepository);
+        RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
+                .entryTtl(Duration.ofMinutes(1));
+        return RedisCacheManager.builder(connectionFactory)
+                .cacheDefaults(redisCacheConfiguration)
+                .build();
+        //return new RedisCacheService(requestRepository);
     }
 
     @Bean
