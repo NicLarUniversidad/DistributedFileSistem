@@ -21,6 +21,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.ByteBuffer;
+import java.nio.channels.WritableByteChannel;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -71,6 +73,7 @@ public class StorageService {
         logger.info("Descargando parte con nombre: [{}].", fileName);
         Storage storage = this.getStorage();
         Blob blob = storage.get("sdypp-file-system", fileName);
+
         logger.info("Size: [{}].", blob.getContent().length);
         String result = Base64.getEncoder().encodeToString(blob.getContent());
         logger.info("String size: [{}].", result.getBytes().length);
@@ -86,5 +89,13 @@ public class StorageService {
                         new ByteArrayInputStream(cred.getBytes(StandardCharsets.UTF_8))
                 )).build();
         return storageOptions.getService();
+    }
+
+    public void update(String fileName, byte[] newContent) throws IOException {
+        Storage storage = this.getStorage();
+        Blob blob = storage.get("sdypp-file-system", fileName);
+        WritableByteChannel channel = blob.writer();
+        channel.write(ByteBuffer.wrap(newContent));
+        channel.close();
     }
 }
