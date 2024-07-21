@@ -18,7 +18,7 @@ function FileTable(props) {
             link.href = window.URL.createObjectURL(blob);
             link.download = fileName;
             link.click();
-            window.location.reload();
+            //window.location.reload();
         })
     }
 

@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Random;
 
 //Acá se definen los recursos o las "URL"
 @RestController//Con esto decís que es REST
@@ -56,10 +54,13 @@ public class FileController {
     }
 
     @GetMapping("/get-file/{file-id}")
-    @Cacheable(value = "get-file")
-    public Resource getFile(@PathVariable("file-id") String fileId) throws IOException {
+    @Cacheable("get-file")
+    public String getFile(@PathVariable("file-id") String fileId) throws IOException {
         System.out.println("Recibido id archivo = " + fileId);
-        return this.fileService.getFile(fileId);
+        FileDownloadModel model = new FileDownloadModel();
+        model.setResource(this.fileService.getFile(fileId));
+
+        return new String(model.getResource().getContentAsByteArray());
     }
 
     @DeleteMapping("/delete-file/{file-id}")

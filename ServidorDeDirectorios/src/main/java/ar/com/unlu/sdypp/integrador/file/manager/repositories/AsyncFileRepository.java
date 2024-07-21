@@ -37,6 +37,7 @@ public class AsyncFileRepository extends Thread {
         this.endTime = new Date();
         this.processTime = this.endTime.getTime() - this.startTime.getTime();
         logger.info("Descarga finalizada... Tiempo de descarga: " + processTime + " ms | Hilo: " + Thread.currentThread().getName());
+        logger.info("Se descargó el siguiente contenido: " + new String(this.fileContent));
     }
 
     public byte[] getFile(String fileId, String username) {
