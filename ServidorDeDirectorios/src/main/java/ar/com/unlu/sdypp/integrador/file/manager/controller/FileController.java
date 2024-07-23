@@ -43,6 +43,12 @@ public class FileController {
         return fileService.uploadFile(file, username);
     }
 
+    @PostMapping("/update-file")
+    public FileCrud updateFile(@RequestParam("file-id") Integer fileId, @RequestParam("file") MultipartFile file, @RequestParam("username") String username) throws Exception {
+        logger.info(String.format("Recibido: %s", file.getOriginalFilename()));
+        return fileService.updateFile(fileId, file, username);
+    }
+
     @GetMapping("/files/{username}")
     public FileListModel getFile(@PathVariable("username") String username, HttpServletResponse response) {
         return fileService.getAllFiles(username);

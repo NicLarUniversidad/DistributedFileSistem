@@ -172,4 +172,35 @@ public class FileRepository {
 
         return response.getBody();
     }
+
+    public FileModel updateFile(MultipartFile file, String currentUser) throws IOException {
+        RestTemplate restTemplate = new RestTemplate();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+        String boundary = Long.toHexString(System.currentTimeMillis());
+        LinkedMultiValueMap<String, String> pdfHeaderMap = new LinkedMultiValueMap<>();
+        pdfHeaderMap.add("Content-disposition", "form-data; name=file; filename=" + file.getOriginalFilename());
+        pdfHeaderMap.add("Content-type", "multipart/form-data; boundary =" + boundary);
+        HttpEntity<byte[]> doc = new HttpEntity<>(file.getBytes(), pdfHeaderMap);
+
+        LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
+        map.add("file", doc);
+        map.add("username", currentUser);
+
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(host + "update-file");
+
+        logger.info("Se hace una solicitud al servicio [Gestor de archivos]");
+
+        var requestEntity = new HttpEntity<>(map, headers);
+        HttpEntity<FileModel> response = restTemplate.exchange(
+                builder.toUriString(),
+                HttpMethod.POST,
+                requestEntity,
+                FileModel.class);
+
+        logger.info("Se devolvió desde el servicio [Gestor de archivos]: " + response.getBody());
+
+        return response.getBody();
+    }
 }

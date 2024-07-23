@@ -53,6 +53,11 @@ public class FileController {
         return this.fileService.uploadFile(file);
     }
 
+    @PostMapping("/update-file")
+    public FileModel updateFile(@RequestParam("file") MultipartFile file) throws IOException {
+        return this.fileService.updateFile(file);
+    }
+
     @GetMapping("/get-file/{file-id}")
     @Cacheable("get-file")
     public String getFile(@PathVariable("file-id") String fileId) throws IOException {

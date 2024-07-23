@@ -131,9 +131,22 @@ public class RabbitmqRepository {
                 //    newFIle.createNewFile();
                 //}
                 //var encryptData = textEncryptor.encrypt(Arrays.toString(file.getContent())).getBytes();
-
-                String fileUrl = this.storageService.saveFile( file.getContent(), file.getName());
-                logger.info("Se guardó el archivo en: {}", fileUrl);
+                switch (file.getMessageType()) {
+                    case FileModel.GUARDADO:
+                        String fileUrl = this.storageService.saveFile(file.getContent(), file.getName());
+                        logger.info("Se guardó el archivo en: {}", fileUrl);
+                        break;
+                    case FileModel.MODIFICACION:
+                        this.storageService.update(file.getName(), file.getContent());
+                        logger.info("Se modificó el archivo: {}", file.getName());
+                        break;
+                    default:
+                        logger.warn("Se reicibió un mensaje con tipo incorrecto, mensaje: {}", message);
+                }
+                if (file.getMessageType().equals(FileModel.GUARDADO)) {
+                    String fileUrl = this.storageService.saveFile(file.getContent(), file.getName());
+                    logger.info("Se guardó el archivo en: {}", fileUrl);
+                }
                 //Files.write(newFIle.toPath(), encryptData);
                 //Se avisa que se procesó el mensaje
                 channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);

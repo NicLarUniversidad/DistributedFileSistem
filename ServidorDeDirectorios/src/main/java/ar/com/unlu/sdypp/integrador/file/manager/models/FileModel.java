@@ -2,14 +2,13 @@ package ar.com.unlu.sdypp.integrador.file.manager.models;
 
 import lombok.Data;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import java.util.Date;
 
 @Data
 public class FileModel {
+    public static final String GUARDADO = "guardado";
+    public static final String MODIFICACION = "modificacion";
+
     private String name;
     private byte[] content;
     private String path;
@@ -17,4 +16,5 @@ public class FileModel {
     private Date creationDate;
     private Date lastModification;
     private String username;
+    private String messageType;
 }

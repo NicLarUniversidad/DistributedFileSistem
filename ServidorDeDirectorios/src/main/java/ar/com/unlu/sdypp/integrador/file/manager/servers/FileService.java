@@ -4,6 +4,7 @@ import ar.com.unlu.sdypp.integrador.file.manager.cruds.FileCrud;
 import ar.com.unlu.sdypp.integrador.file.manager.cruds.FilePartCrud;
 import ar.com.unlu.sdypp.integrador.file.manager.models.FileListModel;
 import ar.com.unlu.sdypp.integrador.file.manager.models.FileLogsModel;
+import ar.com.unlu.sdypp.integrador.file.manager.models.FileModel;
 import ar.com.unlu.sdypp.integrador.file.manager.models.PartsModel;
 import ar.com.unlu.sdypp.integrador.file.manager.repositories.AsyncFileRepository;
 import ar.com.unlu.sdypp.integrador.file.manager.repositories.FileDataRepository;
@@ -23,10 +24,7 @@ import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -78,7 +76,7 @@ public class FileService {
             partData.setOriginalFile(fileData);
             fileData.getParts().add(partData);
             count++;
-            this.fileRepository.save(part, username, partName);
+            this.fileRepository.save(part, username, partName, FileModel.GUARDADO);
         }
         this.fileDataRepository.save(fileData);
         return fileData;
@@ -210,5 +208,23 @@ public class FileService {
             return this.timeLogService.getFileLogs(fileData.get().getNombreArchivo());
         }
         throw new Exception("No se encontró el archivo con id " +fileId);
+    }
+
+    public FileCrud updateFile(Integer fileId, MultipartFile file, String username) throws Exception {
+        var fileMetadataOpt = this.fileDataRepository.findById(fileId);
+        if (fileMetadataOpt.isPresent()) {
+            var fileMetadata = fileMetadataOpt.get();
+            var parts = fileMetadata.getParts();
+            var newParts = this.fileRepository.splitByNumberOfFiles(file, PART_NUMBERS);
+            int count = 0;
+            for (var partMetadata : parts) {
+                this.fileRepository.save(newParts.get(count), username, partMetadata.getNombre(), FileModel.MODIFICACION);
+                count++;
+            }
+            return fileMetadata;
+        }
+        else {
+            throw new Exception("No se encontró el archivo con ID=" + fileId);
+        }
     }
 }

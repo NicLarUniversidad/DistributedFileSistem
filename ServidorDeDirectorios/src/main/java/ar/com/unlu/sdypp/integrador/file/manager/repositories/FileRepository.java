@@ -4,14 +4,11 @@ import ar.com.unlu.sdypp.integrador.file.manager.cruds.FileCrud;
 import ar.com.unlu.sdypp.integrador.file.manager.models.FileModel;
 import ar.com.unlu.sdypp.integrador.file.manager.repositories.amqp.RabbitmqRepository;
 import ar.com.unlu.sdypp.integrador.file.manager.servers.LoadBalancerService;
-import ar.com.unlu.sdypp.integrador.file.manager.servers.UserService;
 import ar.com.unlu.sdypp.integrador.file.manager.utils.json;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.client.RestTemplate;
@@ -25,7 +22,6 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Component
 public class FileRepository {
@@ -53,6 +49,7 @@ public class FileRepository {
         FileCrud newFileCrud = new FileCrud();
         FileModel user = new FileModel();
         newFileCrud.setActivo(true);
+        //newFileCrud.setMessageType(FileModel.GUARDADO);
         newFileCrud.setTamaño(file.getSize() + " bytes");
         newFileCrud.setTamaño2((int) file.getSize());
         newFileCrud.setNombreArchivo(file.getName());
@@ -72,7 +69,7 @@ public class FileRepository {
 
     }
 
-    public void save(File file, String username, String partName) throws IOException {
+    public void save(File file, String username, String partName, String action) throws IOException {
         //Se guarda la información del archivo
         //FileCrud newFileCrud = new FileCrud();
         FileModel fileModel = new FileModel();
@@ -90,6 +87,7 @@ public class FileRepository {
         fileModel.setContent(content);
         fileModel.setUsername(username);
         fileModel.setSize(content.length);
+        fileModel.setMessageType(action);
         rabbitmqRepository.send(jsonConverter.ConvertirAjson(fileModel));
 
     }
