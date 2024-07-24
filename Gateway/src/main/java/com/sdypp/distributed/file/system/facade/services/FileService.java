@@ -45,9 +45,9 @@ public class FileService {
         return this.fileRepository.uploadFile(file, currentUser);
     }
 
-    public FileModel updateFile(MultipartFile file) throws IOException {
+    public FileModel updateFile(String newText, Integer fileId) throws IOException {
         String currentUser = this.getUsername();
-        return this.fileRepository.updateFile(file, currentUser);
+        return this.fileRepository.updateFile(newText, currentUser, fileId);
     }
 
     public Resource getFile(String fileId) {

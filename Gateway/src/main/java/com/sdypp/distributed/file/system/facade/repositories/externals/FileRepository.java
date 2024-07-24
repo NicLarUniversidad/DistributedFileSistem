@@ -16,7 +16,10 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.UUID;
 
 @Component
 public class FileRepository {
@@ -173,22 +176,21 @@ public class FileRepository {
         return response.getBody();
     }
 
-    public FileModel updateFile(MultipartFile file, String currentUser) throws IOException {
+    public FileModel updateFile(String newText, String currentUser, Integer fileId) throws IOException {
         RestTemplate restTemplate = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
         String boundary = Long.toHexString(System.currentTimeMillis());
         LinkedMultiValueMap<String, String> pdfHeaderMap = new LinkedMultiValueMap<>();
-        pdfHeaderMap.add("Content-disposition", "form-data; name=file; filename=" + file.getOriginalFilename());
+        pdfHeaderMap.add("Content-disposition", "form-data; name=file; filename=" + UUID.randomUUID() + ".temp");
         pdfHeaderMap.add("Content-type", "multipart/form-data; boundary =" + boundary);
-        HttpEntity<byte[]> doc = new HttpEntity<>(file.getBytes(), pdfHeaderMap);
-
+        HttpEntity<byte[]> doc = new HttpEntity<>(newText.getBytes(), pdfHeaderMap);
         LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
         map.add("file", doc);
         map.add("username", currentUser);
 
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(host + "update-file");
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(host + "update-file/" + fileId);
 
         logger.info("Se hace una solicitud al servicio [Gestor de archivos]");
 

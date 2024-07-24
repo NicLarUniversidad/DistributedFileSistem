@@ -221,6 +221,9 @@ public class FileService {
                 this.fileRepository.save(newParts.get(count), username, partMetadata.getNombre(), FileModel.MODIFICACION);
                 count++;
             }
+            fileMetadata.setTamaño2((int) file.getSize());
+            fileMetadata.setTamaño(file.getSize() + " bytes");
+            this.fileDataRepository.save(fileMetadata);
             return fileMetadata;
         }
         else {

@@ -53,9 +53,9 @@ public class FileController {
         return this.fileService.uploadFile(file);
     }
 
-    @PostMapping("/update-file")
-    public FileModel updateFile(@RequestParam("file") MultipartFile file) throws IOException {
-        return this.fileService.updateFile(file);
+    @PostMapping("/update-file/{file-id}")
+    public FileModel updateFile(@RequestParam("newText") String newText, @PathVariable("file-id") Integer fileId) throws IOException {
+        return this.fileService.updateFile(newText, fileId);
     }
 
     @GetMapping("/get-file/{file-id}")

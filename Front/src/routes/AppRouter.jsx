@@ -5,6 +5,7 @@ import Login from "../views/Login";
 import RequireAuth from "../components/auth/RequireAuth";
 import FilePartScreen from "../components/parts/FilePartScreen";
 import LogScreen from "../components/parts/logs/LogScreen";
+import EditScreen from "../components/files/edit/EditScreen";
 
 const AppRouter = () => {
 
@@ -30,6 +31,7 @@ const AppRouter = () => {
                     />
                     <Route path={"/file/parts/:id"} element={<FilePartScreen />} />
                     <Route path={"/file/logs/:id"} element={<LogScreen />} />
+                    <Route path={"/file/edit/:id"} element={<EditScreen />} />
                 </Routes>
             </Router>
         </>

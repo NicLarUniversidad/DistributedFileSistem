@@ -43,8 +43,8 @@ public class FileController {
         return fileService.uploadFile(file, username);
     }
 
-    @PostMapping("/update-file")
-    public FileCrud updateFile(@RequestParam("file-id") Integer fileId, @RequestParam("file") MultipartFile file, @RequestParam("username") String username) throws Exception {
+    @PostMapping("/update-file/{file-id}")
+    public FileCrud updateFile(@RequestParam("file") MultipartFile file, @RequestParam("username") String username, @PathVariable("file-id") Integer fileId) throws Exception {
         logger.info(String.format("Recibido: %s", file.getOriginalFilename()));
         return fileService.updateFile(fileId, file, username);
     }

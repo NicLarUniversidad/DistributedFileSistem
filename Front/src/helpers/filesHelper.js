@@ -88,4 +88,24 @@ async function getFileLogs(fileId) {
     return await fetchResponse.json();
 }
 
-export {getAllFiles, uploadFile, getFile, deleteFile, getFileParts, getFileLogs}
+async function updateFile(fileId, newText) {
+    const base64encodedData = localStorage.getItem("token");
+    const url = getHealthUrl() + "update-file/" + fileId;
+    const formData = new FormData();
+    formData.append("newText", newText);
+    const fetchResponse = await fetch(url, {
+        body: formData,
+        method: 'POST',
+        cache: 'no-cache',
+        credentials: 'same-origin',
+        headers: {
+            'Authorization': 'Basic ' + base64encodedData,
+            'Access-Control-Allow-Origin': '*'
+        }
+    })
+    const data = await fetchResponse.json()
+    console.log(data)
+    return data;
+}
+
+export {getAllFiles, uploadFile, getFile, deleteFile, getFileParts, getFileLogs, updateFile}
