@@ -130,14 +130,14 @@ public class RabbitmqRepository {
                 //if (!newFIle.exists()) {
                 //    newFIle.createNewFile();
                 //}
-                //var encryptData = textEncryptor.encrypt(Arrays.toString(file.getContent())).getBytes();
+                var encryptData = textEncryptor.encrypt(Arrays.toString(file.getContent())).getBytes();
                 switch (file.getMessageType()) {
                     case FileModel.GUARDADO:
-                        String fileUrl = this.storageService.saveFile(file.getContent(), file.getName());
+                        String fileUrl = this.storageService.saveFile(encryptData, file.getName());
                         logger.info("Se guardó el archivo en: {}", fileUrl);
                         break;
                     case FileModel.MODIFICACION:
-                        this.storageService.update(file.getName(), file.getContent());
+                        this.storageService.update(file.getName(), encryptData);
                         logger.info("Se modificó el archivo: {}", file.getName());
                         break;
                     default:
