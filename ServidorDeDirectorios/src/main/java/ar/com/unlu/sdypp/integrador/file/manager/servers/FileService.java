@@ -122,8 +122,10 @@ public class FileService {
             int i = 0;
             for (var part : contentMap.entrySet()) {
                 for (byte oneByte : part.getValue()) {
-                    contenidoArchivo[i] = oneByte;
-                    i++;
+                    if (i < contenidoArchivo.length) {
+                        contenidoArchivo[i] = oneByte;
+                        i++;
+                    }
                 }
             }
             String fileName = fileData.getNombreArchivo();

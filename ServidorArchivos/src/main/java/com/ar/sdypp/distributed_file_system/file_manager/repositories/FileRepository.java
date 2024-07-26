@@ -85,7 +85,7 @@ public class FileRepository {
         long finishTime = System.currentTimeMillis();
         logger.info("Time taken: [{}] milliseconds", finishTime - startTime);
         //logger.info("Part size: [{}], encrypt size: [{}]", plainText.getBytes(StandardCharsets.UTF_8).length, fileContent.getBytes(StandardCharsets.UTF_8).length);
-        return plainText.getBytes(StandardCharsets.UTF_16);
+        return plainText.getBytes();
         // Por ahora el ID podría ser el path
 //        long startTime = System.currentTimeMillis();
 //        String path = username + "/" + fileId;
