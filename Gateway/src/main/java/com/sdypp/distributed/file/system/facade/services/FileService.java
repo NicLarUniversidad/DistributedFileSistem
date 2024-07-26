@@ -66,4 +66,12 @@ public class FileService {
     public FileLogsModel getFileLogs(Integer fileId) {
         return this.fileRepository.getFileLogs(fileId);
     }
+
+    public FileModel getFileData(Integer fileId) {
+        return this.fileRepository.getFileData(fileId);
+    }
+
+    public FileModel lockFile(Integer fileId) {
+        return this.fileRepository.lockFile(fileId);
+    }
 }

@@ -6,6 +6,7 @@ import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -14,6 +15,9 @@ import java.util.Objects;
 @ToString
 @Entity(name="Archivo")
 public class FileCrud {
+
+    public static final char UNLOCKED = 'u';
+    public static final char LOCKED = 'l';
 
     @Id
     @GeneratedValue (strategy = GenerationType.IDENTITY)
@@ -25,6 +29,8 @@ public class FileCrud {
     private String formato;
     private String tipo; //si es de lectura, escritura o ambas
     private Boolean activo;
+    private Date lastTimeOpen;
+    private char state;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JsonManagedReference

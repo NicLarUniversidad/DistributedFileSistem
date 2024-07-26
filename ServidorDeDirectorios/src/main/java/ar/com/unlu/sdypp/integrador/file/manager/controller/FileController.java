@@ -70,6 +70,11 @@ public class FileController {
         return this.fileService.getFileLogs(fileId);
     }
 
+    @PostMapping("/file/lock/{fileId}")
+    public FileCrud lockFile(@PathVariable("fileId") Integer fileId) throws Exception {
+        return this.fileService.lockFile(fileId);
+    }
+
 /*
 
     @PostMapping("/file")

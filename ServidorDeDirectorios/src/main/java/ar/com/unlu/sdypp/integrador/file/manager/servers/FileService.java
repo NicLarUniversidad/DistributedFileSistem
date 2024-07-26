@@ -2,6 +2,7 @@ package ar.com.unlu.sdypp.integrador.file.manager.servers;
 
 import ar.com.unlu.sdypp.integrador.file.manager.cruds.FileCrud;
 import ar.com.unlu.sdypp.integrador.file.manager.cruds.FilePartCrud;
+import ar.com.unlu.sdypp.integrador.file.manager.exceptions.FileClosedException;
 import ar.com.unlu.sdypp.integrador.file.manager.models.FileListModel;
 import ar.com.unlu.sdypp.integrador.file.manager.models.FileLogsModel;
 import ar.com.unlu.sdypp.integrador.file.manager.models.FileModel;
@@ -9,8 +10,8 @@ import ar.com.unlu.sdypp.integrador.file.manager.models.PartsModel;
 import ar.com.unlu.sdypp.integrador.file.manager.repositories.AsyncFileRepository;
 import ar.com.unlu.sdypp.integrador.file.manager.repositories.FileDataRepository;
 import ar.com.unlu.sdypp.integrador.file.manager.repositories.FileRepository;
-import ar.com.unlu.sdypp.integrador.file.manager.repositories.TimeLogsRepository;
 import ar.com.unlu.sdypp.integrador.file.manager.services.TimeLogService;
+import ar.com.unlu.sdypp.integrador.file.manager.utils.Time;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Message;
@@ -20,19 +21,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
-import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class FileService {
@@ -67,6 +68,7 @@ public class FileService {
         fileData.setTamaño(file.getSize() + " bytes");
         fileData.setTamaño2((int) file.getSize());
         fileData.setUser(user);
+        fileData.setState(FileCrud.UNLOCKED);
         int count = 1;
         for (var part : parts) {
             var partData = new FilePartCrud();
@@ -214,6 +216,10 @@ public class FileService {
         var fileMetadataOpt = this.fileDataRepository.findById(fileId);
         if (fileMetadataOpt.isPresent()) {
             var fileMetadata = fileMetadataOpt.get();
+            if (isFileLocked(fileMetadata)) {
+                throw new FileClosedException(String.format("Archivo con ID = '{}' y nombre '{}' bloqueado", fileId,
+                        fileMetadata.getNombreArchivo()));
+            }
             var parts = fileMetadata.getParts();
             var newParts = this.fileRepository.splitByNumberOfFiles(file, PART_NUMBERS);
             int count = 0;
@@ -223,11 +229,46 @@ public class FileService {
             }
             fileMetadata.setTamaño2((int) file.getSize());
             fileMetadata.setTamaño(file.getSize() + " bytes");
+            fileMetadata.setState(FileCrud.UNLOCKED);
             this.fileDataRepository.save(fileMetadata);
             return fileMetadata;
         }
         else {
             throw new Exception("No se encontró el archivo con ID=" + fileId);
         }
+    }
+
+    public FileCrud lockFile(Integer fileId) throws Exception {
+        var fileMetadataOpt = this.fileDataRepository.findById(fileId);
+        if (fileMetadataOpt.isPresent()) {
+            var fileMetadata = fileMetadataOpt.get();
+            if (fileMetadata.getState() == FileCrud.UNLOCKED) {
+                fileMetadata.setState(FileCrud.LOCKED);
+                fileMetadata.setLastTimeOpen(Time.getCurrentTime());
+                this.fileDataRepository.save(fileMetadata);
+                return fileMetadata;
+            }
+            else {
+                if (isFileLocked(fileMetadata)) {
+                    throw new FileClosedException(String.format("Archivo con ID = '{}' y nombre '{}' bloqueado", fileId,
+                            fileMetadata.getNombreArchivo()));
+                }
+                fileMetadata.setLastTimeOpen(Time.getCurrentTime());
+                this.fileDataRepository.save(fileMetadata);
+                return fileMetadata;
+            }
+        }
+        else {
+            throw new Exception("No se encontró el archivo con ID=" + fileId);
+        }
+    }
+
+    private Boolean isFileLocked(FileCrud fileCrud) {
+        boolean isLocked = false;
+        if (fileCrud.getState() == FileCrud.LOCKED) {
+            isLocked = Time.getCurrentTime()
+                    .after(new Date(fileCrud.getLastTimeOpen().getTime() + TimeUnit.MINUTES.toMillis(5)));
+        }
+        return isLocked;
     }
 }

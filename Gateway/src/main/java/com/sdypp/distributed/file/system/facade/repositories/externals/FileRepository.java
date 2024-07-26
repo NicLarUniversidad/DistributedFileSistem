@@ -205,4 +205,48 @@ public class FileRepository {
 
         return response.getBody();
     }
+
+    public FileModel getFileData(Integer fileId) {
+        RestTemplate restTemplate = new RestTemplate();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
+
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(host + "file/data/" + fileId);
+
+        logger.info("Se hace una solicitud al servicio [Gestor de archivos]");
+
+        var requestEntity = new HttpEntity<>(map, headers);
+        HttpEntity<FileModel> response = restTemplate.exchange(
+                builder.toUriString(),
+                HttpMethod.GET,
+                requestEntity,
+                FileModel.class);
+
+        return response.getBody();
+    }
+
+    public FileModel lockFile(Integer fileId) {
+        RestTemplate restTemplate = new RestTemplate();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
+
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(host + "file/lock/" + fileId);
+
+        logger.info("Se hace una solicitud al servicio [Gestor de archivos]");
+
+        var requestEntity = new HttpEntity<>(map, headers);
+        HttpEntity<FileModel> response = restTemplate.exchange(
+                builder.toUriString(),
+                HttpMethod.GET,
+                requestEntity,
+                FileModel.class);
+
+        return response.getBody();
+    }
 }

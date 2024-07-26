@@ -84,4 +84,16 @@ public class FileController {
         System.out.println("Recibido id archivo = " + fileId);
         return this.fileService.getFileLogs(fileId);
     }
+
+    @GetMapping("/file/data/{file-id}")
+    public FileModel getFileData(@PathVariable("file-id") Integer fileId) throws IOException {
+        System.out.println("Recibido id archivo = " + fileId);
+        return this.fileService.getFileData(fileId);
+    }
+
+    @PostMapping("/file/lock/{file-id}")
+    public FileModel lockFile(@PathVariable("file-id") Integer fileId) throws IOException {
+        System.out.println("Recibido id archivo = " + fileId);
+        return this.fileService.lockFile(fileId);
+    }
 }
