@@ -4,6 +4,7 @@ import com.sdypp.distributed.file.system.facade.models.*;
 import com.sdypp.distributed.file.system.facade.services.FileService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.Resource;
 import org.springframework.web.bind.annotation.*;
@@ -54,8 +55,15 @@ public class FileController {
     }
 
     @PostMapping("/update-file/{file-id}")
-    public FileModel updateFile(@RequestParam("newText") String newText, @PathVariable("file-id") Integer fileId) throws IOException {
+    @CacheEvict("get-file")
+    public FileModel updateFile(@RequestParam("newText") String newText, @PathVariable("file-id") String fileId) throws IOException {
         return this.fileService.updateFile(newText, fileId);
+    }
+
+    @PostMapping("/cache/clean/{file-id}")
+    @CacheEvict("get-file")
+    public String cleanFileCache(@PathVariable("file-id") String fileId) {
+        return "OK";
     }
 
     @GetMapping("/get-file/{file-id}")

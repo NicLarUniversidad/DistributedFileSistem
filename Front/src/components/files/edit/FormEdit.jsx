@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {useParams} from "react-router-dom";
-import {getFile, updateFile, uploadFile} from "../../../helpers/filesHelper";
+import {getFile, updateFile, cleanCache} from "../../../helpers/filesHelper";
 
 function FormEdit(props) {
 
@@ -23,6 +23,7 @@ function FormEdit(props) {
             .then((response) => {
                 console.log(response);
                 alert("Se actualizó correctamente")
+                cleanCache(fileId)
                 window.location.reload();
             })
             .catch((e) => {
