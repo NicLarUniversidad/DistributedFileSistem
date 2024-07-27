@@ -6,6 +6,8 @@ import org.jasypt.util.text.StrongTextEncryptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StreamUtils;
@@ -28,11 +30,14 @@ public class FileRepository {
 
     private final StrongTextEncryptor textEncryptor;
     private final StorageService storageService;
+    @Value("${sdypp.encrypt.queue.password:ultrasecreta}")
+    private String passwordEncrypt;
 
     @Autowired
-    public FileRepository(StorageService storageService) {
+    public FileRepository(Environment env, StorageService storageService) {
         this.textEncryptor = new StrongTextEncryptor();
-        this.textEncryptor.setPassword("ultrasecreta");
+        passwordEncrypt = env.getProperty("sdypp.encrypt.queue.password", "ultrasecreta");
+        this.textEncryptor.setPassword(passwordEncrypt);
         this.storageService = storageService;
     }
 

@@ -7,7 +7,7 @@ reader = FolderReader("files")
 files = reader.findTxtAndHtmlFiles()
 count = 0
 
-maxFileNumber = 1
+maxFileNumber = 10
 for file in files:
     if count < maxFileNumber:
         with open(file, 'rb') as f:
