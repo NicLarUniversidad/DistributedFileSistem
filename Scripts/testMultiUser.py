@@ -5,9 +5,9 @@ import requests
 
 gatewayUrl = "http://localhost:8080/"
 userQuantity = 16  # 1, 8, 16
-file_id = 309
-file_quantity = 10
-node_quantity = 1
+file_id = 319
+file_quantity = 100
+node_quantity = 10
 def get_file(fileId):
     requests.get(f'{gatewayUrl}get-file/{fileId}')
 
@@ -34,6 +34,4 @@ if __name__ =="__main__":
     f = open("results.jsonl", "a")
     f.write(json.dumps(data) + "\n")
     f.close()
-
-
 
