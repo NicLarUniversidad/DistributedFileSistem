@@ -118,13 +118,20 @@ public class FileService {
             var finishTime = System.currentTimeMillis();
             logger.info("Descarga finalizada, tiempo de descarga en hilo principal: {}", initTime - finishTime);
             this.timeLogService.finishFileDownload(fileDownloadLog);
-            byte[] contenidoArchivo = new byte[fileData.getTamaño2()];
-            int i = 0;
-            for (var part : contentMap.entrySet()) {
-                for (byte oneByte : part.getValue()) {
-                    contenidoArchivo[i] = oneByte;
-                    i++;
-                }
+            Integer i = 1;
+//            for (var part : contentMap.entrySet()) {
+//                for (byte oneByte : part.getValue()) {
+//                    if (i < contenidoArchivo.length) {
+//                        contenidoArchivo[i] = oneByte;
+//                        i++;
+//                    }
+//                }
+//            }
+            StringBuilder fileContent = new StringBuilder();
+            while (i <= contentMap.size()) {
+                var content = new String(contentMap.get(i));
+                fileContent.append(content);
+                i++;
             }
             String fileName = fileData.getNombreArchivo();
             File temp = new File(TEMP_DIRECTORY);
@@ -135,7 +142,7 @@ public class FileService {
                 file.createNewFile();
             }
             FileOutputStream out = new FileOutputStream(file);
-            out.write(contenidoArchivo);
+            out.write(fileContent.toString().getBytes());
             return new InputStreamResource(new FileInputStream(file));
 
         }
@@ -222,11 +229,20 @@ public class FileService {
             }
             var parts = fileMetadata.getParts();
             var newParts = this.fileRepository.splitByNumberOfFiles(file, PART_NUMBERS);
-            int count = 0;
-            for (var partMetadata : parts) {
-                this.fileRepository.save(newParts.get(count), username, partMetadata.getNombre(), FileModel.MODIFICACION);
+            int count = 1;
+            while (count <= parts.size()) {
+                for (var part: parts) {
+                    if (part.getOrden() == count){
+                        this.fileRepository.save(newParts.get(count - 1), username, part.getNombre(), FileModel.MODIFICACION);
+                    }
+                }
                 count++;
             }
+//            for (var partMetadata : parts) {
+//                if (count == partMetadata.getOrden())
+//                this.fileRepository.save(newParts.get(count), username, partMetadata.getNombre(), FileModel.MODIFICACION);
+//                count++;
+//            }
             fileMetadata.setTamaño2((int) file.getSize());
             fileMetadata.setTamaño(file.getSize() + " bytes");
             fileMetadata.setState(FileCrud.UNLOCKED);

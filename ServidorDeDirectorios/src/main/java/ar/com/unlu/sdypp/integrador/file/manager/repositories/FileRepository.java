@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 @Component
@@ -94,7 +95,7 @@ public class FileRepository {
 
     //Divide el archivo en partes
     public List<java.io.File> splitBySize(MultipartFile largeFile, int maxChunkSize) throws IOException {
-        List<java.io.File> list = new ArrayList<>();
+        List<java.io.File> list = new LinkedList<>();
         try (InputStream in = largeFile.getInputStream()) {
             final byte[] buffer = new byte[maxChunkSize];
             int dataRead = in.read(buffer);

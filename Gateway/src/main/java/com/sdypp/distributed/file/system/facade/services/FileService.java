@@ -45,7 +45,7 @@ public class FileService {
         return this.fileRepository.uploadFile(file, currentUser);
     }
 
-    public FileModel updateFile(String newText, Integer fileId) throws IOException {
+    public FileModel updateFile(String newText, String fileId) throws IOException {
         String currentUser = this.getUsername();
         return this.fileRepository.updateFile(newText, currentUser, fileId);
     }

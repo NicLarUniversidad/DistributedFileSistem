@@ -176,7 +176,7 @@ public class FileRepository {
         return response.getBody();
     }
 
-    public FileModel updateFile(String newText, String currentUser, Integer fileId) throws IOException {
+    public FileModel updateFile(String newText, String currentUser, String fileId) throws IOException {
         RestTemplate restTemplate = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();

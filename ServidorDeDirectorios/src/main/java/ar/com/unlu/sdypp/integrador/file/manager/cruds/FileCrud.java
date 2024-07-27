@@ -5,10 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Getter
 @Setter
@@ -35,7 +32,7 @@ public class FileCrud {
     @OneToMany(cascade = CascadeType.ALL)
     @JsonManagedReference
     @ToString.Exclude
-    private List<FilePartCrud> parts = new ArrayList<>();
+    private List<FilePartCrud> parts = new LinkedList<>();
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JsonManagedReference
