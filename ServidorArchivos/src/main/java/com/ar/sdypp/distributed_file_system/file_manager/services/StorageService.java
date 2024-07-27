@@ -1,5 +1,6 @@
 package com.ar.sdypp.distributed_file_system.file_manager.services;
 
+import com.ar.sdypp.distributed_file_system.file_manager.models.FileDataModel;
 import com.google.auth.Credentials;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.auth.oauth2.ServiceAccountCredentials;
@@ -26,9 +27,7 @@ import java.nio.channels.WritableByteChannel;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class StorageService {
@@ -37,8 +36,18 @@ public class StorageService {
 
     @Value("${sdypp.storage.credentials:}")
     public String cred = "";
+    private String[] bucketNames = {"sdypp-file-system", "sdypp-file-system-replica", "sdypp-file-system-replica-2"};
 
-    public String saveFile(byte[] fileContent, String fileName) throws IOException {
+
+    public String saveFileOnBuckets(byte[] fileContent, String fileName) throws IOException {
+        StringBuilder result = new StringBuilder();
+        for (String bucketName : bucketNames) {
+            result.append(this.saveFile(fileContent, fileName, bucketName)).append("\n");
+        }
+        return result.toString();
+    }
+
+    public String saveFile(byte[] fileContent, String fileName, String bucketName) throws IOException {
         Storage storage = this.getStorage();
         long fileSize = fileContent.length;
         logger.info("Saving a part with size: " + fileSize);
@@ -47,7 +56,7 @@ public class StorageService {
         metadata.put("content-length", String.valueOf(fileSize));
 
         BlobInfo blobInfo = BlobInfo
-                .newBuilder("sdypp-file-system", fileName)
+                .newBuilder(bucketName, fileName)
                 .setMetadata(metadata)
                 .build();
 
@@ -65,19 +74,23 @@ public class StorageService {
 
     }
 
-    public byte[] getFile(String fileName) throws IOException {
-//        FileUrlResource gcsFile = new FileUrlResource("https://storage.cloud.google.com/sdypp-file-system/" + fileName);
-//        return StreamUtils.copyToString(
-//                gcsFile.getInputStream(),
-//                Charset.defaultCharset());
-        logger.info("Descargando parte con nombre: [{}].", fileName);
+    public FileDataModel getFile(String fileName) throws IOException {
+        FileDataModel fileData = new FileDataModel();
+        var count=1;
         Storage storage = this.getStorage();
-        Blob blob = storage.get("sdypp-file-system", fileName);
-
-        logger.info("Size: [{}].", blob.getContent().length);
-        String result = Base64.getEncoder().encodeToString(blob.getContent());
-        logger.info("String size: [{}].", result.getBytes().length);
-        return blob.getContent();
+        Blob blob = storage.get(bucketNames[0], fileName);
+        if (blob != null) {
+            fileData.setBucketName(bucketNames[0]);
+        }
+        while (blob == null && count < bucketNames.length) {
+            blob = storage.get(bucketNames[count], fileName);
+            if (blob != null) {
+                fileData.setBucketName(bucketNames[count]);
+            }
+            count++;
+        }
+        fileData.setData(blob.getContent());
+        return fileData;
     }
 
 
@@ -92,8 +105,14 @@ public class StorageService {
     }
 
     public void update(String fileName, byte[] newContent) throws IOException {
+        for (String bucketName : bucketNames) {
+            this.update(fileName, newContent, bucketName);
+        }
+    }
+
+    private void update(String fileName, byte[] newContent, String bucketName) throws IOException {
         Storage storage = this.getStorage();
-        Blob blob = storage.get("sdypp-file-system", fileName);
+        Blob blob = storage.get(bucketName, fileName);
         WritableByteChannel channel = blob.writer();
         channel.write(ByteBuffer.wrap(newContent));
         channel.close();

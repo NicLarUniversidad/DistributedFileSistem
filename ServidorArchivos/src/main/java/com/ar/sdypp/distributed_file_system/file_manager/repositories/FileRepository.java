@@ -80,10 +80,10 @@ public class FileRepository {
 
     public byte[] getFileById(String fileId, String username) throws IOException {
         long startTime = System.currentTimeMillis();
-        byte[] fileContent = this.storageService.getFile(fileId);
-        String plainText = textEncryptor.decrypt(new String(fileContent));
+        var fileData = this.storageService.getFile(fileId);
+        String plainText = textEncryptor.decrypt(new String(fileData.getData()));
         long finishTime = System.currentTimeMillis();
-        logger.info("Time taken: [{}] milliseconds", finishTime - startTime);
+        logger.info("Se recuperó la parte: '{}', desde el bucket: '{}' en [{}] milisegundos", fileId, fileData.getBucketName(), finishTime - startTime);
         //logger.info("Part size: [{}], encrypt size: [{}]", plainText.getBytes(StandardCharsets.UTF_8).length, fileContent.getBytes(StandardCharsets.UTF_8).length);
         return plainText.getBytes();
         // Por ahora el ID podría ser el path

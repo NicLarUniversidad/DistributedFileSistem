@@ -127,4 +127,43 @@ async function cleanCache(fileId) {
     return data;
 }
 
-export {getAllFiles, uploadFile, getFile, deleteFile, getFileParts, getFileLogs, updateFile, cleanCache}
+async function getFileData(fileId) {
+    const base64encodedData = localStorage.getItem("token");
+    const url = getHealthUrl() + "file/data/" + fileId;
+    const formData = new FormData();
+    const fetchResponse = await fetch(url, {
+        body: formData,
+        method: 'GET',
+        cache: 'no-cache',
+        credentials: 'same-origin',
+        headers: {
+            'Authorization': 'Basic ' + base64encodedData,
+            'Access-Control-Allow-Origin': '*'
+        }
+    })
+    const data = await fetchResponse.json()
+    console.log(data)
+    return data;
+}
+
+async function lockFile(fileId) {
+    const base64encodedData = localStorage.getItem("token");
+    const url = getHealthUrl() + "file/lock/" + fileId;
+    const formData = new FormData();
+    const fetchResponse = await fetch(url, {
+        body: formData,
+        method: 'POST',
+        cache: 'no-cache',
+        credentials: 'same-origin',
+        headers: {
+            'Authorization': 'Basic ' + base64encodedData,
+            'Access-Control-Allow-Origin': '*'
+        }
+    })
+    const data = await fetchResponse.json()
+    console.log(data)
+    return data;
+}
+
+export {getAllFiles, uploadFile, getFile, deleteFile, getFileParts, getFileLogs, updateFile, cleanCache, 
+    getFileData, lockFile}

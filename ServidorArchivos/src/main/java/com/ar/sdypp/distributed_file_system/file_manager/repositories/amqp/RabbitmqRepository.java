@@ -49,6 +49,8 @@ public class RabbitmqRepository {
     private String username;
     @Value("${sdypp.rabbitmq.queue.password:guest}")
     private String password;
+    @Value("${sdypp.encrypt.queue.password:ultrasecreta}")
+    private String passwordEncrypt;
     private StrongTextEncryptor textEncryptor;
 
     private final StorageService storageService;
@@ -81,8 +83,9 @@ public class RabbitmqRepository {
         channel.basicQos(prefetchCount);// channel.basicQos(prefetchCount);
         //Se agrega esto para poder usar tópicos
         channel.exchangeDeclare(exchangeName, "topic");
+        passwordEncrypt = env.getProperty("sdypp.encrypt.queue.password", "ultrasecreta");
         this.textEncryptor = new StrongTextEncryptor();
-        this.textEncryptor.setPassword("ultrasecreta");
+        this.textEncryptor.setPassword(passwordEncrypt);
         Thread t1 = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -134,7 +137,7 @@ public class RabbitmqRepository {
                 logger.info("Mensaje encriptado: " + new String(encryptData));
                 switch (file.getMessageType()) {
                     case FileModel.GUARDADO:
-                        String fileUrl = this.storageService.saveFile(encryptData, file.getName());
+                        String fileUrl = this.storageService.saveFileOnBuckets(encryptData, file.getName());
                         logger.info("Se guardó el archivo en: {}", fileUrl);
                         break;
                     case FileModel.MODIFICACION:

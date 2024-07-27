@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {useParams} from "react-router-dom";
-import {getFile, updateFile, cleanCache, getFileData, lockFile} from "../../../helpers/filesHelper";
+import {cleanCache, getFile, getFileData, lockFile, updateFile} from "../../../helpers/filesHelper";
 
 function FormEdit(props) {
 
