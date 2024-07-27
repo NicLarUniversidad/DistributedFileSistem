@@ -287,4 +287,13 @@ public class FileService {
         }
         return isLocked;
     }
+
+    public FileCrud getFileData(Integer fileId) {
+        FileCrud fileCrud = null;
+        var fileOptional = this.fileDataRepository.findById(fileId);
+        if (fileOptional.isPresent()) {
+            fileCrud = fileOptional.get();
+        }
+        return fileCrud;
+    }
 }

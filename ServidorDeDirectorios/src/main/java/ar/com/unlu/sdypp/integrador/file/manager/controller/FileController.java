@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.Resource;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -73,6 +74,12 @@ public class FileController {
     @PostMapping("/file/lock/{fileId}")
     public FileCrud lockFile(@PathVariable("fileId") Integer fileId) throws Exception {
         return this.fileService.lockFile(fileId);
+    }
+
+    @GetMapping("/file/data/{file-id}")
+    public FileCrud getFileData(@PathVariable("file-id") Integer fileId) {
+        System.out.println("Recibido id archivo = " + fileId);
+        return this.fileService.getFileData(fileId);
     }
 
 /*

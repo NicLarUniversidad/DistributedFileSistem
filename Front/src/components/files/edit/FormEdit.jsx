@@ -1,12 +1,30 @@
 import React, {useEffect, useState} from 'react';
 import {useParams} from "react-router-dom";
-import {getFile, updateFile, cleanCache} from "../../../helpers/filesHelper";
+import {getFile, updateFile, cleanCache, getFileData, lockFile} from "../../../helpers/filesHelper";
 
 function FormEdit(props) {
 
     const {id:fileId} = useParams()
 
     const [fileData, setFileData] = useState({})
+    const [fileMetadata, setFileMetadata] = useState({"nombreArchivo" : ""})
+
+
+    useEffect(() => {
+        getFileData(fileId).then(data => {
+            setFileMetadata(data)
+            if (data.state === 'l') {
+                alert("Se está editando este archivo por otro usuario, intente más tarde...")
+            }
+            else {
+                lockFile(fileId).then(data => {
+                    alert("Se bloquea archivo")
+                }).catch(err => {
+                        alert("No se pudo bloquear el archivo...")
+                    })
+            }
+        })
+    }, [])
 
     useEffect(() => {
         setFileData("Cargando...")
@@ -33,6 +51,7 @@ function FormEdit(props) {
 
     return (
         <>
+            <h2 className="w3-center">{fileMetadata.nombreArchivo}</h2>
             <textarea className="w3-input w3-border" rows="25" cols="10" id="noter-text-area" name="textarea" value={fileData} onChange={handleChange}></textarea>
             <button className="w3-btn w3-cyan" onClick={handleUpdate}>Guardar</button>
         </>

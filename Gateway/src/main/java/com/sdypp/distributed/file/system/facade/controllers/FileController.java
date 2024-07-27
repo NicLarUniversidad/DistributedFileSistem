@@ -94,7 +94,8 @@ public class FileController {
     }
 
     @GetMapping("/file/data/{file-id}")
-    public FileModel getFileData(@PathVariable("file-id") Integer fileId) throws IOException {
+    @Cacheable("file-data")
+    public FileModel getFileData(@PathVariable("file-id") Integer fileId) {
         System.out.println("Recibido id archivo = " + fileId);
         return this.fileService.getFileData(fileId);
     }

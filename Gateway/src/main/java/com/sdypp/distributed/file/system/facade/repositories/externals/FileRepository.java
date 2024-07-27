@@ -243,7 +243,7 @@ public class FileRepository {
         var requestEntity = new HttpEntity<>(map, headers);
         HttpEntity<FileModel> response = restTemplate.exchange(
                 builder.toUriString(),
-                HttpMethod.GET,
+                HttpMethod.POST,
                 requestEntity,
                 FileModel.class);
 
