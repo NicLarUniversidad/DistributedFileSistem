@@ -74,4 +74,8 @@ public class FileService {
     public FileModel lockFile(Integer fileId) {
         return this.fileRepository.lockFile(fileId);
     }
+
+    public String deleteLogs(Integer fileId) {
+        return this.fileRepository.deleteLogs(fileId);
+    }
 }

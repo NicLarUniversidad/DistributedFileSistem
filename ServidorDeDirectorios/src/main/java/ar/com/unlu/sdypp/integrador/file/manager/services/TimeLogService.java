@@ -64,4 +64,11 @@ public class TimeLogService {
         }
         return fileLogsModel;
     }
+
+    public void deleteLogs(String name) {
+        var logs = this.timeLogsRepository.findAll();
+        if (logs != null) {
+            this.timeLogsRepository.deleteAll(logs);
+        }
+    }
 }

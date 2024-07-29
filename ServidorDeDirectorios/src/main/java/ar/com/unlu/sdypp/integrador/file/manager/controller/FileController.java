@@ -82,6 +82,12 @@ public class FileController {
         return this.fileService.getFileData(fileId);
     }
 
+    @DeleteMapping("/file/log/{fileId}")
+    public String deleteLogs(@PathVariable("fileId") Integer fileId) throws Exception {
+        this.fileService.deleteLogs(fileId);
+        return "OK";
+    }
+
 /*
 
     @PostMapping("/file")

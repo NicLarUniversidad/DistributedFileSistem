@@ -93,6 +93,12 @@ public class FileController {
         return this.fileService.getFileLogs(fileId);
     }
 
+    @DeleteMapping("/file/log/{file-id}")
+    public String deleteLogs(@PathVariable("file-id") Integer fileId) throws IOException {
+        System.out.println("Recibido id archivo = " + fileId);
+        return this.fileService.deleteLogs(fileId);
+    }
+
     @GetMapping("/file/data/{file-id}")
     @Cacheable("file-data")
     public FileModel getFileData(@PathVariable("file-id") Integer fileId) {

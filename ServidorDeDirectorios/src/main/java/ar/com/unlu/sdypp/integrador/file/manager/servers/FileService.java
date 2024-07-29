@@ -296,4 +296,12 @@ public class FileService {
         }
         return fileCrud;
     }
+
+    public void deleteLogs(Integer fileId) throws Exception {
+        var fileData = this.fileDataRepository.findById(fileId);
+        if (fileData.isPresent()) {
+            this.timeLogService.deleteLogs(fileData.get().getNombreArchivo());
+        }
+        throw new Exception("No se encontró el archivo con id " +fileId);
+    }
 }
