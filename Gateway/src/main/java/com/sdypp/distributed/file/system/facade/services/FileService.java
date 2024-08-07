@@ -34,7 +34,7 @@ public class FileService {
         return "test-user";
     }
 
-    public FileModel uploadFile(MultipartFile file) throws IOException {
+    public FileModel uploadFile(MultipartFile file, Integer id) throws IOException {
         //var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String currentUser = this.getUsername();
 //        if (principal instanceof UserDetails) {
@@ -42,7 +42,7 @@ public class FileService {
 //        } else {
 //            currentUser = principal.toString();
 //        }
-        return this.fileRepository.uploadFile(file, currentUser);
+        return this.fileRepository.uploadFile(file, currentUser, id);
     }
 
     public FileModel updateFile(String newText, String fileId) throws IOException {

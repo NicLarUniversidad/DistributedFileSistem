@@ -1,6 +1,5 @@
 package com.sdypp.distributed.file.system.facade.repositories.externals;
 
-import com.sdypp.distributed.file.system.facade.entities.UserEntity;
 import com.sdypp.distributed.file.system.facade.models.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,8 +15,6 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.UUID;
 
@@ -48,7 +45,7 @@ public class FileRepository {
         return response.getBody();
     }
 
-    public FileModel uploadFile(MultipartFile file, String currentUser) throws IOException {
+    public FileModel uploadFile(MultipartFile file, String currentUser, Integer id) throws IOException {
         RestTemplate restTemplate = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
@@ -62,6 +59,7 @@ public class FileRepository {
         LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
         map.add("file", doc);
         map.add("username", currentUser);
+        map.add("file-id", id);
 
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(host + "upload-file");
 

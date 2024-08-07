@@ -50,8 +50,8 @@ public class FileController {
     }
 
     @PostMapping("/upload-file")
-    public FileModel uploadFile(@RequestParam("file") MultipartFile file) throws IOException {
-        return this.fileService.uploadFile(file);
+    public FileModel uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("file-id") Integer id) throws IOException {
+        return this.fileService.uploadFile(file, id);
     }
 
     @PostMapping("/update-file/{file-id}")

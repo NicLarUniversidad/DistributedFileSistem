@@ -19,8 +19,26 @@ async function getAllFiles() {
 async function uploadFile(file) {
     const base64encodedData = localStorage.getItem("token");
     const url = getHealthUrl() + "upload-file";
+    let start = 0
+    let chunkSize = Number(process.env.REACT_APP_CHUNK_SIZE)
+    let chunks = []
+    if (file.size < chunkSize) {
+        chunks.push(file)
+    }
+    else {
+        while (start < file.size) {
+            let endChunk = start + chunkSize
+            if (endChunk > file.size) {
+                endChunk = file.size
+            }
+            const newChunk = file.slice(start, endChunk)
+            chunks.push(newChunk)
+            start += chunkSize
+        }
+    }
     const formData = new FormData();
-    formData.append("file", file, file.name);
+    formData.append("file", chunks[0], file.name);
+    formData.append("file-id", 0);
     const fetchResponse = await fetch(url, {
         body: formData,
         method: 'POST',
@@ -31,9 +49,42 @@ async function uploadFile(file) {
             'Access-Control-Allow-Origin': '*'
         }
     })
-    const data = await fetchResponse.json()
-    console.log(data)
-    return data;
+    if (fetchResponse.status === 200) {
+        let data = await fetchResponse.json()
+        const x = Number(data.id);
+        let correctlyUploaded = true;
+        for (let i = 1; i < chunks.length; i++) {
+            const formData = new FormData();
+            formData.append("file", chunks[i], file.name);
+            formData.append("file-id", x);
+            const fetchResponse = await fetch(url, {
+                body: formData,
+                method: 'POST',
+                cache: 'no-cache',
+                credentials: 'same-origin',
+                headers: {
+                    'Authorization': 'Basic ' + base64encodedData,
+                    'Access-Control-Allow-Origin': '*'
+                }
+            })
+            if (fetchResponse.status === 200) {
+                data = fetchResponse.json();
+            }
+            else {
+                correctlyUploaded = false;
+            }
+        }
+        if (correctlyUploaded) {
+            return data;
+        }
+        else {
+            await deleteFile(data.id);
+            alert("Se ha producido un error al subir un chuck, se ha dado de baja el archivo.");
+            return null;
+        }
+    }
+    alert("Se ha producido un error al subir el primer chuck, no se ha subido ninguna parte.");
+    return null;
 }
 
 async function getFile(fileId) {

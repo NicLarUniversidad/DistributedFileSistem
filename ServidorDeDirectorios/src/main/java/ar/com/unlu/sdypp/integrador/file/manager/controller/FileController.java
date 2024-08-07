@@ -1,23 +1,19 @@
 package ar.com.unlu.sdypp.integrador.file.manager.controller;
 
 import ar.com.unlu.sdypp.integrador.file.manager.cruds.FileCrud;
-import ar.com.unlu.sdypp.integrador.file.manager.cruds.FilePartCrud;
 import ar.com.unlu.sdypp.integrador.file.manager.models.FileListModel;
 import ar.com.unlu.sdypp.integrador.file.manager.models.FileLogsModel;
-import ar.com.unlu.sdypp.integrador.file.manager.models.FileModel;
 import ar.com.unlu.sdypp.integrador.file.manager.models.PartsModel;
 import ar.com.unlu.sdypp.integrador.file.manager.servers.FileService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.Resource;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
 
 @RestController
 public class FileController {
@@ -28,8 +24,8 @@ public class FileController {
     private FileService fileService;
 
     @PutMapping("/file")
-    public String saveFile(@RequestParam("file") MultipartFile file, @RequestParam("name") String fileName, HttpServletResponse response) throws IOException {
-        fileService.save(file, fileName);
+    public String saveFile(@RequestParam("file") MultipartFile file, @RequestParam("name") String fileName, HttpServletResponse response) throws Exception {
+        fileService.save(file, fileName, null);
         return "OK";
     }
 
@@ -39,9 +35,9 @@ public class FileController {
     }
 
     @PostMapping("/upload-file")
-    public FileCrud uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("username") String username) throws IOException {
+    public FileCrud uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("username") String username, @RequestParam("file-id") Integer id) throws Exception {
         logger.info(String.format("Recibido: %s", file.getOriginalFilename()));
-        return fileService.uploadFile(file, username);
+        return fileService.uploadFile(file, username, id);
     }
 
     @PostMapping("/update-file/{file-id}")

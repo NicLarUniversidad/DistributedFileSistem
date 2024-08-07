@@ -40,8 +40,7 @@ function logout() {
 
 
 function getHealthUrl() {
-    //return "http://localhost:8080/";
-    return "http://34.121.203.246:8080/"
+    return process.env.REACT_APP_GATEWAY_URL;
 }
 
 export {getAuth, login, logout, health, getHealthUrl}

@@ -2,6 +2,7 @@ package ar.com.unlu.sdypp.integrador.file.manager.servers;
 
 import ar.com.unlu.sdypp.integrador.file.manager.cruds.FileCrud;
 import ar.com.unlu.sdypp.integrador.file.manager.cruds.FilePartCrud;
+import ar.com.unlu.sdypp.integrador.file.manager.cruds.UserCrud;
 import ar.com.unlu.sdypp.integrador.file.manager.exceptions.FileClosedException;
 import ar.com.unlu.sdypp.integrador.file.manager.models.FileListModel;
 import ar.com.unlu.sdypp.integrador.file.manager.models.FileLogsModel;
@@ -58,29 +59,32 @@ public class FileService {
     @Autowired
     private TimeLogService timeLogService;
 
-    public FileCrud save(MultipartFile file, String username) throws IOException {
-        var parts = this.fileRepository.splitByNumberOfFiles(file, PART_NUMBERS);
+    public FileCrud save(MultipartFile file, String username, Integer id) throws Exception {
         var fileData = new FileCrud();
-        var user = this.userService.findByUsername(username);
-        //user.setUsername(username);
-        fileData.setActivo(true);
-        fileData.setNombreArchivo(file.getOriginalFilename());
-        fileData.setTamaño(file.getSize() + " bytes");
-        fileData.setTamaño2((int) file.getSize());
-        fileData.setUser(user);
-        fileData.setState(FileCrud.UNLOCKED);
-        int count = 1;
-        for (var part : parts) {
-            var partData = new FilePartCrud();
-            partData.setOrden(count);
-            String partName = UUID.randomUUID() + ".temp";
-            partData.setNombre(partName);
-            partData.setOriginalFile(fileData);
-            fileData.getParts().add(partData);
-            count++;
-            this.fileRepository.save(part, username, partName, FileModel.GUARDADO);
+        if (id == 0) {
+            var user = this.userService.findByUsername(username);
+            if (user == null) {
+                user = new UserCrud();
+                user.setUsername(username);
+            }
+            fileData.setActivo(true);
+            fileData.setNombreArchivo(file.getOriginalFilename());
+            fileData.setTamaño2(0);
+            fileData.setUser(user);
+            fileData.setState(FileCrud.UNLOCKED);
+            this.fileDataRepository.save(fileData);
+            this.createPart(file, username, fileData);
         }
-        this.fileDataRepository.save(fileData);
+        else {
+            var fileDataOpt = this.fileDataRepository.findById(id);
+            if (fileDataOpt.isPresent()) {
+                fileData = fileDataOpt.get();
+                this.createPart(file, username, fileData);
+            }
+            else {
+                throw new FileNotFoundException(String.format("File with id = [{}] not found", id));
+            }
+        }
         return fileData;
     }
 
@@ -162,11 +166,11 @@ public class FileService {
     }
 
 
-    public FileCrud uploadFile(MultipartFile file, String username) throws IOException {
+    public FileCrud uploadFile(MultipartFile file, String username, Integer id) throws Exception {
         //Dividir el archivo en partes
         //Subir las partes a rabbit
         //Verificar que todas las partes se hayan guardado (Opcional)
-        return this.save(file, username);
+        return this.save(file, username, id);
     }
 
     //publicar archivo en rabbit
@@ -238,11 +242,6 @@ public class FileService {
                 }
                 count++;
             }
-//            for (var partMetadata : parts) {
-//                if (count == partMetadata.getOrden())
-//                this.fileRepository.save(newParts.get(count), username, partMetadata.getNombre(), FileModel.MODIFICACION);
-//                count++;
-//            }
             fileMetadata.setTamaño2((int) file.getSize());
             fileMetadata.setTamaño(file.getSize() + " bytes");
             fileMetadata.setState(FileCrud.UNLOCKED);
@@ -304,4 +303,17 @@ public class FileService {
         }
         throw new Exception("No se encontró el archivo con id " +fileId);
     }
+
+    private void createPart(MultipartFile file, String username, FileCrud fileData) throws Exception {
+        FilePartCrud filePartCrud = new FilePartCrud();
+        filePartCrud.setOriginalFile(fileData);
+        filePartCrud.setOrden(fileData.getParts().size() + 1);
+        filePartCrud.setNombre(UUID.randomUUID() + ".part" + filePartCrud.getOrden());
+        fileData.getParts().add(filePartCrud);
+        fileData.setTamaño2((int) (file.getSize() + fileData.getTamaño2()));
+        fileData.setTamaño(fileData.getTamaño2() + " bytes");
+        this.fileRepository.save(file, username);
+        this.fileDataRepository.save(fileData);
+    }
+
 }
