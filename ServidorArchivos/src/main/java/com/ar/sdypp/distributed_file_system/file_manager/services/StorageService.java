@@ -1,32 +1,18 @@
 package com.ar.sdypp.distributed_file_system.file_manager.services;
 
 import com.ar.sdypp.distributed_file_system.file_manager.models.FileDataModel;
-import com.google.auth.Credentials;
 import com.google.auth.oauth2.GoogleCredentials;
-import com.google.auth.oauth2.ServiceAccountCredentials;
-import com.google.cloud.ReadChannel;
 import com.google.cloud.storage.*;
-import com.google.common.io.CharSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.FileUrlResource;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ResourceUtils;
-import org.springframework.util.StreamUtils;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.channels.WritableByteChannel;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.util.*;
 
 @Service
@@ -34,8 +20,10 @@ public class StorageService {
 
     private static Logger logger = LoggerFactory.getLogger(StorageService.class);
 
-    @Value("${sdypp.storage.credentials:}")
+    @Value("${sdypp.storage.credentials}")
     public String cred = "";
+    @Value("${sdypp.storage.project}")
+    public String projectId = "";
     private String[] bucketNames = {"sdypp-file-system", "sdypp-file-system-replica", "sdypp-file-system-replica-2"};
 
 
@@ -96,7 +84,7 @@ public class StorageService {
 
     private Storage getStorage() throws IOException {
         StorageOptions storageOptions = StorageOptions.newBuilder()
-                .setProjectId("hybrid-hawk-428007-f9")
+                .setProjectId(projectId)
                 .setCredentials(GoogleCredentials.fromStream(
                         //classPathResource.getInputStream()
                         new ByteArrayInputStream(cred.getBytes(StandardCharsets.UTF_8))

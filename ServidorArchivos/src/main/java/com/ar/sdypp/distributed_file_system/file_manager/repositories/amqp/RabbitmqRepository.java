@@ -49,7 +49,7 @@ public class RabbitmqRepository {
     private String username;
     @Value("${sdypp.rabbitmq.queue.password:guest}")
     private String password;
-    @Value("${sdypp.encrypt.queue.password:ultrasecreta}")
+    @Value("${sdypp.encrypt.queue.password}")
     private String passwordEncrypt;
     private StrongTextEncryptor textEncryptor;
 
@@ -83,7 +83,7 @@ public class RabbitmqRepository {
         channel.basicQos(prefetchCount);// channel.basicQos(prefetchCount);
         //Se agrega esto para poder usar tópicos
         channel.exchangeDeclare(exchangeName, "topic");
-        passwordEncrypt = env.getProperty("sdypp.encrypt.queue.password", "ultrasecreta");
+        passwordEncrypt = env.getProperty("sdypp.encrypt.queue.password");
         this.textEncryptor = new StrongTextEncryptor();
         this.textEncryptor.setPassword(passwordEncrypt);
         Thread t1 = new Thread(new Runnable() {
