@@ -59,7 +59,7 @@ public class FileService {
     @Autowired
     private TimeLogService timeLogService;
 
-    public FileCrud save(MultipartFile file, String username, Integer id) throws Exception {
+    public FileCrud save(MultipartFile file, String username, Integer id, Boolean append) throws Exception {
         var fileData = new FileCrud();
         if (id == 0) {
             var user = this.userService.findByUsername(username);
@@ -73,13 +73,13 @@ public class FileService {
             fileData.setUser(user);
             fileData.setState(FileCrud.UNLOCKED);
             this.fileDataRepository.save(fileData);
-            this.createPart(file, username, fileData);
+            this.createPart(file, username, fileData, append);
         }
         else {
             var fileDataOpt = this.fileDataRepository.findById(id);
             if (fileDataOpt.isPresent()) {
                 fileData = fileDataOpt.get();
-                this.createPart(file, username, fileData);
+                this.createPart(file, username, fileData, append);
             }
             else {
                 throw new FileNotFoundException(String.format("File with id = [{}] not found", id));
@@ -166,11 +166,11 @@ public class FileService {
     }
 
 
-    public FileCrud uploadFile(MultipartFile file, String username, Integer id) throws Exception {
+    public FileCrud uploadFile(MultipartFile file, String username, Integer id, Boolean append) throws Exception {
         //Dividir el archivo en partes
         //Subir las partes a rabbit
         //Verificar que todas las partes se hayan guardado (Opcional)
-        return this.save(file, username, id);
+        return this.save(file, username, id, append);
     }
 
     //publicar archivo en rabbit
@@ -304,16 +304,21 @@ public class FileService {
         throw new Exception("No se encontró el archivo con id " +fileId);
     }
 
-    private void createPart(MultipartFile file, String username, FileCrud fileData) throws Exception {
-        FilePartCrud filePartCrud = new FilePartCrud();
-        filePartCrud.setOriginalFile(fileData);
-        filePartCrud.setOrden(fileData.getParts().size() + 1);
-        filePartCrud.setNombre(UUID.randomUUID() + ".part" + filePartCrud.getOrden());
-        fileData.getParts().add(filePartCrud);
-        fileData.setTamaño2((int) (file.getSize() + fileData.getTamaño2()));
-        fileData.setTamaño(fileData.getTamaño2() + " bytes");
-        this.fileRepository.save(file, username);
-        this.fileDataRepository.save(fileData);
+    private void createPart(MultipartFile file, String username, FileCrud fileData, Boolean append) throws Exception {
+        if (fileData.getOpenToAppend()) {
+            FilePartCrud filePartCrud = new FilePartCrud();
+            filePartCrud.setOriginalFile(fileData);
+            filePartCrud.setOrden(fileData.getParts().size() + 1);
+            filePartCrud.setNombre(UUID.randomUUID() + ".part" + filePartCrud.getOrden());
+            fileData.getParts().add(filePartCrud);
+            fileData.setTamaño2((int) (file.getSize() + fileData.getTamaño2()));
+            fileData.setTamaño(fileData.getTamaño2() + " bytes");
+            fileData.setOpenToAppend(append);
+            this.fileRepository.save(file, username);
+            this.fileDataRepository.save(fileData);
+        } else {
+            throw new FileClosedException(String.format("No se pueden seguir agregando partes al archivo con id=[{}]", fileData.getID()));
+        }
     }
 
 }

@@ -38,7 +38,8 @@ async function uploadFile(file) {
     }
     const formData = new FormData();
     formData.append("file", chunks[0], file.name);
-    formData.append("file-id", 0);
+    formData.append("x-chunk", 0);
+    formData.append("chunk-append", chunks.length > 1);
     const fetchResponse = await fetch(url, {
         body: formData,
         method: 'POST',
@@ -56,7 +57,8 @@ async function uploadFile(file) {
         for (let i = 1; i < chunks.length; i++) {
             const formData = new FormData();
             formData.append("file", chunks[i], file.name);
-            formData.append("file-id", x);
+            formData.append("x-chunk", x);
+            formData.append("chunk-append", chunks.length > i + 1);
             const fetchResponse = await fetch(url, {
                 body: formData,
                 method: 'POST',

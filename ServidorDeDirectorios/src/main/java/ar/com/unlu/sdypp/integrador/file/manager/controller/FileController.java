@@ -25,7 +25,7 @@ public class FileController {
 
     @PutMapping("/file")
     public String saveFile(@RequestParam("file") MultipartFile file, @RequestParam("name") String fileName, HttpServletResponse response) throws Exception {
-        fileService.save(file, fileName, null);
+        fileService.save(file, fileName, null, false);
         return "OK";
     }
 
@@ -35,9 +35,10 @@ public class FileController {
     }
 
     @PostMapping("/upload-file")
-    public FileCrud uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("username") String username, @RequestParam("file-id") Integer id) throws Exception {
+    public FileCrud uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("username") String username, @RequestParam("x-chunk") Integer id,
+                               @RequestParam("chunk-append") Boolean append) throws Exception {
         logger.info(String.format("Recibido: %s", file.getOriginalFilename()));
-        return fileService.uploadFile(file, username, id);
+        return fileService.uploadFile(file, username, id, append);
     }
 
     @PostMapping("/update-file/{file-id}")

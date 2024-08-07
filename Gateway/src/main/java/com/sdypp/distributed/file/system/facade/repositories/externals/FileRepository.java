@@ -45,7 +45,7 @@ public class FileRepository {
         return response.getBody();
     }
 
-    public FileModel uploadFile(MultipartFile file, String currentUser, Integer id) throws IOException {
+    public FileModel uploadFile(MultipartFile file, String currentUser, Integer id, Boolean append) throws IOException {
         RestTemplate restTemplate = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
@@ -59,7 +59,8 @@ public class FileRepository {
         LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
         map.add("file", doc);
         map.add("username", currentUser);
-        map.add("file-id", id);
+        map.add("x-chunk", id);
+        map.add("chunk-append", append);
 
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(host + "upload-file");
 

@@ -28,6 +28,7 @@ public class FileCrud {
     private Boolean activo;
     private Date lastTimeOpen;
     private char state;
+    private Boolean openToAppend = true;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JsonManagedReference
