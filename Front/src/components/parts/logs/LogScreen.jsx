@@ -2,6 +2,7 @@ import React from 'react';
 import Header from "../../Header";
 import LogTable from "./LogTable";
 import {useParams} from "react-router-dom";
+import BackArrow from "../../BackArrow";
 
 function LogScreen(props) {
 
@@ -11,7 +12,7 @@ function LogScreen(props) {
     return (
         <>
             <Header />
-            <a href={"/file/parts/" + fileId}><i className="fa fa-arrow-circle-left"></i></a>
+            <BackArrow />
             <LogTable />
         </>
     );

@@ -22,6 +22,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -190,8 +192,8 @@ public class FileService {
         System.out.println("Archivo " + filePath + " publicado en la cola " + queueName);
     }
 
-    public FileListModel getAllFiles(String username) {
-        List<FileCrud> files = this.fileDataRepository.findAllByUserUsernameAndActivo(username, true);
+    public FileListModel getAllFiles(String username, Pageable pageable) {
+        Page<FileCrud> files = this.fileDataRepository.findAllByUserUsernameAndActivo(username, true, pageable);
         FileListModel fileListModel = new FileListModel();
         fileListModel.setFiles(files);
         return fileListModel;
@@ -315,7 +317,7 @@ public class FileService {
             fileData.setTamaño(fileData.getTamaño2() + " bytes");
             fileData.setOpenToAppend(append);
             this.fileRepository.save(file, username);
-            this.fileDataRepository.save(fileData);
+            //this.fileDataRepository.save(fileData);
         } else {
             throw new FileClosedException(String.format("No se pueden seguir agregando partes al archivo con id=[{}]", fileData.getID()));
         }

@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -26,14 +27,19 @@ public class FileRepository {
     @Value("${sdypp.file.server.host:http://localhost:10000/}")
     private String host;
 
-    public FilesDetailModel getAllFiles(String username) {
+    public FilesDetailModel getAllFiles(String username, Pageable pageable) {
         RestTemplate restTemplate = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
+        String parameters = String.format("?page=%d&size=%d", pageable.getPageNumber(), pageable.getPageSize());
+//        if (!pageable.getSort().equals("UNSORTED")) {
+//            parameters += "&sort=" + pageable.getSort();
+//        }
+
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(host + "files/"
-                + username);
+                + username + parameters);
 
         HttpEntity<?> entity = new HttpEntity<>(headers);
 

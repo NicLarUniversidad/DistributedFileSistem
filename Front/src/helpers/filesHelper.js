@@ -1,9 +1,9 @@
 import {getHealthUrl} from "./loginHelper";
 
 
-async function getAllFiles() {
+async function getAllFiles(page, limit) {
     const base64encodedData = localStorage.getItem("token");
-    const url = getHealthUrl() + "files";
+    const url = getHealthUrl() + "files?page=" + page + "&size=" + limit;
     const fetchResponse = await fetch(url, {
         method: "GET",
         headers: {
@@ -183,9 +183,7 @@ async function cleanCache(fileId) {
 async function getFileData(fileId) {
     const base64encodedData = localStorage.getItem("token");
     const url = getHealthUrl() + "file/data/" + fileId;
-    const formData = new FormData();
     const fetchResponse = await fetch(url, {
-        body: formData,
         method: 'GET',
         cache: 'no-cache',
         credentials: 'same-origin',

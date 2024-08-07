@@ -6,6 +6,7 @@ import com.google.cloud.storage.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayInputStream;
@@ -24,8 +25,16 @@ public class StorageService {
     public String cred = "";
     @Value("${sdypp.storage.project}")
     public String projectId = "";
-    private String[] bucketNames = {"sdypp-file-system", "sdypp-file-system-replica", "sdypp-file-system-replica-2"};
+    //private String[] bucketNames = {"sdypp-file-system", "sdypp-file-system-replica", "sdypp-file-system-replica-2"};
+    private final List<String> bucketNames = new ArrayList<>();
 
+
+    public StorageService(Environment env) {
+        String buckets = env.getProperty("sdypp.storage.buckets");
+        if (buckets != null) {
+            bucketNames.addAll(Arrays.asList(buckets.split(",")));
+        }
+    }
 
     public String saveFileOnBuckets(byte[] fileContent, String fileName) throws IOException {
         StringBuilder result = new StringBuilder();
@@ -66,14 +75,14 @@ public class StorageService {
         FileDataModel fileData = new FileDataModel();
         var count=1;
         Storage storage = this.getStorage();
-        Blob blob = storage.get(bucketNames[0], fileName);
+        Blob blob = storage.get(bucketNames.get(0), fileName);
         if (blob != null) {
-            fileData.setBucketName(bucketNames[0]);
+            fileData.setBucketName(bucketNames.get(0));
         }
-        while (blob == null && count < bucketNames.length) {
-            blob = storage.get(bucketNames[count], fileName);
+        while (blob == null && count < bucketNames.size()) {
+            blob = storage.get(bucketNames.get(count), fileName);
             if (blob != null) {
-                fileData.setBucketName(bucketNames[count]);
+                fileData.setBucketName(bucketNames.get(count));
             }
             count++;
         }

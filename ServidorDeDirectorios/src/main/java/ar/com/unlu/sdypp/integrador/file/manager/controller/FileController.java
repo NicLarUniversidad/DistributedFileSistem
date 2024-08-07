@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,7 +25,7 @@ public class FileController {
     private FileService fileService;
 
     @PutMapping("/file")
-    public String saveFile(@RequestParam("file") MultipartFile file, @RequestParam("name") String fileName, HttpServletResponse response) throws Exception {
+    public String saveFile(@RequestParam("file") MultipartFile file, @RequestParam("name") String fileName) throws Exception {
         fileService.save(file, fileName, null, false);
         return "OK";
     }
@@ -48,8 +49,8 @@ public class FileController {
     }
 
     @GetMapping("/files/{username}")
-    public FileListModel getFile(@PathVariable("username") String username, HttpServletResponse response) {
-        return fileService.getAllFiles(username);
+    public FileListModel getFile(@PathVariable("username") String username, Pageable pageable) {
+        return fileService.getAllFiles(username, pageable);
     }
 
     @DeleteMapping("/delete-file/{file-id}")

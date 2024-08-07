@@ -4,6 +4,7 @@ import com.sdypp.distributed.file.system.facade.models.*;
 import com.sdypp.distributed.file.system.facade.repositories.externals.FileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,8 +20,8 @@ public class FileService {
         this.fileRepository = fileRepository;
     }
 
-    public FilesDetailModel getAllFiles() {
-        return fileRepository.getAllFiles(getUsername());
+    public FilesDetailModel getAllFiles(Pageable pageable) {
+        return fileRepository.getAllFiles(getUsername(), pageable);
     }
 
     private String getUsername() {

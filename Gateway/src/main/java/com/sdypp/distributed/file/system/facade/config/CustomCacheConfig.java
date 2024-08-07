@@ -16,6 +16,7 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import redis.clients.jedis.JedisPoolConfig;
 
 import java.time.Duration;
 
@@ -74,7 +75,7 @@ public class CustomCacheConfig {
     }
 
     @Bean
-    JedisConnectionFactory jedisConnectionFactory() {
+    public JedisConnectionFactory jedisConnectionFactory() {
         JedisConnectionFactory jedisConFactory
                 = new JedisConnectionFactory();
         jedisConFactory.setHostName(this.host);
