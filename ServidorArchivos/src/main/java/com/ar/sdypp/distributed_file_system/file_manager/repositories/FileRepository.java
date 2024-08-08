@@ -30,13 +30,13 @@ public class FileRepository {
 
     private final StrongTextEncryptor textEncryptor;
     private final StorageService storageService;
-    @Value("${sdypp.encrypt.queue.password:ultrasecreta}")
+    @Value("${sdypp.encrypt.queue.password}")
     private String passwordEncrypt;
 
     @Autowired
     public FileRepository(Environment env, StorageService storageService) {
         this.textEncryptor = new StrongTextEncryptor();
-        passwordEncrypt = env.getProperty("sdypp.encrypt.queue.password", "ultrasecreta");
+        passwordEncrypt = env.getProperty("sdypp.encrypt.queue.password");
         this.textEncryptor.setPassword(passwordEncrypt);
         this.storageService = storageService;
     }
@@ -89,32 +89,6 @@ public class FileRepository {
         String plainText = textEncryptor.decrypt(new String(fileData.getData()));
         long finishTime = System.currentTimeMillis();
         logger.info("Se recuperó la parte: '{}', desde el bucket: '{}' en [{}] milisegundos", fileId, fileData.getBucketName(), finishTime - startTime);
-        //logger.info("Part size: [{}], encrypt size: [{}]", plainText.getBytes(StandardCharsets.UTF_8).length, fileContent.getBytes(StandardCharsets.UTF_8).length);
         return plainText.getBytes();
-        // Por ahora el ID podría ser el path
-//        long startTime = System.currentTimeMillis();
-//        String path = username + "/" + fileId;
-//        File file = new File(path);
-//        if (file.exists()) {
-//            //var content = StreamUtils.copyToString( new ClassPathResource(path).getInputStream(), Charset.defaultCharset()  );
-//
-//            BufferedReader reader = new BufferedReader(new FileReader(file));
-//            StringBuilder content = new StringBuilder();
-//            String line = null;
-//            do {
-//                line = reader.readLine();
-//                if (line != null) {
-//                    content.append(line);
-//                }
-//            } while(line != null);
-//            reader.close();
-//            String plainText = textEncryptor.decrypt(content.toString());
-//            long finishTime = System.currentTimeMillis();
-//            logger.info("Time taken: [" + (finishTime - startTime) + "] milliseconds");
-//            return plainText;
-//        }
-//        else {
-//            throw new FileNotFoundException(fileId);
-//        }
     }
 }

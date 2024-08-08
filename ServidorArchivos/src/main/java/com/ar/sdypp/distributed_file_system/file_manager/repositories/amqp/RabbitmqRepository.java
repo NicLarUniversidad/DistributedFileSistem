@@ -34,20 +34,20 @@ public class RabbitmqRepository {
     private Connection connection;
     private Channel channel;
     //Se asigna el valor por variable del programa, en el application.properties
-    @Value("${sdypp.rabbitmq.host:localhost}")
+    @Value("${sdypp.rabbitmq.host}")
     private String host;
-    @Value("${sdypp.rabbitmq.queue.name:GuardadoArchivo}")
+    @Value("${sdypp.rabbitmq.queue.name}")
     private String queueName;
     //Cantidad máxima de mensajes que los consumidores pueden consumir a la vez
     //@Value("${sdypp.rabbitmq.consumer.prefetch-count:1}")
     private int prefetchCount = 1;
-    @Value("${sdypp.rabbitmq.queue.exchange-name:default-exchange}")
+    @Value("${sdypp.rabbitmq.queue.exchange-name}")
     private String exchangeName;
-    @Value("${sdypp.rabbitmq.queue.topics:finish-work}")
+    @Value("${sdypp.rabbitmq.queue.topics}")
     private String finishedWorkTopic;
-    @Value("${sdypp.rabbitmq.queue.username:guest}")
+    @Value("${sdypp.rabbitmq.queue.username}")
     private String username;
-    @Value("${sdypp.rabbitmq.queue.password:guest}")
+    @Value("${sdypp.rabbitmq.queue.password}")
     private String password;
     @Value("${sdypp.encrypt.queue.password}")
     private String passwordEncrypt;

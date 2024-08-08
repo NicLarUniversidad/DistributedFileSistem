@@ -4,7 +4,7 @@ import ar.com.unlu.sdypp.integrador.file.manager.cruds.FileCrud;
 import ar.com.unlu.sdypp.integrador.file.manager.models.FileListModel;
 import ar.com.unlu.sdypp.integrador.file.manager.models.FileLogsModel;
 import ar.com.unlu.sdypp.integrador.file.manager.models.PartsModel;
-import ar.com.unlu.sdypp.integrador.file.manager.servers.FileService;
+import ar.com.unlu.sdypp.integrador.file.manager.services.FileService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,8 +21,12 @@ public class FileController {
 
     private static final Logger logger = LoggerFactory.getLogger(FileController.class);
 
+    private final FileService fileService;
+
     @Autowired
-    private FileService fileService;
+    public FileController(FileService fileService) {
+        this.fileService = fileService;
+    }
 
     @PutMapping("/file")
     public String saveFile(@RequestParam("file") MultipartFile file, @RequestParam("name") String fileName) throws Exception {
@@ -85,31 +89,4 @@ public class FileController {
         this.fileService.deleteLogs(fileId);
         return "OK";
     }
-
-/*
-
-    @PostMapping("/file")
-    public FileModel updateFile(@RequestParam("file") MultipartFile file, @RequestBody RealFileLocation realFileLocation, HttpServletResponse response) throws IOException {
-        try {
-            return fileService.updateFile(file, realFileLocation);
-        } catch (IOException e) {
-            String message = String.format("No se encontró el archivo: [%s]", realFileLocation.getName());
-            logger.error(message);
-            response.sendError(404, message);
-        }
-        return null;
-    }
-
-    @DeleteMapping("/file")
-    public String deleteFile(@RequestBody RealFileLocation realFileLocation, HttpServletResponse response) throws IOException {
-        try {
-            this.fileService.delete(realFileLocation);
-            return "OK";
-        } catch (IOException e) {
-            String message = String.format("No se encontró el archivo: [%s]", realFileLocation.getName());
-            logger.error(message);
-            response.sendError(404, message);
-        }
-        return "No borrado";
-    }*/
 }

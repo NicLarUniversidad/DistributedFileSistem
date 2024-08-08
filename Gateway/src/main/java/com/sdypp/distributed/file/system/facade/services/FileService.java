@@ -25,24 +25,11 @@ public class FileService {
     }
 
     private String getUsername() {
-//        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//        String username;
-//        if (principal instanceof UserDetails) {
-//            username = ((UserDetails)principal).getUsername();
-//        } else {
-//            username = principal.toString();
-//        }
         return "test-user";
     }
 
     public FileModel uploadFile(MultipartFile file, Integer id, Boolean append) throws IOException {
-        //var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String currentUser = this.getUsername();
-//        if (principal instanceof UserDetails) {
-//            currentUser = ((UserDetails)principal).getUsername();
-//        } else {
-//            currentUser = principal.toString();
-//        }
         return this.fileRepository.uploadFile(file, currentUser, id, append);
     }
 
@@ -52,7 +39,6 @@ public class FileService {
     }
 
     public Resource getFile(String fileId) {
-        //return new FileResource(this.fileRepository.getFile(fileId));
         return this.fileRepository.getFile(fileId);
     }
 

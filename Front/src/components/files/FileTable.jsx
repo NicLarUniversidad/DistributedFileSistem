@@ -118,7 +118,7 @@ function FileTable(props) {
                             return (
 
                                 <tr className="w3-row" key={idx}>
-                                    <td>{file.nombreArchivo.substring(0, 50)}</td>
+                                    <td>{file.nombreArchivo.substring(0, 50).padEnd(50)}</td>
                                     <td></td>
                                     {/*<td className="w3-quarter">{format(file.uploadedDate, 'yyyy/MM/dd')}</td>*/}
                                     <td>{file.tamaño}</td>

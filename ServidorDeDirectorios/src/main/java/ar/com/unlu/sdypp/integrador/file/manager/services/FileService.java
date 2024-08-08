@@ -1,4 +1,4 @@
-package ar.com.unlu.sdypp.integrador.file.manager.servers;
+package ar.com.unlu.sdypp.integrador.file.manager.services;
 
 import ar.com.unlu.sdypp.integrador.file.manager.cruds.FileCrud;
 import ar.com.unlu.sdypp.integrador.file.manager.cruds.FilePartCrud;
@@ -11,7 +11,6 @@ import ar.com.unlu.sdypp.integrador.file.manager.models.PartsModel;
 import ar.com.unlu.sdypp.integrador.file.manager.repositories.AsyncFileRepository;
 import ar.com.unlu.sdypp.integrador.file.manager.repositories.FileDataRepository;
 import ar.com.unlu.sdypp.integrador.file.manager.repositories.FileRepository;
-import ar.com.unlu.sdypp.integrador.file.manager.services.TimeLogService;
 import ar.com.unlu.sdypp.integrador.file.manager.utils.Time;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +45,7 @@ public class FileService {
     public final String TEMP_DIRECTORY = "/tmp/";
     public static final Integer PART_NUMBERS = 10;
 
-    @Value("${sdypp.file.server.host:http://localhost:8081}")
+    @Value("${sdypp.file.server.host}")
     private String host;
 
     @Autowired
@@ -99,12 +98,6 @@ public class FileService {
             logger.info("Iniciando descarga archivo: [{}], en hilo principal: [{}]", fileData.getNombreArchivo(), Thread.currentThread().getName());
             var initTime = System.currentTimeMillis();
             for (FilePartCrud part : fileData.getParts()) {
-//                logger.info(part.getNombre() + " " + part.getOrden() + " " + part.getId() + " " + fileData.getUser().getUsername());
-//                String carpeta = fileData.getUser().getUsername();
-//                String nombreArchivo = part.getNombre(); //Archivo
-//                byte[] file = this.fileRepository.getFile(nombreArchivo, carpeta);
-//                contentMap.put(part.getOrden(), file);
-//                logger.info("Recived part with {} bytes", file.length);
                 AsyncFileRepository asyncFileRepository = new AsyncFileRepository(part.getNombre(), fileData.getUser().getUsername(), this.host);
                 asyncFileRepository.start();
                 threads.put(part.getOrden(), asyncFileRepository);
@@ -125,14 +118,6 @@ public class FileService {
             logger.info("Descarga finalizada, tiempo de descarga en hilo principal: {}", initTime - finishTime);
             this.timeLogService.finishFileDownload(fileDownloadLog);
             Integer i = 1;
-//            for (var part : contentMap.entrySet()) {
-//                for (byte oneByte : part.getValue()) {
-//                    if (i < contenidoArchivo.length) {
-//                        contenidoArchivo[i] = oneByte;
-//                        i++;
-//                    }
-//                }
-//            }
             StringBuilder fileContent = new StringBuilder();
             while (i <= contentMap.size()) {
                 var content = new String(contentMap.get(i));
@@ -153,7 +138,7 @@ public class FileService {
 
         }
 
-        return null; //this.fileRepository.getFile(fileId);
+        return null;
     }
 
     //TODO: Si tiene varias partes, acá se podrían ir recuperando y juntando
@@ -317,7 +302,6 @@ public class FileService {
             fileData.setTamaño(fileData.getTamaño2() + " bytes");
             fileData.setOpenToAppend(append);
             this.fileRepository.save(file, username);
-            //this.fileDataRepository.save(fileData);
         } else {
             throw new FileClosedException(String.format("No se pueden seguir agregando partes al archivo con id=[{}]", fileData.getID()));
         }

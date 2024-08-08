@@ -1,8 +1,7 @@
 package ar.com.unlu.sdypp.integrador.file.manager.controller;
 
 import ar.com.unlu.sdypp.integrador.file.manager.cruds.ServerDirectory;
-import ar.com.unlu.sdypp.integrador.file.manager.models.DirectoryServerModel;
-import ar.com.unlu.sdypp.integrador.file.manager.servers.DirectoryServerService;
+import ar.com.unlu.sdypp.integrador.file.manager.services.DirectoryServerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

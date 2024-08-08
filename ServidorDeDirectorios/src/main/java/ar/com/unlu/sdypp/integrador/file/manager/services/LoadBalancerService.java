@@ -1,4 +1,4 @@
-package com.ar.sdypp.distributed_file_system.file_manager.services;
+package ar.com.unlu.sdypp.integrador.file.manager.services;
 
 import org.springframework.stereotype.Service;
 

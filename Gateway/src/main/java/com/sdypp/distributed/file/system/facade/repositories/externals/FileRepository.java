@@ -34,9 +34,6 @@ public class FileRepository {
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         String parameters = String.format("?page=%d&size=%d", pageable.getPageNumber(), pageable.getPageSize());
-//        if (!pageable.getSort().equals("UNSORTED")) {
-//            parameters += "&sort=" + pageable.getSort();
-//        }
 
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(host + "files/"
                 + username + parameters);

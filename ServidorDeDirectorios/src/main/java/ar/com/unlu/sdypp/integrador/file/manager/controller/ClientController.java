@@ -2,20 +2,15 @@ package ar.com.unlu.sdypp.integrador.file.manager.controller;
 
 import ar.com.unlu.sdypp.integrador.file.manager.exceptions.UserAlreadyExistsException;
 import ar.com.unlu.sdypp.integrador.file.manager.models.ClientModels;
-import ar.com.unlu.sdypp.integrador.file.manager.models.DirectoryServerModel;
-import ar.com.unlu.sdypp.integrador.file.manager.servers.ClientService;
-import ar.com.unlu.sdypp.integrador.file.manager.servers.DirectoryServerService;
-import jakarta.servlet.http.HttpServletResponse;
+import ar.com.unlu.sdypp.integrador.file.manager.services.ClientService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.file.FileAlreadyExistsException;
 import java.util.List;
 
 @RestController

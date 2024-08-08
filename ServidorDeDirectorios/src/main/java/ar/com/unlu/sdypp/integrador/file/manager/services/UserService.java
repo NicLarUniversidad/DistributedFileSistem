@@ -1,8 +1,7 @@
-package ar.com.unlu.sdypp.integrador.file.manager.servers;
+package ar.com.unlu.sdypp.integrador.file.manager.services;
 
 import ar.com.unlu.sdypp.integrador.file.manager.cruds.UserCrud;
 import ar.com.unlu.sdypp.integrador.file.manager.repositories.UserCrudRepository;
-import ar.com.unlu.sdypp.integrador.file.manager.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

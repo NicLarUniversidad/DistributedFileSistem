@@ -25,13 +25,6 @@ public class FileController {
         this.fileService = fileService;
     }
 
-//    @PostMapping("/upload-file")
-//    //@RequestBody es para optener datos del cuerpo del request, siempre es un objeto o si no te toma el
-//    //valor "plano" del cuerpo, por ejemplo un String.
-//    public void login(@RequestBody FileModel loginModel) {
-//
-//    }
-
     @Cacheable("health")
     @GetMapping("/health")
     public String health() throws InterruptedException {

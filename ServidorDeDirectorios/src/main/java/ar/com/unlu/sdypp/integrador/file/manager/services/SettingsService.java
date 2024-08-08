@@ -19,7 +19,7 @@ public class SettingsService {
     private String rabbitQueueName;
     @Value("${sdypp.rabbitmq.queue.exchange-name}")
     private String rabbitExchangeName;
-    @Value("${sdypp.file.server.host:localhost:8081}")
+    @Value("${sdypp.file.server.host}")
     private String fileServerUrl;
 
     public ConfigurationSettingsModel getSettings() {

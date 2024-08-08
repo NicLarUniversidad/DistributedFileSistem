@@ -1,4 +1,4 @@
-package ar.com.unlu.sdypp.integrador.file.manager.servers;
+package ar.com.unlu.sdypp.integrador.file.manager.services;
 
 import ar.com.unlu.sdypp.integrador.file.manager.cruds.ServerDirectory;
 import ar.com.unlu.sdypp.integrador.file.manager.models.DirectoryServerModel;
@@ -6,12 +6,6 @@ import ar.com.unlu.sdypp.integrador.file.manager.repositories.DirectoryServerRep
 import ar.com.unlu.sdypp.integrador.file.manager.repositories.FileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.nio.file.FileAlreadyExistsException;
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class DirectoryServerService {
