@@ -116,7 +116,7 @@ public class RabbitmqRepository {
             logger.info("Bind...");
             channel.queueBind(queueName, exchangeName, finishedWorkTopic);
             DeliverCallback deliverCallback = (consumerTag, delivery) -> {
-                String message = new String(delivery.getBody(), "UTF-8");
+                String message = new String(delivery.getBody(), "UTF-8").trim();
                 //logger.info("Message received: " + message);
                 //Acá se debe procesar los mensajes recibidos
                 Gson gson = new Gson();
