@@ -301,7 +301,7 @@ public class FileService {
             fileData.setTamaño2((int) (file.getSize() + fileData.getTamaño2()));
             fileData.setTamaño(fileData.getTamaño2() + " bytes");
             fileData.setOpenToAppend(append);
-            this.fileRepository.save(file, username);
+            this.fileRepository.save(file, username, filePartCrud.getNombre());
         } else {
             throw new FileClosedException(String.format("No se pueden seguir agregando partes al archivo con id=[{}]", fileData.getID()));
         }

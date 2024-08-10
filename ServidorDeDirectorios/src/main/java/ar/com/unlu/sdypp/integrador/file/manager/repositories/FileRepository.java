@@ -44,7 +44,7 @@ public class FileRepository {
         this.jsonConverter = new json();
     }
 
-    public void save(MultipartFile file, String username) throws IOException {
+    public void save(MultipartFile file, String username, String fileName) throws IOException {
         //Se guarda la información del archivo
         FileCrud newFileCrud = new FileCrud();
         FileModel fileContent = new FileModel();
@@ -61,7 +61,7 @@ public class FileRepository {
         //Y publicar cada parte por separado
 
         //Se publica en rabbit
-        fileContent.setName(file.getOriginalFilename());
+        fileContent.setName(fileName);
         fileContent.setContent(file.getBytes());
         fileContent.setUsername(username);
         fileContent.setSize(file.getSize());
