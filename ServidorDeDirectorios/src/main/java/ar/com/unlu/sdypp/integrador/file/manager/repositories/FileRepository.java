@@ -47,7 +47,7 @@ public class FileRepository {
     public void save(MultipartFile file, String username) throws IOException {
         //Se guarda la información del archivo
         FileCrud newFileCrud = new FileCrud();
-        FileModel user = new FileModel();
+        FileModel fileContent = new FileModel();
         newFileCrud.setActivo(true);
         //newFileCrud.setMessageType(FileModel.GUARDADO);
         newFileCrud.setTamaño(file.getSize() + " bytes");
@@ -61,11 +61,12 @@ public class FileRepository {
         //Y publicar cada parte por separado
 
         //Se publica en rabbit
-        user.setName(file.getOriginalFilename());
-        user.setContent(file.getBytes());
-        user.setUsername(username);
-        user.setSize(file.getSize());
-        rabbitmqRepository.send(jsonConverter.ConvertirAjson(user));
+        fileContent.setName(file.getOriginalFilename());
+        fileContent.setContent(file.getBytes());
+        fileContent.setUsername(username);
+        fileContent.setSize(file.getSize());
+        fileContent.setMessageType(FileModel.GUARDADO);
+        rabbitmqRepository.send(jsonConverter.ConvertirAjson(fileContent));
 
     }
 
