@@ -3,12 +3,14 @@ package ar.com.unlu.sdypp.integrador.file.manager.controller;
 import ar.com.unlu.sdypp.integrador.file.manager.cruds.FileCrud;
 import ar.com.unlu.sdypp.integrador.file.manager.models.FileListModel;
 import ar.com.unlu.sdypp.integrador.file.manager.models.FileLogsModel;
+import ar.com.unlu.sdypp.integrador.file.manager.models.FilePart;
 import ar.com.unlu.sdypp.integrador.file.manager.models.PartsModel;
 import ar.com.unlu.sdypp.integrador.file.manager.services.FileService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
@@ -37,6 +39,13 @@ public class FileController {
     @GetMapping("/get-file/{fileId}")
     public Resource getFile(@PathVariable("fileId") Integer fileId) throws IOException, InterruptedException {
         return this.fileService.getFile(fileId);
+    }
+
+    @GetMapping("/get-file/{file-id}/part/{part-number}")
+    public FilePart getFilePart(@PathVariable("file-id") Integer fileId, @PathVariable("part-number") Integer partNumber) throws IOException {
+        System.out.println("Recibido id archivo = " + fileId);
+        FilePart model = this.fileService.getFilePart(fileId, partNumber);
+        return model;
     }
 
     @PostMapping("/upload-file")

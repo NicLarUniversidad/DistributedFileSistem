@@ -4,10 +4,7 @@ import ar.com.unlu.sdypp.integrador.file.manager.cruds.FileCrud;
 import ar.com.unlu.sdypp.integrador.file.manager.cruds.FilePartCrud;
 import ar.com.unlu.sdypp.integrador.file.manager.cruds.UserCrud;
 import ar.com.unlu.sdypp.integrador.file.manager.exceptions.FileClosedException;
-import ar.com.unlu.sdypp.integrador.file.manager.models.FileListModel;
-import ar.com.unlu.sdypp.integrador.file.manager.models.FileLogsModel;
-import ar.com.unlu.sdypp.integrador.file.manager.models.FileModel;
-import ar.com.unlu.sdypp.integrador.file.manager.models.PartsModel;
+import ar.com.unlu.sdypp.integrador.file.manager.models.*;
 import ar.com.unlu.sdypp.integrador.file.manager.repositories.AsyncFileRepository;
 import ar.com.unlu.sdypp.integrador.file.manager.repositories.FileDataRepository;
 import ar.com.unlu.sdypp.integrador.file.manager.repositories.FileRepository;
@@ -28,13 +25,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 
+import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -47,6 +42,9 @@ public class FileService {
 
     @Value("${sdypp.file.server.host}")
     private String host;
+
+    @Value("${sdypp.file.part.max.size}")
+    private Integer maxPartSize;
 
     @Autowired
     private FileRepository fileRepository;
@@ -297,6 +295,7 @@ public class FileService {
             filePartCrud.setOriginalFile(fileData);
             filePartCrud.setOrden(fileData.getParts().size() + 1);
             filePartCrud.setNombre(UUID.randomUUID() + ".part" + filePartCrud.getOrden());
+            filePartCrud.setSize(file.getSize());
             fileData.getParts().add(filePartCrud);
             fileData.setTamaño2((int) (file.getSize() + fileData.getTamaño2()));
             fileData.setTamaño(fileData.getTamaño2() + " bytes");
@@ -307,4 +306,42 @@ public class FileService {
         }
     }
 
+    public FilePart getFilePart(Integer fileId, Integer partNumber) throws IOException {
+        var offset = (partNumber - 1) * this.maxPartSize;
+        var maxByte = partNumber * this.maxPartSize;
+        var fileDataOpt = this.fileDataRepository.findById(fileId);
+        if (fileDataOpt.isPresent()) {
+            var fileData = fileDataOpt.get();
+            var parts = fileData.getParts();
+            parts.sort(new Comparator<FilePartCrud>() {
+                public int compare(FilePartCrud o1, FilePartCrud o2) {
+                    return o1.getOrden() - o2.getOrden();
+                }
+            });
+            long currentOffset = 0;
+            int idx = 0;
+            while (currentOffset <= offset && idx < parts.size()) {
+                currentOffset += parts.get(idx).getSize();
+                idx += 1;
+            }
+            var partsToDownload = new LinkedList<FilePartCrud>();
+            while (maxByte <= currentOffset && idx < parts.size()) {
+                partsToDownload.add(parts.get(idx));
+                idx +=1;
+            }
+            ByteArrayOutputStream content = new ByteArrayOutputStream( );
+            for (FilePartCrud part : partsToDownload) {
+                var partContent = this.fileRepository.getFile(part.getNombre(), fileData.getUser().getUsername());
+                content.write(partContent);
+            }
+            FilePart result = new FilePart();
+            result.setResource(content.toByteArray());
+            result.setNumber(partNumber);
+            result.setHasNext(idx < parts.size());
+            return result;
+        }
+        else {
+            throw new FileNotFoundException(String.format("No se encontró el archivo con id={}", fileId));
+        }
+    }
 }

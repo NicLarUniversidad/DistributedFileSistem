@@ -71,6 +71,14 @@ public class FileController {
         return new String(model.getResource().getContentAsByteArray());
     }
 
+    @GetMapping("/get-file/{file-id}/part/{part-number}")
+    @Cacheable("get-file-part")
+    public FilePart getFilePart(@PathVariable("file-id") Integer fileId, @PathVariable("part-number") Integer partNumber) throws IOException {
+        System.out.println("Recibido id archivo = " + fileId);
+        FilePart model = this.fileService.getFile(fileId, partNumber);
+        return model;
+    }
+
     @DeleteMapping("/delete-file/{file-id}")
     public String deleteFile(@PathVariable("file-id") Integer fileId, HttpServletResponse response) {
         return fileService.deleteFile(fileId);

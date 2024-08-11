@@ -65,4 +65,8 @@ public class FileService {
     public String deleteLogs(Integer fileId) {
         return this.fileRepository.deleteLogs(fileId);
     }
+
+    public FilePart getFile(Integer fileId, Integer partNumber) {
+        return this.fileRepository.getFilePart(fileId, partNumber);
+    }
 }

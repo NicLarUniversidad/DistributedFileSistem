@@ -39,7 +39,6 @@ public class RabbitmqRepository {
     @Value("${sdypp.rabbitmq.queue.name}")
     private String queueName;
     //Cantidad máxima de mensajes que los consumidores pueden consumir a la vez
-    //@Value("${sdypp.rabbitmq.consumer.prefetch-count:1}")
     private int prefetchCount = 1;
     @Value("${sdypp.rabbitmq.queue.exchange-name}")
     private String exchangeName;
@@ -100,11 +99,6 @@ public class RabbitmqRepository {
         t1.start();
     }
 
-    //Investigar más cómo integrar con RPC https://www.rabbitmq.com/tutorials/tutorial-six-java.html
-    public void send(String message) throws IOException {
-        channel.basicPublish("", queueName, MessageProperties.PERSISTENT_TEXT_PLAIN, message.getBytes());
-    }
-
     public void listenQueue(String queue) throws IOException {
         try {
 
@@ -117,22 +111,12 @@ public class RabbitmqRepository {
             channel.queueBind(queueName, exchangeName, finishedWorkTopic);
             DeliverCallback deliverCallback = (consumerTag, delivery) -> {
                 String message = new String(delivery.getBody(), "UTF-8").trim();
-                //logger.info("Message received: " + message);
                 //Acá se debe procesar los mensajes recibidos
                 Gson gson = new Gson();
                 JsonReader reader = new JsonReader(new StringReader(message));
                 reader.setLenient(true);
                 FileModel file = gson.fromJson(reader, FileModel.class);
                 logger.info("Message received: Content size: [{}]", file.getContent().length);
-                //String path = file.getUsername().replace(":", "/").replace(".", "/");
-                //File filePath = new File(path);
-                //filePath.exists();
-                //Files.createDirectories(Paths.get(username.replace(":", "/").replace(".", "/")));
-                //File newFIle = new File(filePath, file.getName());
-                //logger.info(newFIle.getAbsolutePath());
-                //if (!newFIle.exists()) {
-                //    newFIle.createNewFile();
-                //}
                 var encryptData = textEncryptor.encrypt(new String(file.getContent())).getBytes();
                 logger.info("Mensaje encriptado: " + new String(encryptData));
                 switch (file.getMessageType()) {

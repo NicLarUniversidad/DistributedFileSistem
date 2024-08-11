@@ -62,31 +62,10 @@ public class FileRepository {
         return fileEntity;
     }
 
-    public FileDetailsModel saveStringAsFile(MultipartFile file, String username) throws IOException {
-        byte data[] = file.getBytes();
-        Path file0 = Paths.get(username + "/" + file.getOriginalFilename()); // username / nombre de archivo
-
-        String fileContain = new String(data, StandardCharsets.UTF_8);
-        var encryptData = textEncryptor.encrypt(fileContain).getBytes();
-        Files.createDirectories(Paths.get(username));
-        Files.write(file0, encryptData);
-
-        var size = file.getSize();
-        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-        FileDetailsModel fileEntity = new FileDetailsModel();
-        fileEntity.setName(fileName);
-        fileEntity.setUsername(username);
-        fileEntity.setPath(file0.toString()); // Agrego path, por si en algún momento se cambia de estrategia
-        fileEntity.setId(file0.toString());
-        fileEntity.setUploadedDate(new Date());
-        fileEntity.setSize(size + " bytes");
-        return fileEntity;
-    }
-
     public byte[] getFileById(String fileId, String username) throws IOException {
         long startTime = System.currentTimeMillis();
         var fileData = this.storageService.getFile(fileId);
-        String plainText = textEncryptor.decrypt(new String(fileData.getData()));
+        String plainText = textEncryptor.decrypt(new String(fileData.getData(), "UTF-8"));
         long finishTime = System.currentTimeMillis();
         logger.info("Se recuperó la parte: '{}', desde el bucket: '{}' en [{}] milisegundos", fileId, fileData.getBucketName(), finishTime - startTime);
         return plainText.getBytes();

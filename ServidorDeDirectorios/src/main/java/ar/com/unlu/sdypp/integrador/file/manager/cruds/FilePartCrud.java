@@ -12,6 +12,7 @@ public class FilePartCrud {
     private String id;
     private String nombre;
     private Integer orden;
+    private Long size;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonBackReference

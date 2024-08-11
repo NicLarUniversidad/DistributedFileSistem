@@ -273,4 +273,32 @@ public class FileRepository {
 
         return response.getBody();
     }
+
+    public FilePart getFilePart(Integer fileId, Integer partNumber) {
+        RestTemplate restTemplate = new RestTemplate();
+        var requestEntity = this.getGenericRequestEntity();
+        var builder = this.getBuilder("file/" + fileId + "part/" + partNumber);
+        HttpEntity<FilePart> response = restTemplate.exchange(
+                builder.toUriString(),
+                HttpMethod.GET,
+                requestEntity,
+                FilePart.class);
+
+        return response.getBody();
+    }
+
+
+    private HttpEntity getGenericRequestEntity() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
+
+        var requestEntity = new HttpEntity<>(map, headers);
+        return requestEntity;
+    }
+
+    private UriComponentsBuilder getBuilder(String path) {
+        return UriComponentsBuilder.fromHttpUrl(host + path);
+    }
 }
