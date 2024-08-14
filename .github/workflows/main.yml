@@ -16,9 +16,7 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 21
-    - name: front.key generation
-      run:
-        echo ${{ secrets.PRIVATE_KEY }} | fold -w 64 >> Front/front.key
+
     - name: LS
       run:
         ls
