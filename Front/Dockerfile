@@ -15,7 +15,7 @@ COPY . .
 RUN yarn build
 
 #Stage 2
-FROM nginx:1.20-alpine
+FROM nginx
 
 WORKDIR /usr/share/nginx/html
 
