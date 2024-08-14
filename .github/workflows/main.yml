@@ -58,12 +58,12 @@ jobs:
         
     - name: Publish Gateway Front
       uses: elgohr/Publish-Docker-Github-Action@master
+      env:
+        private_key: ${{ secrets.PRIVATE_KEY }}"
       with:
         name: nicolaslarena/gateway-front
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
         workdir: Front
         tags: "latest, v1.0.18"
-        env:
-          private_key: ${{ secrets.PRIVATE_KEY }}"
   
