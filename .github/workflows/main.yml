@@ -64,6 +64,6 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}
         workdir: Front
         tags: "latest, v1.0.18"
-        secrets: |
+        env:
           "PRIVATE_KEY=${{ secrets.PRIVATE_KEY }}"
   
