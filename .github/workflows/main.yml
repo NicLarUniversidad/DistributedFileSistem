@@ -24,7 +24,7 @@ jobs:
         mvn -f ./ServidorDeDirectorios/pom.xml package -DskipTests
     - name: Build with Maven ServidorDeArchivos
       run:
-        mvn -f ./ServidorDeArchivos/pom.xml package -DskipTests
+        mvn -f ./ServidorArchivos/pom.xml package -DskipTests
     - name: Build with Maven Gateway
       run:
         mvn -f ./Gateway/pom.xml package -DskipTests
