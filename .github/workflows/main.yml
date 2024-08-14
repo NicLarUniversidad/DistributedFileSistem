@@ -32,16 +32,45 @@ jobs:
     - name: Publish ServidorArchivos
       uses: elgohr/Publish-Docker-Github-Action@master
       with:
-        name: nicolaslarena/ServidorArchivos
+        name: nicolaslarena/servidorarchivos2
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
         workdir: ServidorArchivos
+        tags: "latest"
         
     - name: Publish ServidorDeDirectorios
       uses: elgohr/Publish-Docker-Github-Action@master
       with:
-        name: nicolaslarena/ServidorDeDirectorios
+        name: nicolaslarena/servidor-directorios
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
         workdir: ServidorDeDirectorios
+        tags: "latest"
+        
+    - name: Publish ServidorDeDirectorios
+      uses: elgohr/Publish-Docker-Github-Action@master
+      with:
+        name: nicolaslarena/servidor-directorios
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        workdir: ServidorDeDirectorios
+        tags: "latest"
+        
+    - name: Publish Gateway
+      uses: elgohr/Publish-Docker-Github-Action@master
+      with:
+        name: nicolaslarena/gateway
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        workdir: ServidorDeDirectorios
+        tags: "latest"
+        
+    - name: Publish Gateway Front
+      uses: elgohr/Publish-Docker-Github-Action@master
+      with:
+        name: nicolaslarena/gateway-front
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        workdir: Front
+        tags: "latest"
   
