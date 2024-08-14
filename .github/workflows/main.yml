@@ -65,5 +65,5 @@ jobs:
         workdir: Front
         tags: "latest, v1.0.18"
         env:
-          PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}"
+          private_key: ${{ secrets.PRIVATE_KEY }}"
   
