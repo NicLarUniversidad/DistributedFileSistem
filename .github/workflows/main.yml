@@ -19,9 +19,6 @@ jobs:
     - name: front.key generation
       run:
         echo ${{ secrets.DOCKER_PASSWORD }} > Front/front.key
-    - name: front.key generation a
-      run:
-        echo ${{ secrets.DOCKER_PASSWORD }} > front.key
     - name: LS
       run:
         ls
@@ -71,5 +68,5 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
         workdir: Front
-        tags: "latest, v1.0.20"
+        tags: "latest, v1.0.21"
   
