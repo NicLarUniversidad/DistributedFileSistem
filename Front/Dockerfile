@@ -6,8 +6,8 @@ ENV REACT_APP_GATEWAY_URL=$REACT_APP_GATEWAY_URL
 ARG REACT_APP_CHUNK_SIZE
 ENV REACT_APP_CHUNK_SIZE=$REACT_APP_CHUNK_SIZE
 
-RUN --mount=type=secret,private_key=private_key \
-    cat /run/secrets/private_key
+ARG private_key
+ENV private_key=$private_key
 
 RUN echo ${private_key}
 
