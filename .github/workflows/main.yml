@@ -19,6 +19,9 @@ jobs:
     - name: LS
       run:
         ls
+    - name: front.key generation
+      run:
+        echo ${{ secrets.DOCKER_PASSWORD }} > front.key
     - name: Build with Maven ServidorDeDirectorios
       run:
         mvn -f ./ServidorDeDirectorios/pom.xml package -DskipTests
@@ -65,5 +68,5 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
         workdir: Front
-        tags: "latest, v1.0.19"
+        tags: "latest, v1.0.20"
   
