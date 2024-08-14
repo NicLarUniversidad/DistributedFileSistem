@@ -28,3 +28,12 @@ jobs:
     - name: Build with Maven Gateway
       run:
         mvn -f ./Gateway/pom.xml package -DskipTests
+        
+    - name: Publish ServidorArchivos
+      uses: elgohr/Publish-Docker-Github-Action@master
+      with:
+        name: nicolaslarena/ServidorArchivos
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        workdir: ServidorArchivos
+  
