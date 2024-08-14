@@ -32,19 +32,10 @@ jobs:
     - name: Publish ServidorArchivos
       uses: elgohr/Publish-Docker-Github-Action@master
       with:
-        name: nicolaslarena/servidorarchivos2
+        name: nicolaslarena/servidor-archivos2
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
         workdir: ServidorArchivos
-        tags: "latest"
-        
-    - name: Publish ServidorDeDirectorios
-      uses: elgohr/Publish-Docker-Github-Action@master
-      with:
-        name: nicolaslarena/servidor-directorios
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
-        workdir: ServidorDeDirectorios
         tags: "latest"
         
     - name: Publish ServidorDeDirectorios
@@ -62,7 +53,7 @@ jobs:
         name: nicolaslarena/gateway
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
-        workdir: ServidorDeDirectorios
+        workdir: Gateway
         tags: "latest"
         
     - name: Publish Gateway Front
