@@ -16,12 +16,15 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 21
+    - name: front.key generation
+      run:
+        echo ${{ secrets.DOCKER_PASSWORD }} > Front/front.key
+    - name: front.key generation a
+      run:
+        echo ${{ secrets.DOCKER_PASSWORD }} > front.key
     - name: LS
       run:
         ls
-    - name: front.key generation
-      run:
-        echo ${{ secrets.DOCKER_PASSWORD }} > front.key
     - name: Build with Maven ServidorDeDirectorios
       run:
         mvn -f ./ServidorDeDirectorios/pom.xml package -DskipTests
