@@ -36,4 +36,12 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
         workdir: ServidorArchivos
+        
+    - name: Publish ServidorDeDirectorios
+      uses: elgohr/Publish-Docker-Github-Action@master
+      with:
+        name: nicolaslarena/ServidorDeDirectorios
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        workdir: ServidorDeDirectorios
   
