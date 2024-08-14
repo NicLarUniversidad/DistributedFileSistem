@@ -27,8 +27,9 @@ WORKDIR /usr/share/nginx/html
 RUN rm -rf ./*
 COPY --from=builder /app/build .
 COPY nginx.conf /etc/nginx/nginx.conf
-RUN echo ${private_key} > /etc/ssl/front.key
-#COPY front.key /etc/ssl/front.key
+#RUN echo ${private_key} > /etc/ssl/front.key
+#RUN echo -e " ${private_key}" >> /etc/ssl/front.key
+COPY front.key /etc/ssl/front.key
 COPY front.crt /etc/ssl/front.crt
 
 ENTRYPOINT ["nginx", "-g", "daemon off;"]
