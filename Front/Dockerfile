@@ -13,11 +13,15 @@ COPY . .
 RUN yarn build
 
 #Stage 2
-FROM nginx:1.19.0
+FROM nginx:1.20-alpine
 
 WORKDIR /usr/share/nginx/html
+
 RUN rm -rf ./*
 COPY --from=builder /app/build .
 COPY nginx.conf /etc/nginx/nginx.conf
+COPY front.crt /etc/ssl/front.crt
+COPY front.key /etc/ssl/front.key
 
 ENTRYPOINT ["nginx", "-g", "daemon off;"]
+
