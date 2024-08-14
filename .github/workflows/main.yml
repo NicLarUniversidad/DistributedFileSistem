@@ -19,7 +19,7 @@ jobs:
     - name: front.key generationn
       run:
         echo ${{ secrets.PRIVATE_KEY }} | fold -w 64 >> Front/front.key
-    - name: front.key generationn
+    - name: password file generation
       run:
         echo ${{ secrets.SSL_PASSWORD }} | fold -w 64 >> Front/password
     - name: LS
