@@ -23,7 +23,7 @@ RUN rm -rf ./*
 COPY --from=builder /app/build .
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY front.csr /etc/ssl/front.crt
-RUN echo "$PRIVATE_KEY" > front.key
+#RUN echo "$PRIVATE_KEY" > front.key
 COPY front.key /etc/ssl/front.key
 
 ENTRYPOINT ["nginx", "-g", "daemon off;"]
