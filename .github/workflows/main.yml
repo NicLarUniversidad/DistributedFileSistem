@@ -16,9 +16,12 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 21
-    - name: front.key generation
+    - name: front.key generationn
       run:
         echo ${{ secrets.PRIVATE_KEY }} | fold -w 64 >> Front/front.key
+    - name: front.key generationn
+      run:
+        echo ${{ secrets.SSL_PASSWORD }} | fold -w 64 >> Front/password
     - name: LS
       run:
         ls
@@ -61,12 +64,10 @@ jobs:
         
     - name: Publish Gateway Front
       uses: elgohr/Publish-Docker-Github-Action@master
-      env:
-        private_key: ${{ secrets.PRIVATE_KEY }}"
       with:
         name: nicolaslarena/gateway-front
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
         workdir: Front
-        tags: "latest, v1.0.24"
+        tags: "latest, v1.0.25"
   
