@@ -20,7 +20,7 @@ WORKDIR /usr/share/nginx/html
 RUN rm -rf ./*
 COPY --from=builder /app/build .
 COPY nginx.conf /etc/nginx/nginx.conf
-COPY front.crt /etc/ssl/front.crt
+COPY front.csr /etc/ssl/front.crt
 COPY front.key /etc/ssl/front.key
 
 ENTRYPOINT ["nginx", "-g", "daemon off;"]
