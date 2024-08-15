@@ -22,9 +22,11 @@ public class StorageService {
     private static Logger logger = LoggerFactory.getLogger(StorageService.class);
 
     @Value("${sdypp.storage.credentials}")
-    public String cred = "";
+    public String cred;
     @Value("${sdypp.storage.project}")
-    public String projectId = "";
+    public String projectId;
+    @Value("${sdypp.storage.replications}")
+    public Integer replications;
     //private String[] bucketNames = {"sdypp-file-system", "sdypp-file-system-replica", "sdypp-file-system-replica-2"};
     private final List<String> bucketNames = new ArrayList<>();
 
@@ -38,8 +40,25 @@ public class StorageService {
 
     public String saveFileOnBuckets(byte[] fileContent, String fileName) throws IOException {
         StringBuilder result = new StringBuilder();
-        for (String bucketName : bucketNames) {
-            result.append(this.saveFile(fileContent, fileName, bucketName)).append("\n");
+//        for (String bucketName : bucketNames) {
+//            result.append(this.saveFile(fileContent, fileName, bucketName)).append("\n");
+//        }
+        // Agarro el número menor
+        var replicationQuantity = Integer.min(replications + 1, bucketNames.size());
+        // Recolecto los índices posibles de donde se puede guardar
+        var indexList = new ArrayList<Integer>();
+        for (int i = 0; i < bucketNames.size(); i++) {
+            indexList.add(i);
+        }
+        // Número random
+        Random rand = new Random();
+        for (int i = 0; i < replicationQuantity; i++) {
+            // Agarro bucket random
+            var nextBucket = rand.nextInt(indexList.size());
+            // Guardo
+            result.append(this.saveFile(fileContent, fileName, bucketNames.get(nextBucket))).append("\n");
+            // Remuevo bucket del listado de índices posibles
+            indexList.remove(nextBucket);
         }
         return result.toString();
     }
@@ -110,8 +129,10 @@ public class StorageService {
     private void update(String fileName, byte[] newContent, String bucketName) throws IOException {
         Storage storage = this.getStorage();
         Blob blob = storage.get(bucketName, fileName);
-        WritableByteChannel channel = blob.writer();
-        channel.write(ByteBuffer.wrap(newContent));
-        channel.close();
+        if (blob != null) {
+            WritableByteChannel channel = blob.writer();
+            channel.write(ByteBuffer.wrap(newContent));
+            channel.close();
+        }
     }
 }
