@@ -45,6 +45,8 @@ public class FileService {
 
     @Value("${sdypp.file.part.max.size}")
     private Integer maxPartSize;
+    @Value("${sdypp.file.part.size}")
+    private Integer partSize;
 
     @Autowired
     private FileRepository fileRepository;
@@ -72,7 +74,14 @@ public class FileService {
             fileData.setUser(user);
             fileData.setState(FileCrud.UNLOCKED);
             this.fileDataRepository.save(fileData);
-            this.createPart(file, username, fileData, append);
+            int newParts = ((int)file.getSize()) / partSize + 1;
+            for (int i = 0; i < newParts; i++) {
+                int size = Integer.min(partSize * (i + 1), (int) file.getSize());
+                var content = Arrays.copyOfRange(file.getBytes(), partSize * i, size);
+                this.createPart(file, username, fileData, content);
+            }
+            fileData.setOpenToAppend(append);
+            this.fileDataRepository.save(fileData);
         }
         else {
             var fileDataOpt = this.fileDataRepository.findById(id);
@@ -139,40 +148,11 @@ public class FileService {
         return null;
     }
 
-    //TODO: Si tiene varias partes, acá se podrían ir recuperando y juntando
-    public File join(List<File> list) throws IOException {
-        File outPutFile = File.createTempFile("temp-", "-unsplit", new File(TEMP_DIRECTORY));
-        FileOutputStream fos = new FileOutputStream(outPutFile);
-        for (File file : list) {
-            Files.copy(file.toPath(), fos);
-        }
-        fos.close();
-        return outPutFile;
-    }
-
-
     public FileCrud uploadFile(MultipartFile file, String username, Integer id, Boolean append) throws Exception {
         //Dividir el archivo en partes
         //Subir las partes a rabbit
         //Verificar que todas las partes se hayan guardado (Opcional)
         return this.save(file, username, id, append);
-    }
-
-    //publicar archivo en rabbit
-    @Autowired
-    private RabbitTemplate rabbitTemplate;
-    public void publishFile(String filePath, String queueName) throws IOException {
-        // Leer el contenido del archivo
-        Path path = Paths.get(filePath);
-        byte[] fileContent = Files.readAllBytes(path);
-        // Configurar las propiedades del mensaje
-        MessageProperties properties = new MessageProperties();
-        properties.setContentType("application/octet-stream"); // Tipo MIME para el contenido binario
-        // Crear el mensaje con el contenido del archivo y las propiedades
-        Message message = new Message(fileContent, properties);
-        // Publicar el mensaje en RabbitMQ
-        rabbitTemplate.send(queueName, message);
-        System.out.println("Archivo " + filePath + " publicado en la cola " + queueName);
     }
 
     public FileListModel getAllFiles(String username, Pageable pageable) {
@@ -219,10 +199,18 @@ public class FileService {
             var parts = fileMetadata.getParts();
             var newParts = this.fileRepository.splitByNumberOfFiles(file, PART_NUMBERS);
             int count = 1;
+            List<byte[]> contentList = new LinkedList<>();
+            int partsToUpdate = fileMetadata.getParts().size();
+            int partSize = (int) (file.getSize() / (partsToUpdate - 1));
+            for (int i = 0; i < partsToUpdate; i++) {
+                int size = Integer.min(partSize * (i + 1), (int) file.getSize());
+                var content = Arrays.copyOfRange(file.getBytes(), partSize * i, size);
+                contentList.add(content);
+            }
             while (count <= parts.size()) {
                 for (var part: parts) {
                     if (part.getOrden() == count){
-                        this.fileRepository.save(newParts.get(count - 1), username, part.getNombre(), FileModel.MODIFICACION);
+                        this.fileRepository.save(file, username, part.getNombre(), FileModel.MODIFICACION, contentList.get(part.getOrden() - 1));
                     }
                 }
                 count++;
@@ -301,6 +289,22 @@ public class FileService {
             fileData.setTamaño(fileData.getTamaño2() + " bytes");
             fileData.setOpenToAppend(append);
             this.fileRepository.save(file, username, filePartCrud.getNombre());
+        } else {
+            throw new FileClosedException(String.format("No se pueden seguir agregando partes al archivo con id=[{}]", fileData.getID()));
+        }
+    }
+
+    private void createPart(MultipartFile file, String username, FileCrud fileData, byte[] slice) throws Exception {
+        if (fileData.getOpenToAppend()) {
+            FilePartCrud filePartCrud = new FilePartCrud();
+            filePartCrud.setOriginalFile(fileData);
+            filePartCrud.setOrden(fileData.getParts().size() + 1);
+            filePartCrud.setNombre(UUID.randomUUID() + ".part" + filePartCrud.getOrden());
+            filePartCrud.setSize((long) slice.length);
+            fileData.getParts().add(filePartCrud);
+            fileData.setTamaño2(slice.length + fileData.getTamaño2());
+            fileData.setTamaño(fileData.getTamaño2() + " bytes");
+            this.fileRepository.save(file, username, filePartCrud.getNombre(), FileModel.GUARDADO, slice);
         } else {
             throw new FileClosedException(String.format("No se pueden seguir agregando partes al archivo con id=[{}]", fileData.getID()));
         }
