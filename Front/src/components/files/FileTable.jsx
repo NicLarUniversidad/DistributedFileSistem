@@ -17,7 +17,7 @@ function FileTable(props) {
 
     const handleDownloadFile = (fileId, fileName) => {
         getFile(fileId).then(response => {
-            var blob = new Blob([response], {type: "application/pdf"});
+            var blob = new Blob([response], {type: "application/text;charset=utf-8"});
             var link = document.createElement("a");
             link.href = window.URL.createObjectURL(blob);
             link.download = fileName;

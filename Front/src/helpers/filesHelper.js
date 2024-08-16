@@ -90,8 +90,38 @@ async function uploadFile(file) {
 }
 
 async function getFile(fileId) {
+    let partNumber = 1
+    let fileData = await getFilePart(fileId, partNumber);
+    let arrayBuffer = fileData.resourceString;
+    console.log(fileData)
+    while (fileData.hasNext) {
+        partNumber += 1;
+        fileData = await getFilePart(fileId, partNumber);
+        arrayBuffer = concatenate(arrayBuffer, partNumber.resourceString);
+    }
+    return arrayBuffer;
+}
+
+// Concatenate a mix of typed arrays
+function concatenate(...arrays) {
+    // Calculate byteSize from all arrays
+    let size = arrays.reduce((a,b) => a + b.byteLength, 0)
+    // Allcolate a new buffer
+    let result = new Uint8Array(size)
+
+    // Build the new array
+    let offset = 0
+    for (let arr of arrays) {
+        result.set(arr, offset)
+        offset += arr.byteLength
+    }
+
+    return result
+}
+
+async function getFilePart(fileId, partNumber) {
     const base64encodedData = localStorage.getItem("token");
-    const url = getHealthUrl() + "get-file/" + fileId;
+    const url = getHealthUrl() + "get-file/" + fileId + "/part/" + partNumber;
     const fetchResponse = await fetch(url, {
         method: "GET",
         headers: {
@@ -99,7 +129,7 @@ async function getFile(fileId) {
             'Authorization': 'Basic ' + base64encodedData
         }
     })
-    return await fetchResponse.arrayBuffer();
+    return await fetchResponse.json();
 }
 
 async function deleteFile(fileId) {

@@ -30,49 +30,14 @@ public class FileController {
         this.fileService = fileService;
     }
 
-    @PostMapping("/file")
-    public FileDetailsModel saveFile(@RequestParam("file") MultipartFile file, @RequestParam("user") String user)
-            throws IOException {
-        logger.info("Recibido: file:{}, username: {}", file.getName(), user);
-        FileDetailsModel response = fileService.save(file, user);
-        return response;
-    }
-
-    // TODO: Modificar para recuperar una sola parte, pensar alternativas
     // Recuperar parte archivo
     @GetMapping("/file")
-    public ResponseEntity<byte[]> getFile(@PathParam("id") String id, @PathParam("username") String username) throws IOException {
-        //FileDetailsEntity fileEntity = fileService.getFileById(id).get();
+    public ResponseEntity<byte[]> getFile(@PathParam("id") String id, @PathParam("username") String username) throws Exception {
         var fileString = fileService.getFileById(id, username);
         return ResponseEntity.status(HttpStatus.OK)
                 .header(HttpHeaders.CONTENT_DISPOSITION,"attachment : filename\"" + id +"\"")
                 .body(fileString);
     }
-
-
-
-//    @GetMapping("/files")
-//    public FilesDetailsModel getUserFiles(@RequestParam(name = "username") String username) throws IOException, URISyntaxException {
-//        logger.info("Recibido: username: {}", username);
-//        var files = this.fileService.getUserFiles(username);
-//        return files;
-//    }
-//
-//    @GetMapping("/get-file/{file-id}")
-//    public String getFileById(@PathVariable(name = "file-id") String fileId) throws IOException, URISyntaxException {
-//        logger.info("Recibido: file id: {}", fileId);
-//        var file = this.fileService.getFileById(fileId, username);
-//        return file;
-//    }
-
-
-    //Trae la lista de archivos
-//    @GetMapping("/allfiles") // Se recuperan desde la base
-//    public ResponseEntity<List<ResponseFile>> getListFiles(){
-//        List<ResponseFile> files = fileService.getAllFiles();
-//        return ResponseEntity.status(HttpStatus.OK).body(files);
-//    }
-
 
     @ExceptionHandler(IOException.class)
     @ResponseStatus(value = HttpStatus.CONFLICT, reason = "Archivo ya existe")

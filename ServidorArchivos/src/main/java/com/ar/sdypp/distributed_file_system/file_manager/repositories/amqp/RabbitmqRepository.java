@@ -1,6 +1,7 @@
 package com.ar.sdypp.distributed_file_system.file_manager.repositories.amqp;
 
 import com.ar.sdypp.distributed_file_system.file_manager.models.FileModel;
+import com.ar.sdypp.distributed_file_system.file_manager.services.CipherService;
 import com.ar.sdypp.distributed_file_system.file_manager.services.StorageService;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
@@ -48,15 +49,14 @@ public class RabbitmqRepository {
     private String username;
     @Value("${sdypp.rabbitmq.queue.password}")
     private String password;
-    @Value("${sdypp.encrypt.queue.password}")
-    private String passwordEncrypt;
-    private StrongTextEncryptor textEncryptor;
 
     private final StorageService storageService;
+    private final CipherService cipherService;
 
     @Autowired
-    public RabbitmqRepository(Environment env, StorageService storageService) throws IOException, TimeoutException, URISyntaxException, NoSuchAlgorithmException, KeyManagementException {
+    public RabbitmqRepository(Environment env, StorageService storageService, CipherService cipherService) throws IOException, TimeoutException, URISyntaxException, NoSuchAlgorithmException, KeyManagementException {
         this.storageService = storageService;
+        this.cipherService = cipherService;
         ConnectionFactory factory = new ConnectionFactory();
         this.queueName = "GuardadoArchivo"; //env.getProperty("sdypp.rabbitmq.queue.name");
         this.exchangeName = "default-exchange"; //env.getProperty("sdypp.rabbitmq.queue.exchange-name");
@@ -82,9 +82,6 @@ public class RabbitmqRepository {
         channel.basicQos(prefetchCount);// channel.basicQos(prefetchCount);
         //Se agrega esto para poder usar tópicos
         channel.exchangeDeclare(exchangeName, "topic");
-        passwordEncrypt = env.getProperty("sdypp.encrypt.queue.password");
-        this.textEncryptor = new StrongTextEncryptor();
-        this.textEncryptor.setPassword(passwordEncrypt);
         Thread t1 = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -117,26 +114,25 @@ public class RabbitmqRepository {
                 reader.setLenient(true);
                 FileModel file = gson.fromJson(reader, FileModel.class);
                 logger.info("Message received: Content size: [{}]", file.getContent().length);
-                var encryptData = textEncryptor.encrypt(new String(file.getContent())).getBytes();
-                logger.info("Mensaje encriptado: " + new String(encryptData));
-                switch (file.getMessageType()) {
-                    case FileModel.GUARDADO:
-                        String fileUrl = this.storageService.saveFileOnBuckets(encryptData, file.getName());
-                        logger.info("Se guardó el archivo en: {}", fileUrl);
-                        break;
-                    case FileModel.MODIFICACION:
-                        this.storageService.update(file.getName(), encryptData);
-                        logger.info("Se modificó el archivo: {}", file.getName());
-                        break;
-                    default:
-                        logger.warn("Se reicibió un mensaje con tipo incorrecto, mensaje: {}", message);
+                try {
+                    byte[] encryptData = this.cipherService.encrypt(file.getContent());
+                    logger.info("Mensaje encriptado: " + new String(encryptData));
+                    switch (file.getMessageType()) {
+                        case FileModel.GUARDADO:
+                            String fileUrl = this.storageService.saveFileOnBuckets(encryptData, file.getName());
+                            logger.info("Se guardó el archivo en: {}", fileUrl);
+                            break;
+                        case FileModel.MODIFICACION:
+                            this.storageService.update(file.getName(), encryptData);
+                            logger.info("Se modificó el archivo: {}", file.getName());
+                            break;
+                        default:
+                            logger.warn("Se reicibió un mensaje con tipo incorrecto, mensaje: {}", message);
+                    }
+                    channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
+                } catch (Exception e) {
+                    logger.error("Error al cifrar el archivo", e);
                 }
-                //Files.write(newFIle.toPath(), encryptData);
-                //Se avisa que se procesó el mensaje
-                channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
-                //TODO: ACK que se guardó el archivo
-                //this.send(); objeto nuevo que comunique donde se guardó la parte, con un id y path
-                //Debe estar en un tópico separado
             };
             logger.info("Basic consume...");
             channel.basicConsume(queue, false, deliverCallback, consumerTag -> { });

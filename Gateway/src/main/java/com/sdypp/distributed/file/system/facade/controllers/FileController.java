@@ -72,10 +72,11 @@ public class FileController {
     }
 
     @GetMapping("/get-file/{file-id}/part/{part-number}")
-    @Cacheable("get-file-part")
+    //@Cacheable("get-file-part")
     public FilePart getFilePart(@PathVariable("file-id") Integer fileId, @PathVariable("part-number") Integer partNumber) throws IOException {
         System.out.println("Recibido id archivo = " + fileId);
         FilePart model = this.fileService.getFile(fileId, partNumber);
+        model.setResourceString(new String(model.getResource()));
         return model;
     }
 

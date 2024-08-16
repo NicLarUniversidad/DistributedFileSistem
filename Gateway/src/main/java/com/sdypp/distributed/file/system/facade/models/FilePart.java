@@ -8,4 +8,5 @@ public class FilePart {
     private byte[] resource;
     private Integer number;
     private Boolean hasNext;
+    private String resourceString;
 }

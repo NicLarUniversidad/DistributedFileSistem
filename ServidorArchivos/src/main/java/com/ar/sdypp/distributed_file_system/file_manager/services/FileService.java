@@ -28,13 +28,7 @@ public class FileService {
         this.modelMapperUtil = modelMapperUtil;
     }
 
-    //Permite almacenar archivos en la base de datos
-    public FileDetailsModel save(MultipartFile file, String username) throws IOException {
-        logger.info("Recibido: {}, username: {}", file.getOriginalFilename(), username); ;
-        return this.fileRepository.saveFile(file, username);
-    }
-
-    public byte[] getFileById(String fileId, String username) throws IOException {
+    public byte[] getFileById(String fileId, String username) throws Exception {
         return this.fileRepository.getFileById(fileId, username);
     }
 }

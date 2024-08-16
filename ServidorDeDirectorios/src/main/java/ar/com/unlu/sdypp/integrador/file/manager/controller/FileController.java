@@ -43,7 +43,7 @@ public class FileController {
 
     @GetMapping("/get-file/{file-id}/part/{part-number}")
     public FilePart getFilePart(@PathVariable("file-id") Integer fileId, @PathVariable("part-number") Integer partNumber) throws IOException {
-        System.out.println("Recibido id archivo = " + fileId);
+        System.out.println(String.format("Recuperando id archivo = %s, parte: %s", fileId, partNumber));
         FilePart model = this.fileService.getFilePart(fileId, partNumber);
         return model;
     }

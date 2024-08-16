@@ -277,13 +277,12 @@ public class FileRepository {
     public FilePart getFilePart(Integer fileId, Integer partNumber) {
         RestTemplate restTemplate = new RestTemplate();
         var requestEntity = this.getGenericRequestEntity();
-        var builder = this.getBuilder("file/" + fileId + "part/" + partNumber);
+        var builder = this.getBuilder("get-file/" + fileId + "/part/" + partNumber);
         HttpEntity<FilePart> response = restTemplate.exchange(
                 builder.toUriString(),
                 HttpMethod.GET,
                 requestEntity,
                 FilePart.class);
-
         return response.getBody();
     }
 

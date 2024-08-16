@@ -320,12 +320,12 @@ public class FileService {
             });
             long currentOffset = 0;
             int idx = 0;
-            while (currentOffset <= offset && idx < parts.size()) {
+            while (currentOffset < offset && idx < parts.size()) {
                 currentOffset += parts.get(idx).getSize();
                 idx += 1;
             }
             var partsToDownload = new LinkedList<FilePartCrud>();
-            while (maxByte <= currentOffset && idx < parts.size()) {
+            while (maxByte >= currentOffset && idx < parts.size()) {
                 partsToDownload.add(parts.get(idx));
                 idx +=1;
             }
