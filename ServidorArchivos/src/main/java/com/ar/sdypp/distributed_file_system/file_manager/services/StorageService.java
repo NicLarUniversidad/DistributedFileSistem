@@ -34,15 +34,15 @@ public class StorageService {
     public StorageService(Environment env) {
         String buckets = env.getProperty("sdypp.storage.buckets");
         if (buckets != null) {
-            bucketNames.addAll(Arrays.asList(buckets.split(",")));
+            var bucketNames = buckets.split(",");
+            for (String bucketName : bucketNames) {
+                this.bucketNames.add(bucketName.trim());
+            }
         }
     }
 
     public String saveFileOnBuckets(byte[] fileContent, String fileName) throws IOException {
         StringBuilder result = new StringBuilder();
-//        for (String bucketName : bucketNames) {
-//            result.append(this.saveFile(fileContent, fileName, bucketName)).append("\n");
-//        }
         // Agarro el número menor
         var replicationQuantity = Integer.min(replications + 1, bucketNames.size());
         // Recolecto los índices posibles de donde se puede guardar
@@ -54,7 +54,8 @@ public class StorageService {
         Random rand = new Random();
         for (int i = 0; i < replicationQuantity; i++) {
             // Agarro bucket random
-            var nextBucket = rand.nextInt(indexList.size());
+            var nextBucketIdx = rand.nextInt(indexList.size());
+            var nextBucket = indexList.get(nextBucketIdx);
             // Guardo
             result.append(this.saveFile(fileContent, fileName, bucketNames.get(nextBucket))).append("\n");
             // Remuevo bucket del listado de índices posibles
