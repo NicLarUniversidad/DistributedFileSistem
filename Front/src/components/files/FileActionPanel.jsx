@@ -16,7 +16,7 @@ function FileActionPanel(props) {
         // We will fill this out later
         uploadFile(file)
             .then((response) => {
-                console.log(response); 
+                console.log(response);
                 window.location.reload();
             })
             .catch((e) => {
