@@ -201,7 +201,7 @@ public class FileService {
             int count = 1;
             List<byte[]> contentList = new LinkedList<>();
             int partsToUpdate = fileMetadata.getParts().size();
-            int partSize = (int) (file.getSize() / (partsToUpdate - 1));
+            int partSize = (int) (file.getSize() / partsToUpdate);
             for (int i = 0; i < partsToUpdate; i++) {
                 int size = Integer.min(partSize * (i + 1), (int) file.getSize());
                 var content = Arrays.copyOfRange(file.getBytes(), partSize * i, size);

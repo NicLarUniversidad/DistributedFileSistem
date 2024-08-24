@@ -18,7 +18,7 @@ function FormEdit(props) {
             }
             else {
                 lockFile(fileId).then(data => {
-                    alert("Se bloquea archivo")
+                    //alert("Se bloquea archivo")
                 }).catch(err => {
                         alert("No se pudo bloquear el archivo...")
                     })
@@ -28,7 +28,10 @@ function FormEdit(props) {
 
     useEffect(() => {
         setFileData("Cargando...")
-        getFile(fileId).then(data => {return new TextDecoder().decode(data);}).then(setFileData)
+        getFile(fileId).then(data => {
+            console.log(data)
+            let uint8array = new TextEncoder("utf-8").encode(data);
+            return new TextDecoder().decode(uint8array);}).then(setFileData)
     }, [])
 
     const handleChange = (event) => {
