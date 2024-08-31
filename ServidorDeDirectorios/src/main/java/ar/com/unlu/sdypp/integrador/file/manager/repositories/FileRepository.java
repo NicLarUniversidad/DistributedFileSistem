@@ -34,7 +34,7 @@ public class FileRepository {
     private FileDataRepository fileDataRepository;
     private json jsonConverter;
 
-    @Value("${sdypp.file.server.host:http://localhost:8081}")
+    @Value("${sdypp.file.server.host}")
     private String host;
 
     @Autowired
