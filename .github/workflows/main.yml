@@ -51,7 +51,7 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
         workdir: ServidorDeDirectorios
-        tags: "latest"
+        tags: "latest, v1.0.15"
         
     - name: Publish Gateway
       uses: elgohr/Publish-Docker-Github-Action@master
