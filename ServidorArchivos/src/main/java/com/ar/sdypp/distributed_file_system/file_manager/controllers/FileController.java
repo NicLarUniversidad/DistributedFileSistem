@@ -32,11 +32,9 @@ public class FileController {
 
     // Recuperar parte archivo
     @GetMapping("/file")
-    public ResponseEntity<byte[]> getFile(@PathParam("id") String id, @PathParam("username") String username) throws Exception {
-        var fileString = fileService.getFileById(id, username);
-        return ResponseEntity.status(HttpStatus.OK)
-                .header(HttpHeaders.CONTENT_DISPOSITION,"attachment : filename\"" + id +"\"")
-                .body(fileString);
+    public byte[] getFile(@PathParam("id") String id, @PathParam("username") String username) throws Exception {
+        var fileBytes = fileService.getFileById(id, username);
+        return fileBytes;
     }
 
     @ExceptionHandler(IOException.class)
