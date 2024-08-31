@@ -42,7 +42,7 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
         workdir: ServidorArchivos
-        tags: "latest"
+        tags: "latest, v1.0.14"
         
     - name: Publish ServidorDeDirectorios
       uses: elgohr/Publish-Docker-Github-Action@master
