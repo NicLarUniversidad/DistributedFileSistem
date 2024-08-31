@@ -57,9 +57,6 @@ public class FileRepository {
         newFileCrud.setTipo(parts[parts.length - 1]);
         fileDataRepository.save(newFileCrud);
 
-        //TODO: Dividir en partes el archivo y guardar en la base información de cada parte
-        //Y publicar cada parte por separado
-
         //Se publica en rabbit
         fileContent.setName(fileName);
         fileContent.setContent(file.getBytes());

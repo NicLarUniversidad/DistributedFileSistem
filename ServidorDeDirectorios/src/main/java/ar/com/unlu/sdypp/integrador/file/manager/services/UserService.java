@@ -24,4 +24,8 @@ public class UserService {
         }
 
     }
+
+    public void save(UserCrud user) {
+        this.userRepository.save(user);
+    }
 }

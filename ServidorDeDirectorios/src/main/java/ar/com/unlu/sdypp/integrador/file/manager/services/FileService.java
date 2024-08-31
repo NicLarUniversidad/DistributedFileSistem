@@ -67,6 +67,7 @@ public class FileService {
             if (user == null) {
                 user = new UserCrud();
                 user.setUsername(username);
+                this.userService.save(user);
             }
             fileData.setActivo(true);
             fileData.setNombreArchivo(file.getOriginalFilename());
