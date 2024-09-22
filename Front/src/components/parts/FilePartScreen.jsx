@@ -1,11 +1,13 @@
 import React from 'react';
-import {useParams} from "react-router-dom";
+import {useLocation} from "react-router-dom";
 import Header from "../Header";
 import FilePartsTable from "./FilePartsTable";
 import BackArrow from "../BackArrow";
 
 function FilePartScreen(props) {
-    const {id:fileId} = useParams()
+    const search = useLocation().search;
+    const fileId = new URLSearchParams(search).get("id");
+    //const {id:fileId} = useParams()
     return (
         <>
             <Header />

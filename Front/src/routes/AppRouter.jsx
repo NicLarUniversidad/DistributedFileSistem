@@ -29,9 +29,9 @@ const AppRouter = () => {
                                 <Home />
                             </RequireAuth>}
                     />
-                    <Route path={"/file/parts/:id"} element={<FilePartScreen />} />
-                    <Route path={"/file/logs/:id"} element={<LogScreen />} />
-                    <Route path={"/file/edit/:id"} element={<EditScreen />} />
+                    <Route path={"/file-parts"} element={<FilePartScreen />} />
+                    <Route path={"/file-logs"} element={<LogScreen />} />
+                    <Route path={"/file-edit"} element={<EditScreen />} />
                 </Routes>
             </Router>
         </>

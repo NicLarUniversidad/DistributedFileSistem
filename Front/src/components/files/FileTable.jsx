@@ -127,11 +127,11 @@ function FileTable(props) {
                                             handleDownloadFile(file.id, file.nombreArchivo)
                                         }} className="w3-button"><i className="fas fa-download"></i></button>
                                     </td>
-                                    <td><a href={"/file/edit/" + file.id} className="w3-button"><i
+                                    <td><a href={"/file-edit?id=" + file.id} className="w3-button"><i
                                         className="fas fa-edit"></i></a></td>
-                                    <td><a href={"/file/logs/" + file.id} className="w3-button"><i
+                                    <td><a href={"/file-logs?id=" + file.id} className="w3-button"><i
                                         className="fa-solid fa-square-poll-vertical"></i></a></td>
-                                    <td><a href={"/file/parts/" + file.id} className="w3-button"><i
+                                    <td><a href={"/file-parts?id=" + file.id} className="w3-button"><i
                                         className="fas fa-eye"></i></a></td>
                                     <td>
                                         <button onClick={() => {

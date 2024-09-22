@@ -1,13 +1,15 @@
 import React from 'react';
 import Header from "../../Header";
 import LogTable from "./LogTable";
-import {useParams} from "react-router-dom";
+import {useLocation} from "react-router-dom";
 import BackArrow from "../../BackArrow";
 
 function LogScreen(props) {
 
 
-    const {id:fileId} = useParams()
+    const search = useLocation().search;
+    const fileId = new URLSearchParams(search).get("id");
+    //const {id:fileId} = useParams()
 
     return (
         <>
