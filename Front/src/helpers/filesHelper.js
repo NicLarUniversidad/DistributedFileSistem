@@ -16,9 +16,7 @@ async function getAllFiles(page, limit) {
     return data;
 }
 
-async function uploadFile(file) {
-    const base64encodedData = localStorage.getItem("token");
-    const url = getHealthUrl() + "upload-file";
+function splitFile(file) {
     let start = 0
     let chunkSize = Number(process.env.REACT_APP_CHUNK_SIZE)
     let chunks = []
@@ -36,6 +34,40 @@ async function uploadFile(file) {
             start += chunkSize
         }
     }
+    return chunks
+}
+
+async function uploadPart(filePart, partNumber, isLastPart, fileName, x=0) {
+    const base64encodedData = localStorage.getItem("token");
+    const url = getHealthUrl() + "upload-file";
+    const formData = new FormData();
+    formData.append("file", filePart, fileName);
+    formData.append("x-chunk", x);
+    formData.append("chunk-append", isLastPart);
+    const fetchResponse = await fetch(url, {
+        body: formData,
+        method: 'POST',
+        cache: 'no-cache',
+        credentials: 'same-origin',
+        headers: {
+            'Authorization': 'Basic ' + base64encodedData,
+            'Access-Control-Allow-Origin': '*'
+        }
+    })
+    if (fetchResponse.status === 200) {
+        let data = await fetchResponse.json();
+        data["uploaded"] = true;
+        return data;
+    }
+    else {
+        return {"uploaded": false};
+    }
+}
+
+async function uploadFile(file) {
+    const base64encodedData = localStorage.getItem("token");
+    const url = getHealthUrl() + "upload-file";
+    let chunks = splitFile(file);
     const formData = new FormData();
     formData.append("file", chunks[0], file.name);
     formData.append("x-chunk", 0);
@@ -247,4 +279,4 @@ async function lockFile(fileId) {
 }
 
 export {getAllFiles, uploadFile, getFile, deleteFile, getFileParts, getFileLogs, updateFile, cleanCache, 
-    getFileData, lockFile}
+    getFileData, lockFile, splitFile, uploadPart}

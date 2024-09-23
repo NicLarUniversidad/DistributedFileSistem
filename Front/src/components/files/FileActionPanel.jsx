@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {uploadFile} from "../../helpers/filesHelper";
+import {deleteFile, splitFile, uploadFile, uploadPart} from "../../helpers/filesHelper";
 
 function FileActionPanel(props) {
 
@@ -14,14 +14,36 @@ function FileActionPanel(props) {
 
     const handleUpload = async () => {
         // We will fill this out later
-        uploadFile(file)
-            .then((response) => {
-                console.log(response);
-                window.location.reload();
-            })
-            .catch((e) => {
-                alert("Se ha producido un error " + e);
-            });
+        // uploadFile(file)
+        //     .then((response) => {
+        //         console.log(response);
+        //         window.location.reload();
+        //     })
+        //     .catch((e) => {
+        //         alert("Se ha producido un error " + e);
+        //     });
+        const parts = splitFile(file);
+        let id = 0;
+        for (let i = parts.length - 1; i >= 0; i--) {
+            const data = uploadPart(parts[i], i, !i < parts.length, file.name, id);
+            if (!data["uploaded"]) {
+                alert("Upload failed");
+                let retry = window.confirm("La descarga falló, se subieron " + i + " partes de " + parts.length + ", reanudar la subida?");
+                while (retry) {
+                    const data = uploadPart(parts[i], i, !i < parts.length, file.name, id);
+                    if (!data["uploaded"]) {
+                        retry = window.confirm("La descarga falló, se subieron " + i + " partes de " + parts.length + ", reanudar la subida?");
+                    }
+                }
+                if (!retry) {
+                    await deleteFile(id);
+                }
+            }
+            else {
+                id = data["id"];
+            }
+        }
+
     };
 
     return (
