@@ -36,13 +36,16 @@ public class CustomCacheConfig {
     @Value("${spring.cache.redis.password}")
     private String password;
 
+    @Value("${sdypp.cache.redis.minutes:1}")
+    private Integer minutes;
+
     @Autowired
     private RequestRepository requestRepository;
 
     @Bean
     public CacheManager cacheManager(RedisConnectionFactory connectionFactory) {
         RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
-                .entryTtl(Duration.ofMinutes(1));
+                .entryTtl(Duration.ofMinutes(minutes));
         return RedisCacheManager.builder(connectionFactory)
                 .cacheDefaults(redisCacheConfiguration)
                 .build();
