@@ -1,10 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import {useParams} from "react-router-dom";
+import {useLocation, useParams} from "react-router-dom";
 import {getFileLogs} from "../../../helpers/filesHelper";
 
 function LogTable(props) {
 
-    const {id:fileId} = useParams()
+    const search = useLocation().search;
+    const fileId = new URLSearchParams(search).get("id");
+    //const {id:fileId} = useParams()
 
     const [logs, useLogs] = useState({})
 

@@ -1,11 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import {getFileLogs, getFileParts} from "../../helpers/filesHelper";
-import {useParams} from "react-router-dom";
+import {useLocation, useParams} from "react-router-dom";
 
 
 function FilePartsTable(props) {
 
-    const {id:fileId} = useParams()
+    const search = useLocation().search;
+    const fileId = new URLSearchParams(search).get("id");
+    //const {id:fileId} = useParams()
 
     const [parts, useParts] = useState({})
 
