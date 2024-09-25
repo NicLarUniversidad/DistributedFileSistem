@@ -1,8 +1,5 @@
 package com.sdypp.distributed.file.system.facade.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.sdypp.distributed.file.system.facade.cache.RedisCacheService;
 import com.sdypp.distributed.file.system.facade.cache.RequestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,8 +12,6 @@ import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import redis.clients.jedis.JedisPoolConfig;
 
 import java.time.Duration;
 
@@ -46,7 +41,7 @@ public class CustomCacheConfig {
     public CacheManager cacheManager(RedisConnectionFactory connectionFactory) {
         RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
                 .entryTtl(Duration.ofMinutes(minutes));
-        return RedisCacheManager.builder(connectionFactory)
+        return RedisCacheManager.builder(jedisConnectionFactory())
                 .cacheDefaults(redisCacheConfiguration)
                 .build();
     }
@@ -64,7 +59,7 @@ public class CustomCacheConfig {
                 = new JedisConnectionFactory();
         jedisConFactory.setHostName(this.host);
         jedisConFactory.setPort(this.port);
-        jedisConFactory.setPassword(this.password);
+        //jedisConFactory.setPassword(this.password);
         jedisConFactory.setTimeout(this.timeToLive);
         return jedisConFactory;
     }
