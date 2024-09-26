@@ -131,7 +131,7 @@ async function refreshPart(fileId, partNumber) {
             'Authorization': 'Basic ' + base64encodedData
         }
     })
-    return fetchResponse.text()
+    return await fetchResponse.text()
 }
 
 async function getFile(fileId, refresh=false) {
