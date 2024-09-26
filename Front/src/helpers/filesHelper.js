@@ -121,13 +121,32 @@ async function uploadFile(file) {
     return null;
 }
 
-async function getFile(fileId) {
+async function refreshPart(fileId, partNumber) {
+    const base64encodedData = localStorage.getItem("token");
+    const url = getHealthUrl() + "refresh-file/" + fileId + "/part/" + partNumber;
+    const fetchResponse = await fetch(url, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            'Authorization': 'Basic ' + base64encodedData
+        }
+    })
+    return fetchResponse.text()
+}
+
+async function getFile(fileId, refresh=false) {
     let partNumber = 1
+    if (refresh) {
+        await refreshPart(fileId, partNumber)
+    }
     let fileData = await getFilePart(fileId, partNumber);
     let arrayBuffer = fileData.resourceString;
     console.log(fileData)
     while (fileData.hasNext) {
         partNumber += 1;
+        if (refresh) {
+            await refreshPart(fileId, partNumber)
+        }
         fileData = await getFilePart(fileId, partNumber);
         arrayBuffer = concatenate(arrayBuffer, partNumber.resourceString);
     }

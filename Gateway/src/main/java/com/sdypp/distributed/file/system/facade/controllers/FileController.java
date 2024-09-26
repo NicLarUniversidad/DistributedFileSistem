@@ -80,6 +80,12 @@ public class FileController {
         return model;
     }
 
+    @GetMapping("/refresh-file/{file-id}/part/{part-number}")
+    @CacheEvict("get-file-part")
+    public String refreshFile(@PathVariable("file-id") Integer fileId, @PathVariable("part-number") Integer partNumber) {
+        return "OK";
+    }
+
     @DeleteMapping("/delete-file/{file-id}")
     public String deleteFile(@PathVariable("file-id") Integer fileId, HttpServletResponse response) {
         return fileService.deleteFile(fileId);

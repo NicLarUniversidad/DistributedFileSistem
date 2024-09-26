@@ -30,7 +30,7 @@ function FormEdit(props) {
 
     useEffect(() => {
         setFileData("Cargando...")
-        getFile(fileId).then(data => {
+        getFile(fileId, true).then(data => {
             console.log(data)
             let uint8array = new TextEncoder("utf-8").encode(data);
             return new TextDecoder().decode(uint8array);}).then(setFileData)
