@@ -193,10 +193,6 @@ public class FileService {
         var fileMetadataOpt = this.fileDataRepository.findById(fileId);
         if (fileMetadataOpt.isPresent()) {
             var fileMetadata = fileMetadataOpt.get();
-            if (isFileLocked(fileMetadata)) {
-                throw new FileClosedException(String.format("Archivo con ID = '{}' y nombre '{}' bloqueado", fileId,
-                        fileMetadata.getNombreArchivo()));
-            }
             var parts = fileMetadata.getParts();
             var newParts = this.fileRepository.splitByNumberOfFiles(file, PART_NUMBERS);
             int count = 1;

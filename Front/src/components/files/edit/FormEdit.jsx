@@ -15,16 +15,6 @@ function FormEdit(props) {
     useEffect(() => {
         getFileData(fileId).then(data => {
             setFileMetadata(data)
-            if (data.state === 'l') {
-                alert("Se está editando este archivo por otro usuario, intente más tarde...")
-            }
-            else {
-                lockFile(fileId).then(data => {
-                    //alert("Se bloquea archivo")
-                }).catch(err => {
-                        alert("No se pudo bloquear el archivo...")
-                    })
-            }
         })
     }, [])
 
