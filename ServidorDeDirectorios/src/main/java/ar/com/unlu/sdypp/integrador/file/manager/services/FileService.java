@@ -228,7 +228,7 @@ public class FileService {
         if (fileMetadataOpt.isPresent()) {
             var fileMetadata = fileMetadataOpt.get();
             if (fileMetadata.getState() == FileCrud.UNLOCKED) {
-                fileMetadata.setState(FileCrud.LOCKED);
+                //fileMetadata.setState(FileCrud.LOCKED);
                 fileMetadata.setLastTimeOpen(Time.getCurrentTime());
                 this.fileDataRepository.save(fileMetadata);
                 return fileMetadata;
