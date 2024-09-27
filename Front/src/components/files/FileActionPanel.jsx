@@ -25,15 +25,30 @@ function FileActionPanel(props) {
         window.location.reload();
 
     };
+    const handleUploadB = async () => {
+        console.log("handleUploadB");
+        uploadFile(file)
+            .then((response) => {
+                console.log(response);
+                window.location.reload();
+            })
+            .catch((e) => {
+                alert("Se ha producido un error " + e);
+            });
+        window.location.reload();
+
+    };
 
     return (
         <section className="w3-container w3-third w3-grey">
             &nbsp;
             <input type="file" className="w3-input" onChange={handleFile}/>
             <button className="w3-btn w3-section w3-blue-grey w3-ripple w3-col"
-                onClick={handleUpload}>Subir archivo</button>
-            {/* <button className="w3-btn w3-section w3-blue-grey w3-ripple w3-col">Registros</button>
-            <button className="w3-btn w3-section w3-blue-grey w3-ripple w3-col">Prueba</button> */}
+                    onClick={handleUpload}>Subir archivo
+            </button>
+            <button className="w3-btn w3-section w3-blue-grey w3-col"
+                    onClick={handleUploadB}>Cargar archivo
+            </button>
         </section>
     );
 }
