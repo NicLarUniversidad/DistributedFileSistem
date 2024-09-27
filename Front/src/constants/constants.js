@@ -1,2 +1,2 @@
-export const gateway_url = "http://34.39.128.55:8080/",
-    chunk_size = 5242880;
+export const gateway_url = process.env.REACT_APP_GATEWAY_URL,
+    chunk_size = process.env.REACT_APP_CHUNK_SIZE
