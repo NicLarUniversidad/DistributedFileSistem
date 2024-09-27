@@ -1,3 +1,3 @@
-const gateway_url = "http://34.39.128.55:8080/"
+const gateway_url = process.env.REACT_APP_GATEWAY_URL;
 
 export default gateway_url;

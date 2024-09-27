@@ -69,4 +69,4 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
         workdir: Front
-        tags: "latest, v1.0.39"
+        tags: "latest, v1.0.40"
