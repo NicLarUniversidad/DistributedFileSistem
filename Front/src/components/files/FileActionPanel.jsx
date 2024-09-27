@@ -27,14 +27,9 @@ function FileActionPanel(props) {
     };
     const handleUploadB = async () => {
         console.log("handleUploadB");
-        uploadFile(file)
-            .then((response) => {
-                console.log(response);
-                window.location.reload();
-            })
-            .catch((e) => {
-                alert("Se ha producido un error " + e);
-            });
+        const parts = splitFile(file);
+        let id = 0;
+        console.log(parts.length);
         window.location.reload();
 
     };
