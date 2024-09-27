@@ -84,8 +84,40 @@ async function uploadFile(file) {
     })
     if (fetchResponse.status === 200) {
         let data = await fetchResponse.json()
-        return data;
-    } else {
+        const x = Number(data.id);
+        let correctlyUploaded = true;
+        for (let i = 1; i < chunks.length; i++) {
+            const formData = new FormData();
+            formData.append("file", chunks[i], file.name);
+            formData.append("x-chunk", x);
+            formData.append("chunk-append", chunks.length > i + 1);
+            const fetchResponse = await fetch(url, {
+                body: formData,
+                method: 'POST',
+                cache: 'no-cache',
+                credentials: 'same-origin',
+                headers: {
+                    'Authorization': 'Basic ' + base64encodedData,
+                    'Access-Control-Allow-Origin': '*'
+                }
+            })
+            if (fetchResponse.status === 200) {
+                data = fetchResponse.json();
+            }
+            else {
+                correctlyUploaded = false;
+            }
+        }
+        if (correctlyUploaded) {
+            return data;
+        }
+        else {
+            await deleteFile(data.id);
+            alert("Se ha producido un error al subir un chuck, se ha dado de baja el archivo.");
+            return null;
+        }
+    }
+    else {
         alert("Se ha producido un error al subir el primer chuck, no se ha subido ninguna parte.");
         return null;
     }

@@ -1,4 +1,4 @@
-FROM node:22-alpine as builder
+FROM node:22.9.0 as builder
 WORKDIR /app
 
 ARG REACT_APP_GATEWAY_URL
