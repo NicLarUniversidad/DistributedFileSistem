@@ -1,4 +1,5 @@
 import {getHealthUrl} from "./loginHelper";
+import {chunk_size} from "../constants/constants";
 
 
 async function getAllFiles(page, limit) {
@@ -18,7 +19,7 @@ async function getAllFiles(page, limit) {
 
 function splitFile(file) {
     let start = 0
-    let chunkSize = Number(process.env.REACT_APP_CHUNK_SIZE)
+    let chunkSize = Number(chunk_size)
     let chunks = []
     if (file.size < chunkSize) {
         chunks.push(file)

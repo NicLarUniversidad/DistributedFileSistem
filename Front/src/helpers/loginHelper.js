@@ -1,5 +1,5 @@
 import { encode } from "base-64";
-import gateway_url from "../constants/constants";
+import {gateway_url} from "../constants/constants";
 
 function getAuth() {
     const token = localStorage.getItem('logged');
