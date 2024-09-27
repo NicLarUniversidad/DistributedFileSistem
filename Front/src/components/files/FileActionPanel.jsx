@@ -60,9 +60,9 @@ function FileActionPanel(props) {
         <section className="w3-container w3-third w3-grey">
             &nbsp;
             <input type="file" className="w3-input" onChange={handleFile}/>
-            <button className="w3-btn w3-section w3-blue-grey w3-ripple w3-col"
-                    onClick={handleUpload}>Subir archivo
-            </button>
+            {/*<button className="w3-btn w3-section w3-blue-grey w3-ripple w3-col"*/}
+            {/*        onClick={handleUpload}>Subir archivo*/}
+            {/*</button>*/}
             <button className="w3-btn w3-section w3-blue-grey w3-col"
                     onClick={handleUploadB}>Cargar archivo
             </button>
