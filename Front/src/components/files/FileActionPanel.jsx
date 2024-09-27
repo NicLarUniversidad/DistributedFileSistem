@@ -37,10 +37,11 @@ function FileActionPanel(props) {
             }
             catch (e) {
                 let retry = window.confirm("La descarga falló, se subieron " + i + " partes de " + parts.length + ", ¿reanudar la subida?");
-                while (retry) {
+                let uploaded = false
+                while (retry && !uploaded) {
                     try {
                         const data = await uploadPart(parts[i], i, !i < parts.length, file.name, id);
-                        retry = false;
+                        uploaded = true;
                         id = data["id"];
                     }
                     catch (e) {
