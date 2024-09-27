@@ -1,4 +1,5 @@
 import { encode } from "base-64";
+import gateway_url from "../constants/constants";
 
 function getAuth() {
     const token = localStorage.getItem('logged');
@@ -40,7 +41,7 @@ function logout() {
 
 
 function getHealthUrl() {
-    return process.env.REACT_APP_GATEWAY_URL;
+    return gateway_url;
 }
 
 export {getAuth, login, logout, health, getHealthUrl}
