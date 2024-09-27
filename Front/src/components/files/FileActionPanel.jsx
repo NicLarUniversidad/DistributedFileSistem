@@ -30,6 +30,28 @@ function FileActionPanel(props) {
         const parts = splitFile(file);
         let id = 0;
         console.log(parts.length);
+        for (let i = parts.length - 1; i >= 0; i--) {
+            try {
+                const data = await uploadPart(parts[i], i, !i < parts.length, file.name, id);
+                id = data["id"];
+            }
+            catch (e) {
+                let retry = window.confirm("La descarga falló, se subieron " + i + " partes de " + parts.length + ", ¿reanudar la subida?");
+                while (retry) {
+                    try {
+                        const data = await uploadPart(parts[i], i, !i < parts.length, file.name, id);
+                        retry = false;
+                        id = data["id"];
+                    }
+                    catch (e) {
+                        retry = window.confirm("La descarga falló, se subieron " + i + " partes de " + parts.length + ", ¿reanudar la subida?");
+                    }
+                }
+                if (!retry) {
+                    await deleteFile(id);
+                }
+            }
+        }
         window.location.reload();
 
     };
