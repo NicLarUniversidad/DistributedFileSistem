@@ -1,6 +1,9 @@
 FROM node:22.9.0 as builder
 WORKDIR /app
 
+ARG REACT_APP_GATEWAY_URL
+ARG REACT_APP_CHUNK_SIZE
+
 COPY package*.json .
 COPY yarn*.lock .
 RUN yarn install
