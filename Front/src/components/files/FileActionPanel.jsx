@@ -24,6 +24,7 @@ function FileActionPanel(props) {
         //     });
         const parts = splitFile(file);
         let id = 0;
+        console.log(parts.length);
         for (let i = parts.length - 1; i >= 0; i--) {
             try {
                 const data = await uploadPart(parts[i], i, !i < parts.length, file.name, id);
